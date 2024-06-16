@@ -27,5 +27,9 @@ go.work
 
 web/manager/*
 !web/manager/.gitkeep
+assets/material-design-icons/*
+!assets/material-design-icons/.gitkeep
+assets/simple-icons/*
+!assets/simple-icons/.gitkeep
 
 .vscode/settings.json
