@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="login page">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{{ .Title }}</title>
+  <link rel="stylesheet" href="/assets/css/var.css">
+  <link rel="stylesheet" href="/assets/css/login.css">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+  <main>
+    <h1>{{ .Header }}</h1>
+    <div class="container">
+      <form action="{{ .Action }}" method="post">
+        <input id="username" type="text" name="username" value="{{ .Username }}" autocomplete="username"
+          style="display: none;" />
+        <input id="password" type="password" name="password" autocomplete="new-password" autofocus
+          placeholder="{{ .Placeholder }}" />
+        <br />
+        <input id="submit" type="submit" value="{{ .OK }}" />
+      </form>
+    </div>
+    {{ if .Tip }}
+    <p class="login-tips">Tips: {{ .Tip }}</p>
+    {{ end }}
+  </main>
+</body>
+
+</html>

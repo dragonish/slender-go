@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="website navigation program">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{{ .Title }}</title>
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/assets/css/var.css">
+  <link rel="stylesheet" href="/assets/css/home.css">
+  {{ if .ShowSearchInput }}
+  <link rel="stylesheet" href="/assets/css/search.css">
+  {{ end }}
+  {{ if .ShowSidebar }}
+  <link rel="stylesheet" href="/assets/css/sidebar.css">
+  {{ end }}
+  {{ if .ShowScrollTop }}
+  <link rel="stylesheet" href="/assets/css/scroll.css">
+  {{ end }}
+  {{ if .ShowSearchInput }}
+  <script type="text/javascript" defer="defer" src="/assets/js/search.js"></script>
+  {{ end }}
+  {{ if .ShowSidebar }}
+  <script type="text/javascript" defer="defer" src="/assets/js/sidebar.js"></script>
+  {{ end }}
+  {{ if .ShowScrollTop }}
+  <script type="text/javascript" defer="defer" src="/assets/js/scroll.js"></script>
+  {{ end }}
+  {{ if .ShowHot }}
+  <script type="text/javascript" defer="defer" src="/assets/js/hot.js"></script>
+  {{ end }}
+  <script type="text/javascript">
+    (function () {
+      const key = 'slender-color';
+      const color = localStorage.getItem(key);
+      if (color) {
+        switch (color) {
+          case 'light':
+          case 'dark':
+            document.documentElement.classList.add('slender-color-' + color);
+            break;
+        }
+      }
+
+      window.onload = function () {
+        const colorSwitch = document.getElementById('slender-color-switch');
+
+        if (colorSwitch) {
+          const dropdownContent = document.getElementById('slender-dropdown-content');
+
+          if (color) {
+            switch (color) {
+              case 'light':
+                colorSwitch.textContent = 'Light';
+                break;
+              case 'dark':
+                colorSwitch.textContent = 'Dark';
+                break;
+              case 'system':
+              default:
+                colorSwitch.textContent = 'System';
+                break;
+            }
+          } else {
+            colorSwitch.textContent = 'System';
+          }
+
+          if (dropdownContent) {
+            colorSwitch.addEventListener('click', e => {
+              e.stopPropagation();
+              dropdownContent.classList.add('slender-dropdown-show');
+            })
+
+            dropdownContent.addEventListener('click', e => {
+              e.stopPropagation();
+              const target = e.target;
+              if (target) {
+                const mode = target.dataset.mode;
+                if (mode) {
+                  switch (mode) {
+                    case 'light':
+                      document.documentElement.classList.remove('slender-color-dark');
+                      document.documentElement.classList.add('slender-color-light');
+                      colorSwitch.textContent = 'Light';
+                      localStorage.setItem(key, 'light');
+                      break;
+                    case 'dark':
+                      document.documentElement.classList.remove('slender-color-light');
+                      document.documentElement.classList.add('slender-color-dark');
+                      colorSwitch.textContent = 'Dark';
+                      localStorage.setItem(key, 'dark');
+                      break;
+                    case 'system':
+                    default:
+                      document.documentElement.classList.remove('slender-color-light');
+                      document.documentElement.classList.remove('slender-color-dark');
+                      colorSwitch.textContent = 'System';
+                      localStorage.setItem(key, 'system');
+                      break;
+                  }
+                }
+              }
+              dropdownContent.classList.remove('slender-dropdown-show');
+            })
+          }
+        }
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <header id="slender-header" class="slender-header-container">
+    <div class="slender-header-left-module">
+      {{ if eq .Identity "admin" }}
+      <span id="slender-identity" class="slender-header-element">{{ .AdminText }}</span>
+      <a id="slender-logout" class="slender-header-element" target="_self" rel="noopener" href="/admin/logout">{{
+        .QuitText }}</a>
+      {{ else if eq .Identity "access" }}
+      <span id="slender-identity" class="slender-header-element">{{ .UserText }}</span>
+      <a id="slender-logout" class="slender-header-element" target="_self" rel="noopener" href="/logout">{{ .QuitText
+        }}</a>
+      <a id="slender-privacy" class="slender-header-element" target="_self" rel="noopener" href="/admin?redirect=/">{{
+        .PrivacyText
+        }}</a>
+      {{ end }}
+    </div>
+    <div class="slender-header-right-module">
+      <a id="slender-color-switch" class="slender-header-element" href="javascript:void(0)">&nbsp;</a>
+      <a id="slender-manager" class="slender-header-element" target="_blank" ref="noopener" href="/manager">{{
+        .ManagerText }}</a>
+      <div id="slender-dropdown-content">
+        <a class="slender-dropdown-item" href="javascript:void(0)" data-mode="system">System</a>
+        <a class="slender-dropdown-item" href="javascript:void(0)" data-mode="light">Light</a>
+        <a class="slender-dropdown-item" href="javascript:void(0)" data-mode="dark">Dark</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="slender-main" class="slender-main-container">
+    {{ if .ShowSearchInput }}
+    <div id="slender-search" class="slender-module-container slender-top-module">
+      <input id="slender-search-input" type="text" name="search" autocomplete="off" autofocus />
+      <label for="slender-search-input" id="slender-clear-button"> >> {{ .ClearSearchTip }}</label>
+      <span id="slender-search-total">&nbsp;</span>
+    </div>
+    {{ end }}
+
+    {{ if .ShowSidebar }}
+    <div id="slender-sidebar" class="slender-module-container slender-sidebar-container">
+      <div class="slender-sidebar-header">
+        <i>
+          <svg viewBox="0 3 24 24" width="26">
+            <path d="M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z"></path>
+          </svg>
+        </i>
+        <span class="slender-sidebar-header-text">{{ .FoldersText }}</span>
+      </div>
+      <div class="slender-sidebar-content">
+        <ul class="slender-sidebar-list">
+          {{ .Sidebar }}
+        </ul>
+      </div>
+    </div>
+    {{ end }}
+
+    <div id="slender-content" class="slender-module-container">
+      {{ .Bookmarks }}
+    </div>
+
+
+    <div id="slender-toolbar" class="slender-module-container">
+      {{ if .ShowSidebar }}
+      <div id="slender-sidebar-button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24">
+          <path
+            d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,12.5A1.5,1.5 0 0,1 10.5,11A1.5,1.5 0 0,1 12,9.5A1.5,1.5 0 0,1 13.5,11A1.5,1.5 0 0,1 12,12.5M12,7.2C9.9,7.2 8.2,8.9 8.2,11C8.2,14 12,17.5 12,17.5C12,17.5 15.8,14 15.8,11C15.8,8.9 14.1,7.2 12,7.2Z">
+          </path>
+        </svg>
+      </div>
+      {{ end }}
+      {{ if .ShowScrollTop }}
+      <div id="slender-scroll-top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24">
+          <path
+            d="M12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22M12,7L7,12H10V16H14V12H17L12,7Z">
+          </path>
+        </svg>
+      </div>
+      {{ end }}
+    </div>
+  </main>
+
+  <footer id="slender-footer" class="slender-footer-container">{{ .CustomFooter }}</footer>
+</body>
+
+</html>

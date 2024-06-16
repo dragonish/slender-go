@@ -21,3 +21,11 @@
 # Go workspace file
 go.work
 
+/data
+/demo.sh
+/i18n/translate.*.toml
+
+web/manager/*
+!web/manager/.gitkeep
+
+.vscode/settings.json

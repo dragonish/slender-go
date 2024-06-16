@@ -1,0 +1,67 @@
+{
+	"nowDatetime": {
+		"prefix": "nowDatetime",
+		"description": "Insert sqlite now datetime statement.",
+		"scope": "go",
+		"body": [
+			"datetime('now', 'localtime')"
+		]
+	},
+	"txRollback": {
+		"prefix": "txRollback",
+		"description": "Rollback transaction",
+		"scope": "go",
+		"body": [
+			"if rErr := tx.Rollback(); rErr != nil {",
+			"  panic(rErr)",
+			"}",
+			"$0"
+		]
+	},
+	"txBegin": {
+		"prefix": "txBegin",
+		"description": "Begin transaction",
+		"scope": "go",
+		"body": [
+			"tx := db.MustBegin()",
+			"",
+			"$0",
+			"",
+			"if cErr := tx.Commit(); cErr != nil {",
+			"  panic(cErr)",
+			"}",
+			""
+		]
+	},
+	"txCommit": {
+		"prefix": "txCommit",
+		"description": "Commit transaction",
+		"scope": "go",
+		"body": [
+			"if cErr := tx.Commit(); cErr != nil {",
+			"  panic(cErr)",
+			"}",
+			"$0"
+		]
+	},
+	"dbRecover": {
+		"prefix": "dbRecover",
+		"description": "Database panic capture handler",
+		"scope": "go",
+		"body": [
+			"defer func() {",
+			"  if err := recover(); err != nil {",
+			"    ${1:internalServerErrorWithPanic(ctx, err)}",
+			"  }",
+			"}()$0"
+		]
+	},
+	"internal": {
+		"prefix": "internalPackage",
+		"description": "Insert internal package",
+		"scope": "go",
+		"body": [
+			"\"slender/internal/$1\"$0"
+		]
+	}
+}

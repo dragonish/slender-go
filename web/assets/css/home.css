@@ -1,0 +1,237 @@
+body {
+  background: var(--color-background);
+  min-width: 360px;
+  margin: 0;
+  color: var(--color-primary);
+}
+
+body::-webkit-scrollbar {
+  width: 5px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+}
+
+a {
+  color: var(--color-link);
+}
+
+.slender-header-container {
+  height: 24px;
+}
+
+.slender-header-container .slender-header-left-module {
+  float: left;
+  margin-left: 5px;
+}
+
+.slender-header-container .slender-header-right-module {
+  float: right;
+  margin-right: 5px;
+}
+
+#slender-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: var(--color-link-bg);
+  box-shadow: 0 2px 6px 0 var(--color-border);
+  z-index: 1;
+}
+
+#slender-dropdown-content a {
+  display: block;
+  color: var(--color-link);
+  padding: 2px;
+  text-decoration: none;
+}
+#slender-dropdown-content a:hover {
+  background-color: var(--color-link-bg-hover);
+}
+
+#slender-dropdown-content.slender-dropdown-show {
+  display: block;
+}
+
+.slender-header-element {
+  color: var(--color-primary);
+  margin: 0 2px;
+}
+
+.slender-main-container {
+  padding: 50px 150px;
+  user-select: none;
+}
+
+.slender-folder-container {
+  display: inline-block;
+  width: 100%;
+  float: none;
+}
+
+.slender-bookmark-folder-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 5px;
+  margin: 8px 0;
+  color: var(--color-text);
+}
+
+.slender-bookmark-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.slender-bookmark-item {
+  float: left;
+  width: 16.66%;
+  padding: 1px;
+  box-sizing: border-box;
+}
+
+.slender-bookmark-link {
+  display: flex;
+  color: var(--color-link);
+  transition: all 0.25s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  background: var(--color-link-bg);
+  border: 1px solid var(--color-border);
+  padding-left: 2px;
+}
+
+.slender-bookmark-link:not(.slender-large-bookmark-link) {
+  align-items: center;
+}
+
+.slender-bookmark-link.slender-large-bookmark-link {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.slender-bookmark-link .slender-large-bookmark-des {
+  color: var(--color-second);
+}
+
+.slender-bookmark-link:hover {
+  background: var(--color-link-bg-hover);
+}
+
+.slender-bookmark-link:hover .slender-bookmark-text {
+  text-decoration: underline;
+}
+
+.slender-bookmark-text {
+  padding-left: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slender-bookmark-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slender-large-bookmark-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 2px;
+}
+
+.slender-large-bookmark-title {
+  font-weight: 600;
+}
+
+.slender-large-bookmark-icon {
+  min-width: 48px;
+  width: 48px;
+  height: 48px;
+  font-size: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slender-built-in-icon {
+  filter: drop-shadow(var(--color-link) 100px 0);
+  transform: translateX(-100px);
+}
+
+.slender-large-bookmark-item {
+  float: left;
+  width: 25%;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+.slender-large-bookmark-link {
+  margin: 0;
+  height: 48px;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 5px;
+}
+
+.slender-large-bookmark-text {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 1600px) {
+  .slender-main-container {
+    padding: 50px 150px;
+  }
+
+  .slender-bookmark-item {
+    width: 20%;
+  }
+}
+
+@media (max-width: 1200px) {
+  .slender-main-container {
+    padding: 40px 125px;
+  }
+
+  .slender-bookmark-item {
+    width: 25%;
+  }
+
+  .slender-large-bookmark-item {
+    width: 33.33%;
+  }
+}
+
+@media (max-width: 992px) {
+  .slender-main-container {
+    padding: 25px 100px;
+  }
+
+  .slender-bookmark-item {
+    width: 33.3%;
+  }
+}
+
+@media (max-width: 768px) {
+  .slender-main-container {
+    padding: 20px;
+    margin: 0 auto;
+  }
+
+  .slender-bookmark-item {
+    width: 50%;
+  }
+
+  .slender-large-bookmark-item {
+    width: 50%;
+  }
+}

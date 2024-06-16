@@ -1,0 +1,56 @@
+html {
+  padding: 50px 10px;
+  font-size: 16px;
+  line-height: 1.4;
+  background: var(--color-background);
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+html,
+input {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+body {
+  margin: 0 auto;
+  text-align: center;
+}
+
+body h1 {
+  color: var(--color-title);
+}
+
+.container {
+  margin: 0 auto;
+}
+
+#password {
+  font-size: 16px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid var(--color-border);
+  color: var(--color-primary);
+  transition: all 0.2s;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+#password::-webkit-input-placeholder {
+  text-align: center;
+}
+#password::-moz-placeholder {
+  text-align: center;
+}
+
+#submit {
+  cursor: pointer;
+  outline: none;
+  background: #8bc34a;
+  border-color: #42ca42;
+  color: #effafa;
+}
+
+.login-tips {
+  color: var(--color-tips);
+}

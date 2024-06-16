@@ -1,0 +1,22 @@
+#slender-scroll-top {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  bottom: 10px;
+  right: 10px;
+  display: block;
+  visibility: visible;
+  z-index: 1;
+  cursor: pointer;
+  transition: all 0.3s;
+  opacity: 0.5;
+}
+
+#slender-scroll-top:hover {
+  opacity: 1;
+}
+
+#slender-scroll-top svg {
+  width: 100%;
+  fill: var(--color-primary);
+}

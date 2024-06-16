@@ -1,0 +1,63 @@
+[AccessPlaceholder]
+hash = "sha1-ebf53360a313b6b617d49a35fc6d455ff5f1a6f9"
+other = "请输入访问密码"
+
+[Admin]
+hash = "sha1-4e7afebcfbae000b22c7c85e5560f89a2a0280b4"
+other = "管理员"
+
+[AdminPlaceholder]
+hash = "sha1-731970028a8dc1a274220f1e354c7585692dd3cd"
+other = "请输入管理员密码"
+
+[ClearSearchTip]
+hash = "sha1-da8005281a261b4e84b10f9bea9ee696c1f399d9"
+other = "点此标签或按 ESC 清空搜索"
+
+[Folders]
+hash = "sha1-19adc47be34bed86af37b8e8dc882af424402561"
+other = "文件夹"
+
+[Hot]
+hash = "sha1-8c948d7947e0c20b3e2bc9c63fea2eaec504e113"
+other = "热门"
+
+[Latest]
+hash = "sha1-decd7ca8001063374c7a24698a6adbc6c4552498"
+other = "最近添加"
+
+[Login]
+hash = "sha1-4e5a2893bdcc7d239c1db72e4c4ffbe4bea73174"
+other = "登录"
+
+[Manager]
+hash = "sha1-babe3050e2e81dfd87a8ce67264d518cb34aef72"
+other = "管理"
+
+[OK]
+hash = "sha1-9ce3bd4224c8c1780db56b4125ecf3f24bf748b7"
+other = "确认"
+
+[Privacy]
+hash = "sha1-cf01481f626d5127ec7732fcbdb29504f08abefd"
+other = "私密"
+
+[PwdEmpty]
+hash = "sha1-033be8a9e6c44db7cb90a81c010fe519473f1b98"
+other = "密码为空"
+
+[PwdIncorrect]
+hash = "sha1-2409c9a982f0867baa452185fe5f76ccc48d117b"
+other = "密码不正确"
+
+[Quit]
+hash = "sha1-1a2285d8881f226e13430515a9dd2b9fb6294200"
+other = "退出"
+
+[Ungrouped]
+hash = "sha1-a7746fee0fd8fb6af36ee8a0a0801135b89d8d77"
+other = "未分组"
+
+[User]
+hash = "sha1-9f8a2389a20ca0752aa9e95093515517e90e194c"
+other = "用户"

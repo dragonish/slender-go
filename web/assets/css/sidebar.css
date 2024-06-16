@@ -1,0 +1,141 @@
+.slender-sidebar-container {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translate(0%, -50%);
+  border: 1px solid var(--color-border);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  background: var(--color-background);
+  max-height: calc(100vh - 220px);
+  max-width: 200px;
+  z-index: 1;
+  box-shadow: 1px 0px 2px 0px var(--color-border);
+  padding-bottom: 5px;
+  transition: all 0.5s;
+  opacity: 1;
+}
+
+.slender-sidebar-container.slender-hide-sidebar {
+  transform: translate(-100%, -50%);
+  opacity: 0;
+}
+
+.slender-sidebar-container.slender-show-sidebar {
+  transform: translate(0%, -50%);
+  opacity: 1;
+}
+
+@media (max-width: 1600px) {
+  .slender-sidebar-container {
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .slender-sidebar-container {
+    max-width: 125px;
+  }
+}
+
+@media (max-width: 992px) {
+  .slender-sidebar-container {
+    max-width: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .slender-sidebar-container {
+    max-width: 150px;
+    transform: translate(-100%, -50%);
+    opacity: 0;
+  }
+}
+
+.slender-sidebar-container .slender-sidebar-header {
+  display: flex;
+  border-bottom: 1px solid var(--color-primary);
+}
+
+.slender-sidebar-container .slender-sidebar-header .slender-sidebar-header-text {
+  color: var(--color-primary);
+}
+
+.slender-sidebar-container .slender-sidebar-header i {
+  width: 26px;
+  height: 26px;
+}
+
+.slender-sidebar-container .slender-sidebar-header i svg {
+  stroke: var(--color-primary);
+  fill: var(--color-primary);
+}
+
+.slender-sidebar-container .slender-sidebar-header span {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.slender-sidebar-container .slender-sidebar-content {
+  overflow: hidden auto;
+  max-height: calc(100vh - 250px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) var(--color-background);
+}
+
+.slender-sidebar-container .slender-sidebar-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.slender-sidebar-container .slender-sidebar-content::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+}
+
+.slender-sidebar-container .slender-sidebar-content .slender-sidebar-list {
+  margin: 5px 10px 0 -15px;
+  list-style-type: disc;
+  white-space: nowrap;
+}
+
+.slender-sidebar-container .slender-sidebar-content .slender-sidebar-list li {
+  height: 28px;
+}
+
+.slender-sidebar-container .slender-sidebar-content .slender-sidebar-list li a {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.slender-sidebar-container .slender-sidebar-content .slender-sidebar-list li::marker {
+  color: var(--color-text);
+}
+
+.slender-sidebar-container .slender-sidebar-content .slender-sidebar-list li a:hover {
+  text-decoration: underline;
+}
+
+#slender-sidebar-button {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  bottom: 10px;
+  left: 10px;
+  display: block;
+  visibility: visible;
+  z-index: 1;
+  cursor: pointer;
+  transition: all 0.3s;
+  opacity: 0.5;
+}
+
+#slender-sidebar-button:hover {
+  opacity: 1;
+}
+
+#slender-sidebar-button svg {
+  width: 100%;
+  fill: var(--color-primary);
+}
