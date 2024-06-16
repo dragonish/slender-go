@@ -1,0 +1,55 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  DOCKERHUB_REPO: giterhub/slender:latest
+  IMAGE_FILE: slender.tar.gz
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: catthehacker/ubuntu:act-latest
+    env:
+      HTTP_PROXY: ${{ vars.PROXY }}
+      HTTPS_PROXY: ${{ vars.PROXY }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build Docker image
+        continue-on-error: true
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          COMMIT=$(git rev-parse --short HEAD)
+          echo "Latest: $VERSION / $COMMIT"
+          docker build -t "slender-base:$VERSION" -f docker/Dockerfile.base .
+          docker build -t "$DOCKERHUB_REPO" --build-arg BASE_IMAGE="slender-base:$VERSION" --build-arg VERSION="$VERSION" --build-arg COMMIT="$COMMIT" -f docker/Dockerfile.amd64 .
+          docker image save "$DOCKERHUB_REPO" | gzip > $IMAGE_FILE
+          mkdir -p dist
+          mv $IMAGE_FILE ./dist
+      - name: Get git tags
+        id: git_tags
+        run: |
+          current=$(git describe --abbrev=0 --tags)
+          echo "current=${current}" >> $GITHUB_OUTPUT
+          prev=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --max-count=1`)
+          echo "prev=${prev}" >> $GITHUB_OUTPUT
+      - name: Create release
+        uses: akkuman/gitea-release-action@v1
+        env:
+          NODE_OPTIONS: '--experimental-fetch' # if nodejs < 18
+        with:
+          server_url: ${{ vars.SERVER }}
+          files: |-
+            dist/**
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Release ${{ steps.git_tags.outputs.current }}
+          body: "See: [${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}](/${{ gitea.repository }}/compare/${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }})."
