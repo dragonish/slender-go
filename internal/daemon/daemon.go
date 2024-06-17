@@ -55,7 +55,7 @@ func StartDaemon() {
 		configFilename = "config"
 	}
 
-	database.Load(dbFilename)
+	database.Load(dbFilename, global.Flags.PerformanceMode)
 	config.Load(configFilename)
 
 	icons.Build()

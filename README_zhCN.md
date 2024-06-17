@@ -14,6 +14,7 @@
 | `SLENDER_LOG_LEVEL` | `string` | `Info` | 日志输出级别，可选值：`Debug`、`Info`、`Warn`、`Error` |
 | `SLENDER_PORT` | `int` | `8080` | Web 服务运行端口 |
 | `SLENDER_TOKEN_AGE` | `int` | `30` | 令牌保存期限 (天) |
+| `SLENDER_PERFORMANCE_MODE` | `int` | `0` | 性能模式。*建议仅在遇到数据库更新性能不佳时才开启* |
 
 ## 启动命令
 
@@ -24,6 +25,7 @@
 | `--debug, -D` || 开启调试模式 |
 | `--version, -v` || 显示版本信息 |
 | `--help, -h` || 显示帮助文档 |
+| `--performance, -P` || 启用性能模式。*建议仅在遇到数据库更新性能不佳时才开启* |
 | `--access_pwd, -a` | `string` | 指定访问密码 |
 | `--admin_pwd, -d` | `string` | 指定管理员密码 |
 | `--token_age, -t` | `int` | 指定令牌保存期限 (天) |

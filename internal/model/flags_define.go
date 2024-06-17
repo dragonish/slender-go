@@ -14,6 +14,10 @@ const (
 	KEY_HELP_SHORT = "h"
 	KEY_HELP_DES   = "Show help document"
 
+	KEY_PERFORMANCE_MODE       = "performance"
+	KEY_PERFORMANCE_MODE_SHORT = "P"
+	KEY_PERFORMANCE_MODE_DES   = "Enable performance mode"
+
 	KEY_ACCESS_PWD       = "access_pwd"
 	KEY_ACCESS_PWD_SHORT = "a"
 	KEY_ACCESS_PWD_DES   = "Specify access password"

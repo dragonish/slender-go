@@ -23,6 +23,8 @@ func parseCLI(baseFlags *model.Flags) model.Flags {
 
 	options.BoolVarP(&cliFlags.DebugMode, model.KEY_DEBUG, model.KEY_DEBUG_SHORT, false, model.KEY_DEBUG_DES)
 
+	options.BoolVarP(&cliFlags.PerformanceMode, model.KEY_PERFORMANCE_MODE, model.KEY_PERFORMANCE_MODE_SHORT, baseFlags.PerformanceMode, model.KEY_PERFORMANCE_MODE_DES)
+
 	options.StringVarP(&cliFlags.AccessPassword, model.KEY_ACCESS_PWD, model.KEY_ACCESS_PWD_SHORT, baseFlags.AccessPassword, model.KEY_ACCESS_PWD_DES)
 	options.StringVarP(&cliFlags.AdminPassword, model.KEY_ADMIN_PWD, model.KEY_ADMIN_PWD_SHORT, baseFlags.AdminPassword, model.KEY_ADMIN_PWD_DES)
 

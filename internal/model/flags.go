@@ -8,6 +8,8 @@ type Flags struct {
 	ShowVersion bool // show application version.
 	ShowHelp    bool // show help document.
 
+	PerformanceMode bool // enable performance mode.
+
 	AccessPassword string // access password.
 	AdminPassword  string // admin password. default: AccessPassword(not empty) or "p@$$w0rd"
 

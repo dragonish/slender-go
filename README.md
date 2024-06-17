@@ -14,6 +14,7 @@ Website navigation.
 | `SLENDER_LOG_LEVEL` | `string` | `Info` | Log output level. Optional: `Debug`, `Info`, `Warn`, `Error` |
 | `SLENDER_PORT` | `int` | `8080` | Web service running port |
 | `SLENDER_TOKEN_AGE` | `int` | `30` | Token age (days) |
+| `SLENDER_PERFORMANCE_MODE` | `int` | `0` | Performance mode. *It is recommended to enable only when the database update performance is bad* |
 
 ## Startup commands
 
@@ -24,6 +25,7 @@ Website navigation.
 | `--debug, -D` || Enable debug mode |
 | `--version, -v` || Show application version |
 | `--help, -h` || Show help document |
+| `--performance, -P` || Enable performance mode. *It is recommended to enable only when the database update performance is bad* |
 | `--access_pwd, -a` | `string` | Specify access password |
 | `--admin_pwd, -d` | `string` | Specify admin password |
 | `--token_age, -t` | `int` | Specify token age (days) |

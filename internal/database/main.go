@@ -19,9 +19,11 @@ var (
 
 // Load handles connect and initialize the database.
 //
+// journal_mode=WAL and synchronous=NORMAL when wal is true.
+//
 // If an error occurs during the connection, the program is aborted.
 // The filename parameter does not take an extension name.
-func Load(filename string) {
+func Load(filename string, wal bool) {
 	dbFile := getDBFilePath(filename)
 
 	fileLog := logger.New("db_file", dbFile)
@@ -107,15 +109,20 @@ func Load(filename string) {
 		createIndexFatal(err, "logins", "idx_logins_login_time")
 	})
 
-	connect(dbFile)
+	connect(dbFile, wal)
 }
 
-func connect(dbFile string) {
+func connect(dbFile string, wal bool) {
 	var err error
 	log := logger.New("db_file", dbFile)
 
-	//* enable foreign key feature.
-	db, err = sqlx.Open("sqlite3", dbFile+"?_fk=on")
+	if wal {
+		db, err = sqlx.Open("sqlite3", dbFile+"?_fk=on&_journal=WAL&_sync=NORMAL")
+	} else {
+		//* enable foreign key feature.
+		db, err = sqlx.Open("sqlite3", dbFile+"?_fk=on")
+	}
+
 	if err != nil {
 		log.Fatal("database connection error", err)
 	} else {
