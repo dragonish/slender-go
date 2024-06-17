@@ -1,6 +1,9 @@
 version: "3.8"
 
 # Example
+volumes:
+  slender-data:
+
 services:
   home:
     image: giterhub/slender:latest
@@ -14,4 +17,4 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ${PWD}/slender/data:/app/data
+      - slender-data:/app/data
