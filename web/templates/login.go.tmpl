@@ -10,6 +10,20 @@
   <link rel="stylesheet" href="/assets/css/var.css">
   <link rel="stylesheet" href="/assets/css/login.css">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <script type="text/javascript">
+    (function () {
+      const key = 'slender-color';
+      const color = localStorage.getItem(key);
+      if (color) {
+        switch (color) {
+          case 'light':
+          case 'dark':
+            document.documentElement.classList.add('slender-color-' + color);
+            break;
+        }
+      }
+    })();
+  </script>
 </head>
 
 <body>
