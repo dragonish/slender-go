@@ -36,6 +36,32 @@ Website navigation.
 
 If admin password is unset, default to access password(not empty) or `p@$$w0rd`.
 
+## Feature
+
+### Dynamic link
+
+Convert dynamic links and display them according to the network environment.
+
+Suppose the homepage address of the Slender service is `https://192.168.0.1:8080/`, the following available parameters and their corresponding results:
+
+| parameter | result |
+| --- | --- |
+| `host` | `192.168.0.1:8080` |
+| `hostname` | `192.168.0.1` |
+| `href` | `https://192.168.0.1:8080/` |
+| `origin` | `https://192.168.0.1:8080` |
+| `pathname` | `/` |
+| `port` | `8080` |
+| `protocol` | `https:` |
+
+**Example**
+
+If a bookmark URL is configured as `https://{hostname}:8888/test`:
+
+- When the homepage of the Slender service is `https://192.168.0.1:8080/`, it appears as `https://192.168.0.1:8888/test`.
+- When the homepage of the Slender service is `https://172.17.0.1:8080/`, it appears as `https://172.17.0.1:8888/test`.
+- When the homepage of the Slender service is `https://link.example.com/`, it appears as `https://link.example.com:8888/test`.
+
 ## Credits
 
 - [soulteary/flare](https://github.com/soulteary/flare)
