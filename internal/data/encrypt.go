@@ -111,11 +111,11 @@ func ParseJWT(secret string, tokenString string) (model.TokenClaims, error) {
 
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
-			logger.WarnWithErr("the JWT has expired", err)
+			logger.Debug("the JWT has expired")
 		} else if errors.Is(err, jwt.ErrTokenNotValidYet) {
-			logger.WarnWithErr("the JWT has not valid yet", err)
+			logger.Debug("the JWT has not valid yet")
 		} else {
-			logger.WarnWithErr("the JWT invalid", err)
+			logger.Debug("the JWT invalid")
 		}
 
 		return resClaims, err
