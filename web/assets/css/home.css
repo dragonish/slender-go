@@ -1,4 +1,11 @@
+html {
+  height: 100%;
+  margin: 0;
+}
+
 body {
+  min-height: 100%;
+  position: relative;
   background: var(--color-background);
   min-width: 360px;
   margin: 0;
@@ -185,6 +192,13 @@ a {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.slender-footer-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 0;
 }
 
 @media (max-width: 1600px) {
