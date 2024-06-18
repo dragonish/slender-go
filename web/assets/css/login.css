@@ -1,5 +1,6 @@
 html {
-  padding: 50px 10px;
+  height: 100%;
+  margin: 0;
   font-size: 16px;
   line-height: 1.4;
   background: var(--color-background);
@@ -13,12 +14,24 @@ input {
 }
 
 body {
+  position: relative;
+  min-height: 100%;
   margin: 0 auto;
   text-align: center;
+  color: var(--color-primary);
 }
 
 body h1 {
   color: var(--color-title);
+}
+
+a {
+  color: var(--color-link);
+}
+
+.slender-login-main {
+  padding-top: 100px;
+  padding-bottom: 100px;
 }
 
 .container {
@@ -53,4 +66,16 @@ body h1 {
 
 .login-tips {
   color: var(--color-tips);
+}
+
+.slender-login-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 0px;
+}
+
+.slender-login-footer-content {
+  width: 100%;
+  text-align: center;
 }

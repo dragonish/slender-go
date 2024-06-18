@@ -27,7 +27,7 @@
 </head>
 
 <body>
-  <main>
+  <main class="slender-login-main">
     <h1>{{ .Header }}</h1>
     <div class="container">
       <form action="{{ .Action }}" method="post">
@@ -43,6 +43,12 @@
     <p class="login-tips">Tips: {{ .Tip }}</p>
     {{ end }}
   </main>
+
+  <footer class="slender-login-footer">
+    <div class="slender-login-footer-content"><a href="https://github.com/dragonish/slender-go" target="_blank"
+        rel="noopener">Slender</a> ©2024 Created by <a href="https://github.com/dragonish" target="_blank"
+        rel="noopener">dragonish</a></div>
+  </footer>
 </body>
 
 </html>
