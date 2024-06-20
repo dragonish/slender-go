@@ -276,6 +276,7 @@ func IncreaseBookmarkVisits(bookmarkID int64) error {
 // DeleteBookmark deletes bookmark.
 //
 // Auto delete associated files.
+// Causes panic when a transaction error occurs.
 func DeleteBookmark(bookmarkID int64) error {
 	log := logger.New("bookmark_id", bookmarkID)
 

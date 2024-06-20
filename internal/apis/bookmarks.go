@@ -138,6 +138,11 @@ func bookmarks(rGroup *gin.RouterGroup) {
 	rGroup.DELETE(model.API_BOOKMARKS+"/:id", func(ctx *gin.Context) {
 		id, err := parseIDParam(ctx, "id")
 		if err == nil {
+			defer func() {
+				if err := recover(); err != nil {
+					internalServerErrorWithPanic(ctx, err)
+				}
+			}()
 			err := database.DeleteBookmark(id)
 			if err == nil {
 				noContent(ctx)
