@@ -26,6 +26,14 @@
   opacity: 1;
 }
 
+.slender-bookmark-folder-title {
+  transition: color 750ms ease-in-out;
+}
+
+.slender-bookmark-folder-title.slender-highlight-title {
+  color: #f50707;
+}
+
 @media (max-width: 1600px) {
   .slender-sidebar-container {
     max-width: 150px;

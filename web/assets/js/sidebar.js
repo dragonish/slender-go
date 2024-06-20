@@ -3,12 +3,69 @@
 
   const hideSidebar = 'slender-hide-sidebar';
   const showSidebar = 'slender-show-sidebar';
+  const highlightTitle = 'slender-highlight-title';
+
   const sidebarContainer = document.querySelector('.slender-sidebar-container');
   if (sidebarContainer) {
     let state = true;
     const doc = document.documentElement;
     if (doc.clientWidth <= 768) {
       state = false;
+    }
+
+    function isInViewport(ele) {
+      const rect = ele.getBoundingClientRect();
+      return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
+    }
+
+    function focusAnimation(doc, ele) {
+      const clientWidth = doc.clientWidth;
+      if (clientWidth <= 768) {
+        setSidebarState(false);
+      }
+
+      ele.classList.add(highlightTitle);
+      const timer = window.setTimeout(() => {
+        window.clearTimeout(timer);
+        ele.classList.remove(highlightTitle);
+      }, 1500);
+    }
+
+    function scrollHandler(doc, ele) {
+      const inViewport = isInViewport(ele);
+      const offsetTop = ele.offsetTop - 8;
+
+      if (inViewport) {
+        doc.scrollTo({
+          top: offsetTop,
+          behavior: 'smooth',
+        });
+
+        focusAnimation(doc, ele);
+      } else {
+        const observer = new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                observer.unobserve(entry.target);
+                focusAnimation(doc, ele);
+              }
+            });
+          },
+          { threshold: 1.0 }
+        );
+        observer.observe(ele);
+
+        doc.scrollTo({
+          top: offsetTop,
+          behavior: 'smooth',
+        });
+      }
     }
 
     function setSidebarState(sta) {
@@ -41,15 +98,7 @@
         ev.preventDefault();
         const folderTitle = document.querySelector(`[data-folder="${id}"]`);
         if (folderTitle) {
-          const offsetTop = folderTitle.offsetTop - 8;
-          doc.scrollTo({
-            top: offsetTop,
-            behavior: 'smooth',
-          });
-          const clientWidth = doc.clientWidth;
-          if (clientWidth <= 768) {
-            setSidebarState(false);
-          }
+          scrollHandler(doc, folderTitle);
         } else {
           console.warn(`unable find folder title about id "${id}".`);
         }
