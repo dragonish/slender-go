@@ -77,7 +77,7 @@ func GetBookmarkList(cond *model.BookmarkListCondition, body *model.BookmarkList
 
 	qStmt, err := db.PrepareNamed("select b.id, b.url, b.name, b.description, b.icon, b.privacy, b.weight, b.created_time, b.modified_time, b.visits, b.folder_id, f.name as folder_name from bookmarks b left outer join folders f on b.folder_id = f.id " + filter + " order by " + o + " limit :offset,:size")
 	if err != nil {
-		return logger.Err("prepared folder list query statement error", err)
+		return logger.Err("prepared bookmark list query statement error", err)
 	}
 	defer qStmt.Close()
 
