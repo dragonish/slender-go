@@ -2226,9 +2226,6 @@ components:
         openInNewWindow:
           type: boolean
           description: always open the bookmark in the new window.
-        encryptLink:
-          type: boolean
-          description: encrypt link.
       description: the user configuration field.
     BookmarkPatchBody:
       type: object
@@ -2667,9 +2664,6 @@ components:
         openInNewWindow:
           type: boolean
           description: always open the bookmark in the new window.
-        encryptLink:
-          type: boolean
-          description: encrypt link.
       description: the user configuration field.
       required:
         - title
@@ -2683,7 +2677,6 @@ components:
         - hotTotal
         - useLetterIcon
         - openInNewWindow
-        - encryptLink
     DefaultResModel:
       type: object
       properties:
