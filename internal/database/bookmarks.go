@@ -92,8 +92,8 @@ func GetBookmarkList(cond *model.BookmarkListCondition, body *model.BookmarkList
 	return nil
 }
 
-// GetPageBookmarkList gets bookmark list used by the page.
-func GetPageBookmarkList(privacy bool, list *[]model.PageBookmarkListItem) error {
+// GetHomeBookmarkList gets bookmark list used by the homepage.
+func GetHomeBookmarkList(privacy bool, list *[]model.HomeBookmarkListItem) error {
 	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.folder_id from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.privacy = false))) order by b.weight desc, b.id"
 	if privacy {
 		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.folder_id from bookmarks b order by b.weight desc, b.id"
@@ -101,14 +101,14 @@ func GetPageBookmarkList(privacy bool, list *[]model.PageBookmarkListItem) error
 
 	err := db.Select(list, sqlStr)
 	if err != nil {
-		return logger.Err("get bookmark list used by the page error", err, "privacy", privacy)
+		return logger.Err("get bookmark list used by the homepage error", err, "privacy", privacy)
 	}
 
 	return nil
 }
 
-// GetPageLatestBookmarkList gets latest bookmark list used by the page.
-func GetPageLatestBookmarkList(privacy bool, size uint8, list *[]model.PageBookmarkListItem) error {
+// GetHomeLatestBookmarkList gets latest bookmark list used by the homepage.
+func GetHomeLatestBookmarkList(privacy bool, size uint8, list *[]model.HomeBookmarkListItem) error {
 	sqlStr := "select b.id, b.url, b.name, b.description, b.icon from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
 	if privacy {
 		sqlStr = "select b.id, b.url, b.name, b.description, b.icon from bookmarks b where ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
@@ -116,14 +116,14 @@ func GetPageLatestBookmarkList(privacy bool, size uint8, list *[]model.PageBookm
 
 	err := db.Select(list, sqlStr, size)
 	if err != nil {
-		return logger.Err("get latest bookmark list used by the page error", err, "privacy", privacy)
+		return logger.Err("get latest bookmark list used by the homepage error", err, "privacy", privacy)
 	}
 
 	return nil
 }
 
-// GetPageHotBookmarkList gets hot bookmark list used by the page.
-func GetPageHotBookmarkList(privacy bool, size uint8, list *[]model.PageBookmarkListItem) error {
+// GetHomeHotBookmarkList gets hot bookmark list used by the homepage.
+func GetHomeHotBookmarkList(privacy bool, size uint8, list *[]model.HomeBookmarkListItem) error {
 	sqlStr := "select b.id, b.url, b.name, b.description, b.icon from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
 	if privacy {
 		sqlStr = "select b.id, b.url, b.name, b.description, b.icon from bookmarks b where ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
@@ -131,7 +131,7 @@ func GetPageHotBookmarkList(privacy bool, size uint8, list *[]model.PageBookmark
 
 	err := db.Select(list, sqlStr, size)
 	if err != nil {
-		return logger.Err("get hot bookmark list used by the page error", err, "privacy", privacy)
+		return logger.Err("get hot bookmark list used by the homepage error", err, "privacy", privacy)
 	}
 
 	return nil

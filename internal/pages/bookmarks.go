@@ -13,20 +13,20 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 	bookmarksTpl := ""
 	sidebarTpl := ""
 
-	folderList := make([]model.PageFolderListItem, 0)
-	fErr := database.GetPageFolderList(&folderList)
+	folderList := make([]model.HomeFolderListItem, 0)
+	fErr := database.GetHomeFolderList(&folderList)
 	if fErr != nil {
 		return template.HTML(bookmarksTpl), template.HTML(sidebarTpl)
 	}
 
-	bookmarkList := make([]model.PageBookmarkListItem, 0)
-	bErr := database.GetPageBookmarkList(privacy, &bookmarkList)
+	bookmarkList := make([]model.HomeBookmarkListItem, 0)
+	bErr := database.GetHomeBookmarkList(privacy, &bookmarkList)
 	if bErr != nil {
 		return template.HTML(bookmarksTpl), template.HTML(sidebarTpl)
 	}
 
-	largeFolderList := make([]model.PageFolderListItem, 0)
-	generalFolderList := make([]model.PageFolderListItem, 0)
+	largeFolderList := make([]model.HomeFolderListItem, 0)
+	generalFolderList := make([]model.HomeFolderListItem, 0)
 	for _, folder := range folderList {
 		if folder.Large {
 			largeFolderList = append(largeFolderList, folder)
@@ -35,10 +35,10 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 		}
 	}
 
-	bookmarks := make(map[model.MyInt64][]model.PageBookmarkListItem)
+	bookmarks := make(map[model.MyInt64][]model.HomeBookmarkListItem)
 	for _, bookmark := range bookmarkList {
 		if bookmarks[bookmark.FolderID] == nil {
-			bookmarks[bookmark.FolderID] = make([]model.PageBookmarkListItem, 0)
+			bookmarks[bookmark.FolderID] = make([]model.HomeBookmarkListItem, 0)
 			bookmarks[bookmark.FolderID] = append(bookmarks[bookmark.FolderID], bookmark)
 		} else {
 			bookmarks[bookmark.FolderID] = append(bookmarks[bookmark.FolderID], bookmark)
@@ -55,10 +55,10 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 	}
 
 	if global.Config.ShowHot {
-		hotBookmarkList := make([]model.PageBookmarkListItem, 0)
-		hErr := database.GetPageHotBookmarkList(privacy, global.Config.HotTotal, &hotBookmarkList)
+		hotBookmarkList := make([]model.HomeBookmarkListItem, 0)
+		hErr := database.GetHomeHotBookmarkList(privacy, global.Config.HotTotal, &hotBookmarkList)
 		if hErr == nil && len(hotBookmarkList) > 0 {
-			h := model.PageFolderListItem{
+			h := model.HomeFolderListItem{
 				ID:    -2,
 				Name:  model.MyString(hot),
 				Des:   "",
@@ -72,10 +72,10 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 	}
 
 	if global.Config.ShowLatest {
-		latestBookamrkList := make([]model.PageBookmarkListItem, 0)
-		lErr := database.GetPageLatestBookmarkList(privacy, global.Config.LatestTotal, &latestBookamrkList)
+		latestBookamrkList := make([]model.HomeBookmarkListItem, 0)
+		lErr := database.GetHomeLatestBookmarkList(privacy, global.Config.LatestTotal, &latestBookamrkList)
 		if lErr == nil && len(latestBookamrkList) > 0 {
-			l := model.PageFolderListItem{
+			l := model.HomeFolderListItem{
 				ID:    -1,
 				Name:  model.MyString(latest),
 				Des:   "",
@@ -89,7 +89,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 	}
 
 	if bookmarks[0] != nil && len(bookmarks[0]) > 0 {
-		u := model.PageFolderListItem{
+		u := model.HomeFolderListItem{
 			ID:    0,
 			Name:  model.MyString(ungrouped),
 			Des:   "",
@@ -113,7 +113,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 	return template.HTML(bookmarksTpl), template.HTML(sidebarTpl)
 }
 
-func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.PageFolderListItem, bookmarks []model.PageBookmarkListItem) string {
+func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderListItem, bookmarks []model.HomeBookmarkListItem) string {
 	tpl := ""
 
 	target := "_self"
@@ -179,6 +179,6 @@ func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.PageFolderL
 	return tpl
 }
 
-func renderSidebar(folder *model.PageFolderListItem) string {
+func renderSidebar(folder *model.HomeFolderListItem) string {
 	return `<li><a class="slender-sidebar-folder-item" href="#` + folder.ID.String() + `">` + folder.Name.String() + `</a></li>`
 }

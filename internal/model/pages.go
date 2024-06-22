@@ -6,16 +6,16 @@ import (
 	"strings"
 )
 
-// PageFolderListItem defines folder list item used by the page.
-type PageFolderListItem struct {
+// HomeFolderListItem defines folder list item used by the homepage.
+type HomeFolderListItem struct {
 	ID    MyInt64  `db:"id"`
 	Name  MyString `db:"name"`
 	Des   MyString `db:"description"`
 	Large MyBool   `db:"large"`
 }
 
-// PageBookmarkListItem defines bookmark list item used by the page.
-type PageBookmarkListItem struct {
+// HomeBookmarkListItem defines bookmark list item used by the homepage.
+type HomeBookmarkListItem struct {
 	ID       MyInt64  `db:"id"`
 	URL      MyString `db:"url"`
 	Name     MyString `db:"name"`

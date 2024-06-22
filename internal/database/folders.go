@@ -83,11 +83,11 @@ func GetFolderList(cond *model.FolderListCondition, body *model.FolderListData) 
 	return nil
 }
 
-// GetPageFolderList gets folder list used by the page.
-func GetPageFolderList(list *[]model.PageFolderListItem) error {
+// GetHomeFolderList gets folder list used by the homepage.
+func GetHomeFolderList(list *[]model.HomeFolderListItem) error {
 	err := db.Select(list, "select id, name, description, large from folders order by large desc, weight desc, id")
 	if err != nil {
-		return logger.Err("get folder list used by the page error", err)
+		return logger.Err("get folder list used by the homepage error", err)
 	}
 
 	return nil
