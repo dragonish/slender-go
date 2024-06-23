@@ -22,6 +22,7 @@ func Apis(router *gin.Engine) {
 	bookmarks(adminGroup)
 	files(adminGroup)
 	folders(adminGroup)
+	search_engines(adminGroup)
 	icons(adminGroup)
 	list(adminGroup)
 	logins(adminGroup)

@@ -271,3 +271,54 @@ type AboutIconsData struct {
 	MDIVersion string `json:"mdiVersion"`
 	SIVersion  string `json:"siVersion"`
 }
+
+// SearchEnginePostBody defines add search engine body.
+type SearchEnginePostBody struct {
+	Name   MyString `json:"name" db:"name"`
+	Method MyString `json:"method" db:"method"`
+	URL    MyString `json:"url" db:"url"`
+	Body   MyString `json:"body" db:"body"`
+	Icon   MyString `json:"icon" db:"icon"`
+	Weight MyInt16  `json:"weight" db:"weight"`
+}
+
+// SearchEngineListCondition defines search engine list condition.
+type SearchEngineListCondition struct {
+	ListCondition
+
+	Name MyString `json:"name"`
+	URL  MyString `json:"url"`
+
+	Method *MyString `json:"method,omitempty"`
+}
+
+// SearchEngineBaseData defines search engine base data.
+type SearchEngineBaseData struct {
+	ID     MyInt64  `json:"id" db:"id"`
+	Name   MyString `json:"name" db:"name"`
+	Method MyString `json:"method" db:"method"`
+	URL    MyString `json:"url" db:"url"`
+	Body   MyString `json:"body" db:"body"`
+	Icon   MyString `json:"icon" db:"icon"`
+	Weight MyInt16  `json:"weight" db:"weight"`
+
+	CreatedTime  MyDatetimeString `json:"createdTime" db:"created_time"`
+	ModifiedTime MyDatetimeString `json:"modifiedTime" db:"modified_time"`
+}
+
+// SearchEngineListData defines search engine list data.
+type SearchEngineListData struct {
+	PageData
+
+	List []SearchEngineBaseData `json:"list"`
+}
+
+// SearchEnginePatchBody defines update search engine body.
+type SearchEnginePatchBody struct {
+	Name   *MyString `json:"name,omitempty" db:"name"`
+	Method *MyString `json:"method,omitempty" db:"method"`
+	URL    *MyString `json:"url,omitempty" db:"url"`
+	Body   *MyString `json:"body,omitempty" db:"body"`
+	Icon   *MyString `json:"icon,omitempty" db:"icon"`
+	Weight *MyInt16  `json:"weight,omitempty" db:"weight"`
+}

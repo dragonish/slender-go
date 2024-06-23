@@ -3,6 +3,7 @@ package model
 import (
 	"database/sql/driver"
 	"fmt"
+	"html"
 	"math"
 	"strconv"
 	"time"
@@ -47,6 +48,11 @@ func (s MyString) DateString() (resDate MyDateString) {
 // String returns string type value.
 func (s MyString) String() string {
 	return string(s)
+}
+
+// HTMLString returns HTML string value.
+func (s MyString) HTMLString() string {
+	return html.EscapeString(string(s))
 }
 
 // MyDateString defines SQL date format string type.

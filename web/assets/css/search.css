@@ -1,10 +1,22 @@
-#slender-search {
-  margin-bottom: 25px;
+.slender-large-bookmark-item.slender-search-result-hide,
+.slender-bookmark-item.slender-search-result-hide,
+.slender-folder-container.slender-search-result-hide {
+  display: none;
 }
 
-#slender-search #slender-search-input {
+#slender-search {
+  margin-bottom: 5px;
+}
+
+.slender-search-input-module {
+  position: relative;
+  overflow: hidden;
+  height: 60px;
+}
+
+#slender-search-input {
   width: 100%;
-  padding: 5px 0;
+  padding: 5px 30px;
   color: var(--color-primary);
   font-size: 20px;
   background-color: transparent;
@@ -12,30 +24,272 @@
   border-bottom: 2px solid var(--color-border);
   transition: all 0.2s;
   outline: none;
+  box-sizing: border-box;
 }
 
-.slender-large-bookmark-item.slender-search-result-hide,
-.slender-bookmark-item.slender-search-result-hide,
-.slender-folder-container.slender-search-result-hide {
+#slender-search-input.slender-hide-search-button {
+  padding: 5px 0 5px 30px;
+}
+
+.slender-search-input-prefix {
+  position: absolute;
+  left: 5px;
+  top: 0;
+  bottom: 0;
+  height: 20px;
+  width: 20px;
+  margin: 5px 0;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#slender-search-input-prefix-overlay {
+  position: absolute;
+  left: 5px;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  width: 20px;
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+.slender-search-input-suffix {
+  position: absolute;
+  right: 5px;
+  top: 0;
+  bottom: 0;
+  height: 20px;
+  margin: 5px 0;
+}
+
+.slender-search-input-suffix.slender-hide-search-button {
   display: none;
+}
+
+#slender-search-input-suffix-overlay {
+  position: absolute;
+  right: 5px;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  margin: 5px 0;
+  cursor: pointer;
+}
+#slender-search-input-suffix-overlay.slender-hide-search-button {
+  display: none;
+}
+
+.slender-search-built-in-icon {
+  filter: drop-shadow(var(--color-link) -100px 0);
+  transform: translateX(100px);
 }
 
 #slender-clear-button {
   display: none;
-  float: left;
+  position: absolute;
+  bottom: 0;
+  left: 0;
   cursor: pointer;
   color: var(--color-second);
 }
-#slender-clear-button.slender-show-search-button {
-  display: inline;
+#slender-clear-button.slender-show-search-tip {
+  display: block;
 }
 
 #slender-search-total {
   display: none;
-  float: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
   color: var(--color-second);
 }
 
-#slender-search-total.slender-show-search-button {
-  display: inline;
+#slender-search-total.slender-show-search-tip {
+  display: block;
+}
+
+#slender-search-engine-module {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+#slender-search-engine-module.slender-search-engine-module-show {
+  display: block;
+}
+
+.slender-search-engine-dialog {
+  position: relative;
+  top: 120px;
+  margin: 0 150px;
+  padding: 2px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  box-shadow: 4px 4px 12px var(--color-border);
+  background-color: var(--color-background);
+}
+
+.slender-search-engine-config {
+  margin-bottom: 5px;
+}
+
+.slender-search-engine-config input[type='checkbox'] {
+  clip: rect(0, 0, 0, 0);
+  position: absolute;
+}
+
+.slender-search-engine-config input[type='checkbox'] + label {
+  padding-left: 50px;
+  position: relative;
+}
+
+.slender-search-engine-config input[type='checkbox'] + label::before {
+  content: '';
+  position: absolute;
+  left: 0px;
+  margin-top: 1px;
+  border: 1px solid var(--color-border);
+  border-radius: 100px;
+  cursor: pointer;
+  display: inline-block;
+  width: 2.5em;
+  height: 1em;
+  transition: border 0.4s, box-shadow 0.4s;
+  background-color: var(--color-link-bg);
+  border-color: var(--color-border);
+  box-shadow: 0px 0px 1px 1px inset var(--color-border);
+  box-sizing: content-box;
+}
+
+.slender-search-engine-config input[type='checkbox'] + label::after {
+  content: '';
+  cursor: pointer;
+  position: absolute;
+  top: 2px;
+  left: 0px;
+  width: 1em;
+  height: 1em;
+  transition: background-color 0.4s, left 0.2s;
+  border-radius: 100px;
+  background-color: var(--color-link-bg-hover);
+  box-shadow: 0px 0px 2px 1px var(--color-primary);
+}
+
+.slender-search-engine-config input[type='checkbox']:checked + label {
+  color: var(--color-text);
+}
+
+.slender-search-engine-config input[type='checkbox']:checked + label::before {
+  transition: border 0.4s, box-shadow 0.4s, background-color 1.2s;
+  background-color: var(--color-link-bg-hover);
+}
+
+.slender-search-engine-config input[type='checkbox']:checked + label::after {
+  left: 1.5em;
+}
+
+#slender-search-engine-list {
+  display: inline-block;
+  width: 100%;
+}
+
+#slender-search-engine-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.slender-search-engine-item {
+  float: left;
+  width: 16.66%;
+  padding: 1px;
+  box-sizing: border-box;
+}
+
+.slender-search-engine-link {
+  display: flex;
+  color: var(--color-link);
+  transition: all 0.25s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  background: var(--color-link-bg);
+  border: 1px solid var(--color-border);
+  padding-left: 2px;
+  align-items: center;
+}
+.slender-search-engine-link:hover {
+  background: var(--color-link-bg-hover);
+}
+.slender-search-engine-link:hover .slender-search-engine-text {
+  text-decoration: underline;
+}
+
+.slender-search-engine-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slender-search-engine-text {
+  padding-left: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 1600px) {
+  .slender-search-engine-dialog {
+    top: 120px;
+    margin: 0 150px;
+  }
+
+  .slender-search-engine-item {
+    width: 20%;
+  }
+}
+
+@media (max-width: 1200px) {
+  .slender-search-engine-dialog {
+    top: 110px;
+    margin: 0 125px;
+  }
+
+  .slender-search-engine-item {
+    width: 25%;
+  }
+}
+
+@media (max-width: 992px) {
+  .slender-search-engine-dialog {
+    top: 95px;
+    margin: 0 100px;
+  }
+
+  .slender-search-engine-item {
+    width: 33.3%;
+  }
+}
+
+@media (max-width: 768px) {
+  .slender-search-engine-dialog {
+    top: 90px;
+    margin: 0 20px;
+  }
+
+  .slender-search-engine-item {
+    width: 50%;
+  }
 }

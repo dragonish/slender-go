@@ -88,6 +88,19 @@ func Load(filename string, wal bool) {
 		_, err = iDb.Exec("create index if not exists idx_bookmarks_created_time on bookmarks(created_time)")
 		createIndexFatal(err, "bookmarks", "idx_bookmarks_created_time")
 
+		_, err = iDb.Exec(`create table if not exists search_engines(
+			id integer primary key autoincrement,
+			name varchar(100) not null,
+			method char(10) not null,
+			url text not null,
+			body text,
+			icon text,
+			weight smallint not null default 0 check(weight >= -32768 and weight <= 32767),
+			created_time datetime not null,
+			modified_time datetime not null
+		);`)
+		createTableFatal(err, "search_engines")
+
 		_, err = iDb.Exec(`create table if not exists files(
 			id integer primary key autoincrement,
 			path text,

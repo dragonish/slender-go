@@ -22,6 +22,10 @@ other = "文件夹"
 hash = "sha1-8c948d7947e0c20b3e2bc9c63fea2eaec504e113"
 other = "热门"
 
+[InHomeSearch]
+hash = "sha1-6343f56053c63bd876cf3a97174825d0e4609a78"
+other = "页内搜索"
+
 [Latest]
 hash = "sha1-decd7ca8001063374c7a24698a6adbc6c4552498"
 other = "最近添加"
@@ -57,6 +61,10 @@ other = "退出"
 [Ungrouped]
 hash = "sha1-a7746fee0fd8fb6af36ee8a0a0801135b89d8d77"
 other = "未分组"
+
+[UseInHomeSearch]
+hash = "sha1-c8c2be0e41bff75d5461cf5ae421739e10fa229e"
+other = "启用页内搜索"
 
 [User]
 hash = "sha1-9f8a2389a20ca0752aa9e95093515517e90e194c"

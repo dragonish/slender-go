@@ -13,6 +13,7 @@ tags:
   - name: folder
   - name: config
   - name: about
+  - name: search engine
 paths:
   /api/v1/icons:
     get:
@@ -390,7 +391,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  data: &ref_2
+                  data: &ref_3
                     $ref: '#/components/schemas/FileBaseData'
                 required:
                   - data
@@ -1427,6 +1428,214 @@ paths:
                 required:
                   - message
       security: []
+  /api/v1/search-engines:
+    post:
+      summary: add search engine
+      deprecated: false
+      description: ''
+      tags:
+        - search engine
+      parameters:
+        - name: User-Agent
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchEnginePostBody'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: integer
+                required:
+                  - data
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+      security: []
+    get:
+      summary: get search engine list
+      deprecated: false
+      description: ''
+      tags:
+        - search engine
+      parameters:
+        - name: page
+          in: query
+          description: number of pages.
+          required: false
+          example: '1'
+          schema:
+            type: integer
+        - name: size
+          in: query
+          description: size per page.
+          required: false
+          example: '25'
+          schema:
+            type: integer
+        - name: order
+          in: query
+          description: sort condition. ["created-time", "modified-time", "weight"]
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: ''
+          required: false
+          example: ''
+          schema:
+            type: string
+        - name: url
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: method
+          in: query
+          description: ''
+          required: false
+          schema:
+            type: string
+        - name: User-Agent
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SearchEngineListData'
+                required:
+                  - data
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+      security: []
+    patch:
+      summary: handle search engine in batches
+      deprecated: false
+      description: 'action: "delete" | "setWeight" | "incWeight"'
+      tags:
+        - search engine
+      parameters:
+        - name: User-Agent
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema: *ref_0
+      responses:
+        '204':
+          description: No Content
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+                required:
+                  - 01HPRQXDG43QDPJJNY8QX8STMJ
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+      security: []
   /api/v1/about/icons:
     get:
       summary: get icons info
@@ -1979,6 +2188,213 @@ paths:
                 type: object
                 properties: {}
       security: []
+  /api/v1/search-engines/{id}:
+    get:
+      summary: get search engine
+      deprecated: false
+      description: ''
+      tags:
+        - search engine
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          example: '1'
+          schema:
+            type: integer
+        - name: User-Agent
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: &ref_2
+                    $ref: '#/components/schemas/SearchEngineBaseData'
+                required:
+                  - data
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '404':
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+      security: []
+    patch:
+      summary: update search engine
+      deprecated: false
+      description: ''
+      tags:
+        - search engine
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          example: '1'
+          schema:
+            type: integer
+        - name: User-Agent
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchEnginePatchBody'
+      responses:
+        '204':
+          description: No Content
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+                required:
+                  - 01HPRQXDG43QDPJJNY8QX8STMJ
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '404':
+          description: Record not found
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+      security: []
+    delete:
+      summary: delete search engine
+      deprecated: false
+      description: ''
+      tags:
+        - search engine
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          example: '1'
+          schema:
+            type: integer
+        - name: User-Agent
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: ''
+          example: ''
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+                required:
+                  - 01HPRQXDG43QDPJJNY8QX8STMJ
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties: {}
+      security: []
   /api/v1/bookmarks/{id}/visits:
     post:
       summary: increase bookmark visits
@@ -2043,6 +2459,97 @@ paths:
       security: []
 components:
   schemas:
+    SearchEnginePatchBody:
+      type: object
+      properties:
+        name:
+          type: string
+        method:
+          type: string
+        url:
+          type: string
+        body:
+          type: string
+        icon:
+          type: string
+        weight:
+          type: integer
+      description: defines update search engine body.
+    SearchEngineListData:
+      type: object
+      properties:
+        pageSize:
+          type: integer
+          description: size per page.
+        pageNo:
+          type: integer
+          description: current page number.
+        total:
+          type: integer
+        list:
+          type: array
+          items: *ref_2
+      description: defines search engine list data.
+      required:
+        - list
+        - pageSize
+        - pageNo
+        - total
+    SearchEngineBaseData:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        method:
+          type: string
+        url:
+          type: string
+        body:
+          type: string
+        icon:
+          type: string
+        weight:
+          type: integer
+        createdTime:
+          type: string
+        modifiedTime:
+          type: string
+      description: defines search engine base data.
+      required:
+        - id
+        - name
+        - method
+        - url
+        - body
+        - icon
+        - weight
+        - createdTime
+        - modifiedTime
+    SearchEnginePostBody:
+      type: object
+      properties:
+        name:
+          type: string
+        method:
+          type: string
+        url:
+          type: string
+        body:
+          type: string
+        icon:
+          type: string
+        weight:
+          type: integer
+      description: defines add search engine body.
+      required:
+        - name
+        - method
+        - url
+        - body
+        - weight
+        - icon
     AboutIconsData:
       type: object
       properties:
@@ -2278,7 +2785,7 @@ components:
           type: integer
         files:
           type: array
-          items: *ref_2
+          items: *ref_3
           description: file list.
       description: bookmark response data.
       required:

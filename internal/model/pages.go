@@ -24,6 +24,16 @@ type HomeBookmarkListItem struct {
 	FolderID MyInt64  `db:"folder_id"`
 }
 
+// HomeSearchEngineListItem defines search engine list item used by the homepage.
+type HomeSearchEngineListItem struct {
+	ID     MyInt64  `db:"id"`
+	Name   MyString `db:"name"`
+	Method MyString `db:"method"`
+	URL    MyString `db:"url"`
+	Body   MyString `db:"body"`
+	Icon   MyString `db:"icon"`
+}
+
 // PageDynamicURL defines dynamic URL.
 type PageDynamicURL struct {
 	Parsed bool

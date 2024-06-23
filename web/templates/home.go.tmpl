@@ -146,11 +146,7 @@
 
   <main id="slender-main" class="slender-main-container">
     {{ if .ShowSearchInput }}
-    <div id="slender-search" class="slender-module-container slender-top-module">
-      <input id="slender-search-input" type="text" name="search" autocomplete="off" autofocus />
-      <label for="slender-search-input" id="slender-clear-button"> >> {{ .ClearSearchTip }}</label>
-      <span id="slender-search-total">&nbsp;</span>
-    </div>
+    {{ .SearchModule }}
     {{ end }}
 
     {{ if .ShowSidebar }}
@@ -174,7 +170,6 @@
     <div id="slender-content" class="slender-module-container">
       {{ .Bookmarks }}
     </div>
-
 
     <div id="slender-toolbar" class="slender-module-container">
       {{ if .ShowSidebar }}

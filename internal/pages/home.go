@@ -41,6 +41,18 @@ func home(router *gin.Engine) {
 				Other: "Click this or press ESC to clear",
 			},
 		})
+		inHomeSearch, _ := localizer.L.Localize(&i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID:    "InHomeSearch",
+				Other: "In Home Search",
+			},
+		})
+		useInHomeSearch, _ := localizer.L.Localize(&i18n.LocalizeConfig{
+			DefaultMessage: &i18n.Message{
+				ID:    "UseInHomeSearch",
+				Other: "Enable in home search",
+			},
+		})
 		folders, _ := localizer.L.Localize(&i18n.LocalizeConfig{
 			DefaultMessage: &i18n.Message{
 				ID:    "Folders",
@@ -76,6 +88,8 @@ func home(router *gin.Engine) {
 		dynamic := model.PageDynamicURL{}
 		dynamic.Parse(ctx.Request)
 
+		searchModule := generateSearchModule(clearSearchTip, inHomeSearch, useInHomeSearch)
+
 		identity := ctx.GetString(model.CONTEXT_IDENTITY)
 		bookmarks, sidebar := generateBookmarks(&dynamic, identity == "admin", ungrouped, latest, hot)
 
@@ -87,16 +101,16 @@ func home(router *gin.Engine) {
 			"ShowHot":         global.Config.ShowHot,
 			"CustomFooter":    template.HTML(global.Config.CustomFooter),
 
-			"ClearSearchTip": clearSearchTip,
-			"FoldersText":    folders,
-			"AdminText":      admin,
-			"UserText":       user,
-			"PrivacyText":    privacy,
-			"QuitText":       quit,
-			"ManagerText":    manager,
+			"FoldersText": folders,
+			"AdminText":   admin,
+			"UserText":    user,
+			"PrivacyText": privacy,
+			"QuitText":    quit,
+			"ManagerText": manager,
 
-			"Bookmarks": bookmarks,
-			"Sidebar":   sidebar,
+			"SearchModule": searchModule,
+			"Bookmarks":    bookmarks,
+			"Sidebar":      sidebar,
 
 			"Identity": identity,
 		})
