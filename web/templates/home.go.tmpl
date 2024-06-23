@@ -68,9 +68,14 @@
           }
 
           if (dropdownContent) {
+            const slenderDropdownShow = 'slender-dropdown-show';
             colorSwitch.addEventListener('click', e => {
               e.stopPropagation();
-              dropdownContent.classList.add('slender-dropdown-show');
+              if (dropdownContent.classList.contains(slenderDropdownShow)) {
+                dropdownContent.classList.remove(slenderDropdownShow);
+              } else {
+                dropdownContent.classList.add(slenderDropdownShow);
+              }
             })
 
             dropdownContent.addEventListener('click', e => {
@@ -102,7 +107,7 @@
                   }
                 }
               }
-              dropdownContent.classList.remove('slender-dropdown-show');
+              dropdownContent.classList.remove(slenderDropdownShow);
             })
           }
         }
