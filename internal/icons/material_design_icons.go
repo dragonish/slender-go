@@ -37,6 +37,7 @@ func materialDesignIconsVersion() {
 			ver := result["version"].(string)
 			if len(ver) > 0 {
 				MDIVer = ver
+				log.Info("material design icons", "version", MDIVer)
 			} else {
 				log.Warn("unable to get version")
 			}

@@ -37,6 +37,7 @@ func simpleIconsVersion() {
 			ver := result["version"].(string)
 			if len(ver) > 0 {
 				SIVer = ver
+				log.Info("simple icons", "version", SIVer)
 			} else {
 				log.Warn("unable to get version")
 			}
