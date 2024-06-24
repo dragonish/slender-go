@@ -199,6 +199,7 @@ a {
   bottom: 0;
   width: 100%;
   padding: 10px 0;
+  max-height: 30px;
 }
 
 @media (max-width: 1600px) {
@@ -213,7 +214,7 @@ a {
 
 @media (max-width: 1200px) {
   .slender-main-container {
-    padding: 40px 125px;
+    padding: 40px 125px 50px 125px;
   }
 
   .slender-bookmark-item {
@@ -227,7 +228,7 @@ a {
 
 @media (max-width: 992px) {
   .slender-main-container {
-    padding: 25px 100px;
+    padding: 25px 100px 50px 100px;
   }
 
   .slender-bookmark-item {
@@ -237,7 +238,7 @@ a {
 
 @media (max-width: 768px) {
   .slender-main-container {
-    padding: 20px;
+    padding: 20px 20px 50px 20px;
     margin: 0 auto;
   }
 
