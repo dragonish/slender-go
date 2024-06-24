@@ -101,7 +101,7 @@
 
 .slender-sidebar-container .slender-sidebar-content .slender-sidebar-list {
   margin: 5px 10px 0 -15px;
-  list-style-type: disc;
+  list-style-type: disclosure-closed;
   white-space: nowrap;
 }
 
