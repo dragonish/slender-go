@@ -8,7 +8,7 @@
   border-radius: 0 8px 8px 0;
   background: var(--color-background);
   max-height: calc(100vh - 220px);
-  max-width: 200px;
+  max-width: 145px;
   z-index: 1;
   box-shadow: 1px 0px 2px 0px var(--color-border);
   padding-bottom: 5px;
@@ -36,25 +36,25 @@
 
 @media (max-width: 1600px) {
   .slender-sidebar-container {
-    max-width: 150px;
+    max-width: 145px;
   }
 }
 
 @media (max-width: 1200px) {
   .slender-sidebar-container {
-    max-width: 125px;
+    max-width: 120px;
   }
 }
 
 @media (max-width: 992px) {
   .slender-sidebar-container {
-    max-width: 100px;
+    max-width: 95px;
   }
 }
 
 @media (max-width: 768px) {
   .slender-sidebar-container {
-    max-width: 150px;
+    max-width: 145px;
     transform: translate(-100%, -50%);
     opacity: 0;
   }
