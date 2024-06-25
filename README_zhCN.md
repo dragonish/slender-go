@@ -3,7 +3,62 @@
 - [English](./README.md)
 - 简体中文
 
-网址导航程序。
+个人网址导航程序。
+
+## 特性
+
+- 允许定义[访问密码](#访问密码)与[管理员密码](#管理员密码)。
+- 支持[动态链接](#动态链接)功能。
+- 支持隐私模式功能。
+- 支持搜索首页内的书签项目。
+- 内置 [MaterialDesign](https://github.com/Templarian/MaterialDesign) 与 [simple-icons](https://github.com/simple-icons/simple-icons) 图标，并允许自定义或上传图标。
+- 允许自定义网络搜索引擎。
+- 可选的文件夹侧边栏。
+- 可选的展示最近添加书签和热门书签。
+
+## 安装
+
+### Docker 部署
+
+参考 [`compose.yaml`](./compose.yaml)。
+
+### 本地编译运行
+
+本地安装 [git](https://git-scm.com) 与 [Go](https://go.dev) 并运行：
+
+```bash
+# Clone project code
+git clone https://github.com/dragonish/slender-go.git
+
+# Enter project directory
+cd slender-go
+
+# First or update MaterialDesign version
+./mdi.sh
+
+# First or update simple-icons version
+./si.sh
+```
+
+下载 [slender-manager](https://github.com/dragonish/slender-manager/releases) 并解压文件至 `web/manager` 目录下并运行：
+
+```bash
+CGO_ENABLED=1 go run main.go
+```
+
+支持定义[环境变量](#环境变量)或者添加[启动命令](#启动命令)。
+
+#### 本地构建 Docker 镜像
+
+本地安装 [Docker](https://www.docker.com) 并运行：
+
+```bash
+# Building an image
+./build.sh
+
+# Export image file
+./save.sh
+```
 
 ## 环境变量
 
@@ -32,13 +87,17 @@
 | `--log, -l` | `string` | 指定日志输出级别，可选值：`Debug`、`Info`、`Warn`、`Error` |
 | `--port, -p` | `int` | 指定 Web 服务运行端口 |
 
+## 访问密码
+
+用于访问首页，若未定义则默认可直接访问首页。
+
 ## 管理员密码
+
+用于访问后台管理以及进入隐私模式。
 
 如果未设置管理员密码，则默认为访问密码(非空时)或者 `p@$$w0rd`。
 
-## 功能
-
-### 动态链接
+## 动态链接
 
 根据网络环境转换动态链接并展示。
 
@@ -62,8 +121,13 @@
 - 当 Slender 服务的首页地址为 `https://172.17.0.1:8080/`，其显示为 `https://172.17.0.1:8888/test`。
 - 当 Slender 服务的首页地址为 `https://link.example.com/`，其显示为 `https://link.example.com:8888/test`。
 
+
 ## 感谢
 
 - [soulteary/flare](https://github.com/soulteary/flare)
 - [simple-icons/simple-icons](https://github.com/simple-icons/simple-icons)
 - [Templarian/MaterialDesign](https://github.com/Templarian/MaterialDesign)
+
+## 许可证
+
+[GPL-3.0 license](./LICENSE)
