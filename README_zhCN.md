@@ -48,18 +48,6 @@ CGO_ENABLED=1 go run main.go
 
 支持定义[环境变量](#环境变量)或者添加[启动命令](#启动命令)。
 
-#### 本地构建 Docker 镜像
-
-本地安装 [Docker](https://www.docker.com) 并运行：
-
-```bash
-# Building an image
-./build.sh
-
-# Export image file
-./save.sh
-```
-
 ## 环境变量
 
 | 变量名 | 值类型 | 默认值 | 描述 |

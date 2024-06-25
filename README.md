@@ -48,18 +48,6 @@ CGO_ENABLED=1 go run main.go
 
 Support defining [environment variables](#environment-variables) or adding [startup commands](#startup-commands).
 
-#### Build Docker image locally
-
-Install [Docker](https://www.docker.com) and run:
-
-```bash
-# Building an image
-./build.sh
-
-# Export image file
-./save.sh
-```
-
 ## Environment variables
 
 | Name | Type | Default | Description |
