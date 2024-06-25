@@ -1,4 +1,4 @@
-name: Build and Release
+name: Release
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 env:
   DOCKERHUB_REPO: giterhub/slender:latest
   IMAGE_FILE: slender.tar.gz
+  MANAGER_FILE: slender-manager.zip
 
 jobs:
   build:
@@ -24,6 +25,19 @@ jobs:
           fetch-tags: true
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - name: Download icons
+        run: |
+          curl -o ./assets/material-design-icons/index.json https://registry.npmjs.org/@mdi/js/latest
+          curl -o ./assets/material-design-icons/index.js https://gcore.jsdelivr.net/npm/@mdi/js@latest/mdi.js
+          curl -o ./assets/simple-icons/index.json https://registry.npmjs.org/simple-icons/latest
+          curl -o ./assets/simple-icons/index.js https://gcore.jsdelivr.net/npm/simple-icons@latest/index.js
+      - name: Download manager
+        run: |
+          response=$(curl -s "${{ vars.SERVER }}/api/v1/repos/dragonish/slender-manager/releases/latest" --header "Authorization: token ${{ secrets.USER_TOKEN }}" --header "Host: ${{ vars.HOST }}")
+          download_url=$(echo "$response" | jq -r ".assets[0].browser_download_url")
+          curl -k -o "$MANAGER_FILE" "$download_url"
+          curl -k -o "$MANAGER_FILE" "$download_url" --header "Host: ${{ vars.HTTPS_HOST }}" --header "Authorization: token ${{ secrets.USER_TOKEN }}"
+          unzip $MANAGER_FILE -d ./web/manager/
       - name: Build Docker image
         continue-on-error: true
         run: |
