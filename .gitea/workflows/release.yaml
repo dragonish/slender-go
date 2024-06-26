@@ -26,11 +26,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Download icons
+        id: icons
         run: |
-          curl -o ./assets/material-design-icons/index.json https://registry.npmjs.org/@mdi/js/latest
+          mdi_json="./assets/material-design-icons/index.json"
+          si_json="./assets/simple-icons/index.json"
+          curl -o $mdi_json https://registry.npmjs.org/@mdi/js/latest
           curl -o ./assets/material-design-icons/index.js https://gcore.jsdelivr.net/npm/@mdi/js@latest/mdi.js
-          curl -o ./assets/simple-icons/index.json https://registry.npmjs.org/simple-icons/latest
+          curl -o $si_json https://registry.npmjs.org/simple-icons/latest
           curl -o ./assets/simple-icons/index.js https://gcore.jsdelivr.net/npm/simple-icons@latest/index.js
+          mdi_version=$(cat $mdi_json | jq -r '.version')
+          si_version=$(cat $si_json | jq -r '.version')
+          echo "mdi_version=${mdi_version}" >> $GITHUB_OUTPUT
+          echo "si_version=${si_version}" >> $GITHUB_OUTPUT
       - name: Download manager
         run: |
           response=$(curl -s "${{ vars.SERVER }}/api/v1/repos/dragonish/slender-manager/releases/latest" --header "Authorization: token ${{ secrets.USER_TOKEN }}" --header "Host: ${{ vars.HOST }}")
@@ -66,4 +73,12 @@ jobs:
             dist/**
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Release ${{ steps.git_tags.outputs.current }}
-          body: "See: [${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}](/${{ gitea.repository }}/compare/${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }})."
+          body: |
+            ## Changelog
+
+            See: [${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}](/${{ gitea.repository }}/compare/${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}).
+
+            ## Icons
+
+            - [MaterialDesign](https://github.com/Templarian/MaterialDesign) version: ${{ steps.icons.outputs.mdi_version }}
+            - [simple-icons](https://github.com/simple-icons/simple-icons) version: ${{ steps.icons.outputs.si_version }}
