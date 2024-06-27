@@ -13,6 +13,7 @@
 - 支持搜索首页内的书签项目。
 - 内置 [MaterialDesign](https://github.com/Templarian/MaterialDesign) 与 [simple-icons](https://github.com/simple-icons/simple-icons) 图标，并允许自定义或上传图标。
 - 允许自定义网络搜索引擎。
+- 允许自定义首页页脚元素中的代码。
 - 可选的文件夹侧边栏。
 - 可选的展示最近添加书签和热门书签。
 

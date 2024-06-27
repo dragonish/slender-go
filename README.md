@@ -13,6 +13,7 @@ Personal website navigation.
 - Support searching for bookmark items within the homepage.
 - Built-in [MaterialDesign](https://github.com/Templarian/MaterialDesign) and [simple-icons](https://github.com/simple-icons/simple-icons) icons, and allows custom or upload icons.
 - Allows custom web search engines.
+- Allows to custom the code in the home footer element.
 - Optional folder sidebar.
 - Optional display of latest bookmarks and hot bookmarks.
 
