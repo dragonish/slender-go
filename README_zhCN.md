@@ -5,6 +5,13 @@
 
 个人网址导航程序。
 
+## 预览
+
+![desktop](./images/desktop_zhCN.png)
+
+<img src="./images/mobile_zhCN.png" width="360" alt="mobile" />
+
+
 ## 特性
 
 - 允许定义[访问密码](#访问密码)与[管理员密码](#管理员密码)。

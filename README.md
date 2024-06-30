@@ -5,6 +5,12 @@
 
 Personal website navigation.
 
+## Preview
+
+![desktop](./images/desktop.png)
+
+<img src="./images/mobile.png" width="360" alt="mobile" />
+
 ## Feature
 
 - Allow defining [access password](#access-password) and [admin password](#admin-password).
