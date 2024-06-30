@@ -65,6 +65,9 @@ jobs:
         with:
           push: true
           context: .
+          build-args: |
+            VERSION="${{ env.APP_VERSION }}"
+            COMMIT="${${{ github.sha }}:0:7}"
           tags: |
             ${{ env.DOCKERHUB_REPO }}:latest
             ${{ env.DOCKERHUB_REPO }}:${{ env.APP_VERSION }}
