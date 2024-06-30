@@ -21,7 +21,19 @@ Personal website navigation.
 
 ### Docker deployment
 
-Refer to [`compose.yaml`](./compose.yaml).
+Pull image:
+
+```bash
+docker pull giterhub/slender:latest
+```
+
+Create the [`compose.yaml`](./compose.yaml) file and run:
+
+```bash
+docker compose up -d
+```
+
+Support defining [environment variables](#environment-variables) or adding [startup commands](#startup-commands).
 
 ### Local compile
 

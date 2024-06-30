@@ -21,7 +21,19 @@
 
 ### Docker 部署
 
-参考 [`compose.yaml`](./compose.yaml)。
+拉取镜像：
+
+```bash
+docker pull giterhub/slender:latest
+```
+
+创建 [`compose.yaml`](./compose.yaml) 并运行：
+
+```bash
+docker compose up -d
+```
+
+支持定义[环境变量](#环境变量)或者添加[启动命令](#启动命令)。
 
 ### 本地编译运行
 
