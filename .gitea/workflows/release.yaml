@@ -80,5 +80,7 @@ jobs:
 
             ## Icons
 
-            - [MaterialDesign](https://github.com/Templarian/MaterialDesign) version: ${{ steps.icons.outputs.mdi_version }}
-            - [simple-icons](https://github.com/simple-icons/simple-icons) version: ${{ steps.icons.outputs.si_version }}
+            | Name | Version |
+            | ---- | :-----: |
+            | [MaterialDesign](https://github.com/Templarian/MaterialDesign) | ${{ steps.icons.outputs.mdi_version }} |
+            | [simple-icons](https://github.com/simple-icons/simple-icons) | ${{ steps.icons.outputs.si_version }} |
