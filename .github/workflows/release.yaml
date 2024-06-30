@@ -30,7 +30,10 @@ jobs:
           echo "mdi_version=${mdi_version}" >> $GITHUB_OUTPUT
           echo "si_version=${si_version}" >> $GITHUB_OUTPUT
       - name: Generate app version
-        run: echo APP_VERSION=`git describe --tags --always` >> $GITHUB_ENV
+        run: |
+          echo APP_VERSION=`git describe --tags --always` >> $GITHUB_ENV
+          github_sha=${{ github.sha }}
+          echo APP_COMMIT=${github_sha:0:7} >> $GITHUB_ENV
       - name: Create changelog text
         id: changelog_text
         uses: loopwerk/tag-changelog@v1
@@ -67,7 +70,7 @@ jobs:
           context: .
           build-args: |
             VERSION="${{ env.APP_VERSION }}"
-            COMMIT="${${{ github.sha }}:0:7}"
+            COMMIT="${{ env.APP_COMMIT }}"
           tags: |
             ${{ env.DOCKERHUB_REPO }}:latest
             ${{ env.DOCKERHUB_REPO }}:${{ env.APP_VERSION }}
