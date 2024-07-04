@@ -53,14 +53,8 @@ git clone https://github.com/dragonish/slender-go.git
 # Enter project directory
 cd slender-go
 
-# At the first time or update MaterialDesign version
-./mdi.sh
-
-# At the first time or update simple-icons version
-./si.sh
-
-# At the first time or update slender-manager version
-./manager.sh
+# At the first time or update version
+./download.sh
 
 # Run
 CGO_ENABLED=1 go run main.go
