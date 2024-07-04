@@ -31,5 +31,7 @@ assets/material-design-icons/*
 !assets/material-design-icons/.gitkeep
 assets/simple-icons/*
 !assets/simple-icons/.gitkeep
+latest.json
+slender-manager.zip
 
 .vscode/settings.json
