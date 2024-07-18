@@ -88,13 +88,13 @@ jobs:
           body: |
             ${{ steps.changelog_text.outputs.changes }}
 
-            ## Docker image
-
-            - [giterhub/slender](https://hub.docker.com/r/giterhub/slender)
-
             ## Icons
 
             | Name | Version |
             | ---- | :-----: |
             | [MaterialDesign](https://github.com/Templarian/MaterialDesign) | ${{ steps.icons.outputs.mdi_version }} |
             | [simple-icons](https://github.com/simple-icons/simple-icons) | ${{ steps.icons.outputs.si_version }} |
+
+            ## Docker image
+
+            - [giterhub/slender](https://hub.docker.com/r/giterhub/slender)
