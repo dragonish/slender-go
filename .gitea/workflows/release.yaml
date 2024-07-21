@@ -63,6 +63,12 @@ jobs:
           echo "current=${current}" >> $GITHUB_OUTPUT
           prev=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --max-count=1`)
           echo "prev=${prev}" >> $GITHUB_OUTPUT
+      - name: Create changelog text
+        id: changelog_text
+        uses: dragonish/tag-changelog@7ec9e81e765a457f012bf0747f7a5a60831899e2
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          config_file: ../.gitea/scripts/tag-changelog-config.cjs
       - name: Create release
         uses: akkuman/gitea-release-action@v1
         env:
@@ -74,9 +80,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Release ${{ steps.git_tags.outputs.current }}
           body: |
-            ## Changelog
-
-            See: [${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}](/${{ gitea.repository }}/compare/${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}).
+            ${{ steps.changelog_text.outputs.changes }}
 
             ## Icons
 
@@ -84,3 +88,9 @@ jobs:
             | ---- | :-----: |
             | [MaterialDesign](https://github.com/Templarian/MaterialDesign) | ${{ steps.icons.outputs.mdi_version }} |
             | [simple-icons](https://github.com/simple-icons/simple-icons) | ${{ steps.icons.outputs.si_version }} |
+
+            ---
+
+            ## Details
+
+            See: [${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}](/${{ gitea.repository }}/compare/${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}).
