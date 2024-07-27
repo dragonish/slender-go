@@ -235,6 +235,7 @@
         return false;
       } else if (ev.key === 'Enter' && curSearchEngine.id != '0' && searchInput.value) {
         jumper(searchInput.value, curSearchEngine.url, curSearchEngine.method, curSearchEngine.body);
+        restoreDisplay(curBookmarkList);
         searchInput.value = '';
         clearBtn && clearBtn.classList.remove(showTip);
         return false;
@@ -319,6 +320,7 @@
         e.stopPropagation();
         if (searchInput.value) {
           jumper(searchInput.value, curSearchEngine.url, curSearchEngine.method, curSearchEngine.body);
+          restoreDisplay(curBookmarkList);
           searchInput.value = '';
           clearBtn && clearBtn.classList.remove(showTip);
         }
