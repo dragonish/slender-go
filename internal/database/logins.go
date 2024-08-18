@@ -69,6 +69,8 @@ func ClearLogins() error {
 		return logger.Err("clear logins error", err)
 	}
 
+	logger.Info("clear logins")
+
 	return nil
 }
 
