@@ -94,3 +94,12 @@ jobs:
             ## Details
 
             See: [${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}](/${{ gitea.repository }}/compare/${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}).
+      - name: Send notification
+        if: ${{ !cancelled() }}
+        run: |
+          if [ -n "${{ vars.CHAT_URL }}" ]; then
+            echo "Sending notification"
+            curl --location --request POST "${{ vars.CHAT_URL }}" --data-raw 'payload={"text": "${{ gitea.repository }}\n\n#${{ job.status }}"}'
+          else
+            echo "vars.CHAT_URL is empty"
+          fi
