@@ -8,5 +8,8 @@ import (
 
 // favicon registers favicon routing.
 func favicon(router *gin.Engine) {
-	router.StaticFile("/favicon.ico", model.FAVICON_FILE)
+	router.GET("/favicon.ico", func(ctx *gin.Context) {
+		setCacheHeader(ctx)
+		ctx.File(model.FAVICON_FILE)
+	})
 }

@@ -1,10 +1,12 @@
 package pages
 
 import (
+	"net/http"
 	"slender/internal/global"
 	"slender/internal/model"
 	"slender/internal/redirect"
 	"slender/internal/validator"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -67,4 +69,12 @@ func adminBypasser(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
+}
+
+// setCacheHeader sets response cache fields.
+//
+// Default is 24 hours.
+func setCacheHeader(c *gin.Context) {
+	c.Header("Cache-Control", "public, max-age=86400")
+	c.Header("Expires", time.Now().Add(24*time.Hour).Format(http.TimeFormat))
 }
