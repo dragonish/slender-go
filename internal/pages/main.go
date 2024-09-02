@@ -53,11 +53,23 @@ func Pages(router *gin.Engine) {
 
 	router.LoadHTMLFiles(htmlTemplates...)
 	iconsFs, _ := fs.Sub(mFs, MEM_ICONS_DIR)
-	router.StaticFS("/assets/icons", http.FS(iconsFs))
-	router.StaticFS("/assets/uploads", gin.Dir(model.UPLOAD_FILES_PATH, false))
+	uploadsFs := gin.Dir(model.UPLOAD_FILES_PATH, false)
+
 	router.Static("/assets/js", model.JS_PATH)
 	router.Static("/assets/css", model.CSS_PATH)
 	router.Static("/manager-assets", model.MANAGER_PATH+"/manager-assets")
+
+	router.GET("/assets/icons/*filepath", func(ctx *gin.Context) {
+		filepath := ctx.Param("filepath")
+		setCacheHeader(ctx)
+		ctx.FileFromFS(filepath, http.FS(iconsFs))
+	})
+
+	router.GET("/assets/uploads/*filepath", func(ctx *gin.Context) {
+		filepath := ctx.Param("filepath")
+		setCacheHeader(ctx)
+		ctx.FileFromFS(filepath, uploadsFs)
+	})
 
 	home(router)
 	login(router)
