@@ -263,13 +263,13 @@ func getSearchEngineFilterCondition(cond *model.SearchEngineListCondition) (stri
 	}
 
 	if cond.Name != "" {
-		condList = append(condList, "(instr(s.name, :name) > 0)")
-		params["name"] = cond.Name
+		condList = append(condList, `s.name like :name escape '\'`)
+		params["name"] = cond.Name.LikeMatchingString()
 	}
 
 	if cond.URL != "" {
-		condList = append(condList, "(instr(s.url, :url) > 0)")
-		params["url"] = cond.URL
+		condList = append(condList, `s.url like :url escape '\'`)
+		params["url"] = cond.URL.LikeMatchingString()
 	}
 
 	return strings.Join(condList, " and "), params

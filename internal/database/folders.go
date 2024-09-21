@@ -297,13 +297,13 @@ func getFolderFilterCondition(cond *model.FolderListCondition) (string, map[stri
 	}
 
 	if cond.Name != "" {
-		condList = append(condList, "(instr(f.name, :name) > 0)")
-		params["name"] = cond.Name
+		condList = append(condList, `f.name like :name escape '\'`)
+		params["name"] = cond.Name.LikeMatchingString()
 	}
 
 	if cond.Des != "" {
-		condList = append(condList, "(instr(f.description, :description) > 0)")
-		params["description"] = cond.Des
+		condList = append(condList, `f.description like :description like '\'`)
+		params["description"] = cond.Des.LikeMatchingString()
 	}
 
 	return strings.Join(condList, " and "), params

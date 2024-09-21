@@ -85,13 +85,13 @@ func getLoginFilterCondition(cond *model.LoginListCondition) (string, map[string
 	}
 
 	if cond.IP != "" {
-		condList = append(condList, "(instr(l.ip, :ip) > 0)")
-		params["ip"] = cond.IP
+		condList = append(condList, `l.ip like :ip escape '\'`)
+		params["ip"] = cond.IP.LikeMatchingString()
 	}
 
 	if cond.UA != "" {
-		condList = append(condList, "(instr(l.ua, :ua) > 0)")
-		params["ua"] = cond.UA
+		condList = append(condList, `l.ua like :ua escape '\'`)
+		params["ua"] = cond.UA.LikeMatchingString()
 	}
 
 	return strings.Join(condList, " and "), params

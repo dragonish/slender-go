@@ -6,6 +6,7 @@ import (
 	"html"
 	"math"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -53,6 +54,32 @@ func (s MyString) String() string {
 // HTMLString returns HTML string value.
 func (s MyString) HTMLString() string {
 	return html.EscapeString(string(s))
+}
+
+// EscapeSpecialCharacters returns a string that has escaped special characters.
+//
+// Escape character: \.
+func (s MyString) EscapeSpecialCharacters() (res string) {
+	res = s.String()
+
+	replacements := [3][2]string{
+		{`\`, `\\`},
+		{"%", `\%`},
+		{"_", `\_`},
+	}
+
+	for _, item := range replacements {
+		res = strings.ReplaceAll(res, item[0], item[1])
+	}
+	return
+}
+
+// LikeMatchingString returns like matching string.
+//
+// String format: %keyword%.
+// Escape character: \.
+func (s MyString) LikeMatchingString() string {
+	return "%" + s.EscapeSpecialCharacters() + "%"
 }
 
 // MyDateString defines SQL date format string type.

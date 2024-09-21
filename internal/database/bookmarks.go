@@ -57,6 +57,9 @@ func GetBookmarkList(cond *model.BookmarkListCondition, body *model.BookmarkList
 	body.PageNo = cond.Page
 
 	filter, params := getBookmarkFilterCondition(cond)
+
+	logger.Debug("bookmark filter condition", "filter", filter, "params", params)
+
 	if filter != "" {
 		filter = " where " + filter
 	}
@@ -545,18 +548,18 @@ func getBookmarkFilterCondition(cond *model.BookmarkListCondition) (string, map[
 	}
 
 	if cond.Name != "" {
-		condList = append(condList, "(instr(b.name, :name) > 0)")
-		params["name"] = cond.Name
+		condList = append(condList, `b.name like :name escape '\'`)
+		params["name"] = cond.Name.LikeMatchingString()
 	}
 
 	if cond.Des != "" {
-		condList = append(condList, "(instr(b.description, :description) > 0)")
-		params["description"] = cond.Des
+		condList = append(condList, `b.description like :description escape '\'`)
+		params["description"] = cond.Des.LikeMatchingString()
 	}
 
 	if cond.URL != "" {
-		condList = append(condList, "((instr(b.url, :url)) > 0)")
-		params["url"] = cond.URL
+		condList = append(condList, `b.url like :url escape '\'`)
+		params["url"] = cond.URL.LikeMatchingString()
 	}
 
 	return strings.Join(condList, " and "), params

@@ -345,8 +345,8 @@ func getFileFilterCondition(cond *model.FileListCondition) (string, map[string]i
 	}
 
 	if cond.Path != "" {
-		condList = append(condList, "(instr(('/assets/uploads/' || f.path), :path) > 0)")
-		params["path"] = cond.Path
+		condList = append(condList, `('/assets/uploads/' || f.path) like :path escape '\'`)
+		params["path"] = cond.Path.LikeMatchingString()
 	}
 
 	return strings.Join(condList, " and "), params
