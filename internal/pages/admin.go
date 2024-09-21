@@ -124,7 +124,8 @@ func admin(router *gin.Engine) {
 	})
 
 	// logout admin
-	router.GET(model.PAGE_ADMIN+"/logout", adminHandler, func(ctx *gin.Context) {
+	//? When logging out, there is no need to verify its status again
+	router.GET(model.PAGE_ADMIN+"/logout", func(ctx *gin.Context) {
 		ctx.SetCookie(model.COOKIE_ADMIN_PREFIX+global.Flags.GetPortStr(), "", 0, model.PAGE_HOME, "", false, true)
 		redirect.RedirectHome(ctx)
 	})
