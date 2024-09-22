@@ -10,4 +10,6 @@ type Env struct {
 	PerformanceMode uint16 `env:"PERFORMANCE_MODE" envDefault:"0"` // performance mode. default: 0
 
 	TokenAge uint16 `env:"TOKEN_AGE" envDefault:"30"` // token age (days). default: 30
+
+	ServiceConfig string `env:"SERVICE_CONFIG" envDefault:"./slender.yaml"` // service config file path. default: "./slender.yaml"
 }

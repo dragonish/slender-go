@@ -37,4 +37,8 @@ const (
 	KEY_PORT       = "port"
 	KEY_PORT_SHORT = "p"
 	KEY_PORT_DES   = "Specify web service running port"
+
+	KEY_CONFIG_FILE       = "config"
+	KEY_CONFIG_FILE_SHORT = "c"
+	KEY_CONFIG_FILE_DES   = "Specify service config file path"
 )

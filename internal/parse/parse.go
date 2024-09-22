@@ -40,6 +40,10 @@ func Parse() {
 		logger.Info("enable performance mode", "performance_mode", flags.PerformanceMode)
 	}
 
+	if flags.ServiceConfig != "" {
+		logger.Info("use service config file", "path", flags.ServiceConfig)
+	}
+
 	logger.Info("access password", "access_pwd", data.MaskWithStars(flags.AccessPassword))
 	logger.Info("admin password", "admin_pwd", data.MaskWithStars(flags.AdminPassword))
 	logger.Info("token age", "days", flags.TokenAge)

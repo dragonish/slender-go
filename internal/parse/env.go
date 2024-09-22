@@ -26,6 +26,7 @@ func parseEnvVars() (stor model.Flags) {
 	stor.LogLevel = cfg.LogLevel
 	stor.Port = cfg.Port
 	stor.PerformanceMode = cfg.PerformanceMode == 1
+	stor.ServiceConfig = cfg.ServiceConfig
 
 	return
 }

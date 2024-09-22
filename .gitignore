@@ -23,6 +23,7 @@ go.work
 
 /data
 /demo.sh
+/slender.yaml
 /i18n/translate.*.toml
 
 web/manager/*

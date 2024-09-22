@@ -39,7 +39,7 @@ docker pull giterhub/slender:latest
 docker compose up -d
 ```
 
-支持定义[环境变量](#环境变量)或者添加[启动命令](#启动命令)。
+支持定义[环境变量](#环境变量)或[服务配置](#服务配置)或添加[启动命令](#启动命令)。
 
 ### 本地编译运行
 
@@ -59,7 +59,7 @@ cd slender-go
 CGO_ENABLED=1 go run main.go
 ```
 
-支持定义[环境变量](#环境变量)或者添加[启动命令](#启动命令)。
+支持定义[环境变量](#环境变量)或[服务配置](#服务配置)或添加[启动命令](#启动命令)。
 
 ## 环境变量
 
@@ -71,10 +71,49 @@ CGO_ENABLED=1 go run main.go
 | `SLENDER_PORT` | `int` | `8080` | Web 服务运行端口 |
 | `SLENDER_TOKEN_AGE` | `int` | `30` | 令牌保存期限 (天) |
 | `SLENDER_PERFORMANCE_MODE` | `int` | `0` | 性能模式。*建议仅在遇到数据库更新性能不佳时才开启* |
+| `SLENDER_SERVICE_CONFIG` | `string` | `./slender.yaml` | 指定服务配置文件 |
+
+## 服务配置
+
+> *服务配置的优先级高于环境变量。*
+
+服务配置文件可定义为 YAML 或 JSON 格式的文件。
+
+### YAML 格式
+
+程序默认读取程序目录下的 `slender.yaml` 作为服务配置文件(若存在)，若需要使用位于其他位置的服务配置文件，请通过[环境变量](#环境变量)或添加[启动命令](#启动命令)指定其文件路径。
+
+文件中的各个字段是可选的。文件可声明字段如下：
+
+```yaml
+access_password: string # 访问密码
+admin_password: string # 管理员密码
+log_level: Debug|Info|Warn|Error # 日志输出级别
+port: number # Web 服务运行端口
+token_age: number # 令牌保存期限 (天)
+performance_mode: true # 性能模式。建议仅在遇到数据库更新性能不佳时才开启
+```
+
+### JSON 格式
+
+若需要使用 JSON 格式的服务配置文件，请通过[环境变量](#环境变量)或添加[启动命令](#启动命令)指定其文件路径。
+
+文件中的各个字段是可选的。文件可声明字段如下：
+
+```json
+{
+  "accessPassword": "string", // 访问密码
+  "adminPassword": "string", // 管理员密码
+  "logLevel": "Debug|Info|Warn|Error", // 日志输出级别
+  "port": 8080, // Web 服务运行端口
+  "tokenAge": 30, // 令牌保存期限 (天)
+  "performanceMode": true, // 性能模式。建议仅在遇到数据库更新性能不佳时才开启
+}
+```
 
 ## 启动命令
 
-*启动命令的优先级高于环境变量。*
+> *启动命令的优先级高于服务配置及环境变量。*
 
 | 命令名 | 值类型 | 描述 |
 | --- | --- | --- |
@@ -82,6 +121,7 @@ CGO_ENABLED=1 go run main.go
 | `--version, -v` || 显示版本信息 |
 | `--help, -h` || 显示帮助文档 |
 | `--performance, -P` || 启用性能模式。*建议仅在遇到数据库更新性能不佳时才开启* |
+| `--config, -c` | `string` | 指定服务配置文件 |
 | `--access_pwd, -a` | `string` | 指定访问密码 |
 | `--admin_pwd, -d` | `string` | 指定管理员密码 |
 | `--token_age, -t` | `int` | 指定令牌保存期限 (天) |

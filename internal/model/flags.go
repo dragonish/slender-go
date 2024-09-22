@@ -22,6 +22,8 @@ type Flags struct {
 	Secret      string // JWT secret.
 	AccessToken string // access token.
 	AdminToken  string // admin token.
+
+	ServiceConfig string // service config file path.
 }
 
 // GetPortStr returns port string.

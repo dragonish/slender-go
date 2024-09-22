@@ -38,7 +38,7 @@ Create the [`compose.yaml`](./compose.yaml) file and run:
 docker compose up -d
 ```
 
-Support defining [environment variables](#environment-variables) or adding [startup commands](#startup-commands).
+Support defining [environment variables](#environment-variables) or [service configuration](#service-configuration) or adding [startup commands](#startup-commands).
 
 ### Local compile
 
@@ -58,7 +58,7 @@ cd slender-go
 CGO_ENABLED=1 go run main.go
 ```
 
-Support defining [environment variables](#environment-variables) or adding [startup commands](#startup-commands).
+Support defining [environment variables](#environment-variables) or [service configuration](#service-configuration) or adding [startup commands](#startup-commands).
 
 ## Environment variables
 
@@ -70,10 +70,49 @@ Support defining [environment variables](#environment-variables) or adding [star
 | `SLENDER_PORT` | `int` | `8080` | Web service running port |
 | `SLENDER_TOKEN_AGE` | `int` | `30` | Token age (days) |
 | `SLENDER_PERFORMANCE_MODE` | `int` | `0` | Performance mode. *It is recommended to enable only when the database update performance is bad* |
+| `SLENDER_SERVICE_CONFIG` | `string` | `./slender.yaml` | Specify service config file path |
+
+## Service configuration
+
+> *Service configuration take precedence over environment variables.*
+
+The service configuration file can be defined as a YAML or JSON format file.
+
+### YAML format
+
+By default, the program reads `slender.yaml` in the program directory as the service configuration file (if it exists). If you need to use a service configuration file located elsewhere, specify its file path either by [environment variables](#environment-variables) or adding [startup commands](#startup-commands).
+
+Each field in the file is optional. The file can declare fields as follows:
+
+```yaml
+access_password: string # Access password
+admin_password: string # Admin password
+log_level: Debug|Info|Warn|Error # Log output level
+port: number # Web service running port
+token_age: number # Token age (days)
+performance_mode: true # Performance mode. It is recommended to enable only when the database update performance is bad
+```
+
+### JSON format
+
+If you want to use a service configuration file in JSON format, specify its file path either by [environment variables](#environment-variables) or adding [startup commands](#startup-commands).
+
+Each field in the file is optional. The file can declare fields as follows:
+
+```json
+{
+  "accessPassword": "string", // Access password
+  "adminPassword": "string", // Admin password
+  "logLevel": "Debug|Info|Warn|Error", // Log output level
+  "port": 8080, // Web service running port
+  "tokenAge": 30, // Token age (days)
+  "performanceMode": true, // Performance mode. It is recommended to enable only when the database update performance is bad
+}
+```
 
 ## Startup commands
 
-*Startup commands take precedence over environment variables.*
+> *Startup commands take precedence over service configuration and environment variables.*
 
 | Name | Type | Description |
 | --- | --- | --- |
@@ -81,6 +120,7 @@ Support defining [environment variables](#environment-variables) or adding [star
 | `--version, -v` || Show application version |
 | `--help, -h` || Show help document |
 | `--performance, -P` || Enable performance mode. *It is recommended to enable only when the database update performance is bad* |
+| `--config, -c` | `string` | Specify service config file path |
 | `--access_pwd, -a` | `string` | Specify access password |
 | `--admin_pwd, -d` | `string` | Specify admin password |
 | `--token_age, -t` | `int` | Specify token age (days) |

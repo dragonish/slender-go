@@ -33,10 +33,40 @@ func parseCLI(baseFlags *model.Flags) model.Flags {
 	options.StringVarP(&cliFlags.LogLevel, model.KEY_LOG_LEVEL, model.KEY_LOG_LEVEL_SHORT, baseFlags.LogLevel, model.KEY_LOG_LEVEL_DES)
 	options.Uint16VarP(&cliFlags.Port, model.KEY_PORT, model.KEY_PORT_SHORT, baseFlags.Port, model.KEY_PORT_DES)
 
+	options.StringVarP(&cliFlags.ServiceConfig, model.KEY_CONFIG_FILE, model.KEY_CONFIG_FILE_SHORT, baseFlags.ServiceConfig, model.KEY_CONFIG_FILE_DES)
+
 	_ = options.Parse(os.Args)
 
 	if excuteCLI(cliFlags, options) {
 		os.Exit(0)
+	}
+
+	//* Parse service config file.
+	if cliFlags.ServiceConfig != "" {
+		lErr := loadServiceConfig(baseFlags, cliFlags.ServiceConfig)
+		if lErr == nil {
+			if !isManual(options, model.KEY_ACCESS_PWD) {
+				cliFlags.AccessPassword = baseFlags.AccessPassword
+			}
+			if !isManual(options, model.KEY_ADMIN_PWD) {
+				cliFlags.AdminPassword = baseFlags.AdminPassword
+			}
+			if !isManual(options, model.KEY_LOG_LEVEL) {
+				cliFlags.LogLevel = baseFlags.LogLevel
+			}
+			if !isManual(options, model.KEY_PORT) {
+				cliFlags.Port = baseFlags.Port
+			}
+			if !isManual(options, model.KEY_PERFORMANCE_MODE) {
+				cliFlags.PerformanceMode = baseFlags.PerformanceMode
+			}
+			if !isManual(options, model.KEY_TOKEN_AGE) {
+				cliFlags.TokenAge = baseFlags.TokenAge
+			}
+		} else {
+			//? Empty the property to identify that no service config is applied.
+			cliFlags.ServiceConfig = ""
+		}
 	}
 
 	return *cliFlags
@@ -64,4 +94,9 @@ func getVersion() (info string) {
 	info = fmt.Sprintf("Slender v%s-%s %s/%s BuildDate=%s", version.Version, strings.ToLower(version.Commit), runtime.GOOS, runtime.GOARCH, version.BuildDate)
 
 	return
+}
+
+func isManual(pf *pflag.FlagSet, key string) bool {
+	flag := pf.Lookup(key)
+	return flag.Changed
 }
