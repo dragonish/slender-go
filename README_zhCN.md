@@ -1,9 +1,8 @@
 # slender-go
 
-- [English](./README.md)
-- 简体中文
+<p align="center"><a href="./README.md">English</a> | (👉ﾟヮﾟ)👉 <b>简体中文</b></p>
 
-个人网址导航程序。
+个人网站导航。
 
 ## 预览
 
