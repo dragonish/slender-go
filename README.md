@@ -99,7 +99,7 @@ If you want to use a service configuration file in JSON format, specify its file
 
 Each field in the file is optional. The file can declare fields as follows:
 
-```json
+```js
 {
   "accessPassword": "string", // Access password
   "adminPassword": "string", // Admin password

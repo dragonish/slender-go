@@ -100,7 +100,7 @@ performance_mode: true # 性能模式。建议仅在遇到数据库更新性能�
 
 文件中的各个字段是可选的。文件可声明字段如下：
 
-```json
+```js
 {
   "accessPassword": "string", // 访问密码
   "adminPassword": "string", // 管理员密码
