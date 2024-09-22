@@ -87,7 +87,7 @@ func Load(filename string) {
 			if pErr == nil {
 				readConfig(&conf)
 			} else {
-				log.Err("unable to parse configuration file, default config is used", pErr)
+				log.Err("unable to parse config file, default config is used", pErr)
 				global.Config = DefaultConfigGenerator()
 			}
 		} else {
