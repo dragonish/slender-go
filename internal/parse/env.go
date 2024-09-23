@@ -5,6 +5,7 @@ import (
 
 	"github.com/caarlos0/env/v10"
 
+	"slender/internal/data"
 	"slender/internal/model"
 )
 
@@ -25,7 +26,7 @@ func parseEnvVars() (stor model.Flags) {
 	stor.TokenAge = cfg.TokenAge
 	stor.LogLevel = cfg.LogLevel
 	stor.Port = cfg.Port
-	stor.PerformanceMode = cfg.PerformanceMode == 1
+	stor.PerformanceMode = data.IsRouteTruthy(cfg.PerformanceMode)
 	stor.ServiceConfig = cfg.ServiceConfig
 
 	return

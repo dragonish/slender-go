@@ -70,7 +70,7 @@ CGO_ENABLED=1 go run main.go
 | `SLENDER_LOG_LEVEL` | `string` | `Info` | 日志输出级别，可选值：`Debug`、`Info`、`Warn`、`Error` |
 | `SLENDER_PORT` | `int` | `8080` | Web 服务运行端口 |
 | `SLENDER_TOKEN_AGE` | `int` | `30` | 令牌保存期限 (天) |
-| `SLENDER_PERFORMANCE_MODE` | `int` | `0` | 性能模式。*建议仅在遇到数据库更新性能不佳时才开启* |
+| `SLENDER_PERFORMANCE_MODE` | `string` | `0` | 为真值(`1, yes, true, on`)时启用性能模式。*建议仅在遇到数据库更新性能不佳时才开启* |
 | `SLENDER_SERVICE_CONFIG` | `string` | `./slender.yaml` | 指定服务配置文件 |
 
 ## 服务配置

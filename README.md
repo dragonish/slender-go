@@ -69,7 +69,7 @@ Support defining [environment variables](#environment-variables) or [service con
 | `SLENDER_LOG_LEVEL` | `string` | `Info` | Log output level. Optional: `Debug`, `Info`, `Warn`, `Error` |
 | `SLENDER_PORT` | `int` | `8080` | Web service running port |
 | `SLENDER_TOKEN_AGE` | `int` | `30` | Token age (days) |
-| `SLENDER_PERFORMANCE_MODE` | `int` | `0` | Performance mode. *It is recommended to enable only when the database update performance is bad* |
+| `SLENDER_PERFORMANCE_MODE` | `string` | `0` | Enable performance mode when a truthy value (`1, yes, true, on`). *It is recommended to enable only when the database update performance is bad* |
 | `SLENDER_SERVICE_CONFIG` | `string` | `./slender.yaml` | Specify service config file path |
 
 ## Service configuration
