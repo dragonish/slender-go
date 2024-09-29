@@ -1,9 +1,13 @@
 package logger
 
 import (
+	"io"
 	"log/slog"
 	"os"
+	"slender/internal/model"
 	"strings"
+
+	goLogger "github.com/donnie4w/go-logger/logger"
 )
 
 // instance is default logger instance.
@@ -13,8 +17,17 @@ var instance *slog.Logger
 var programLevel = new(slog.LevelVar)
 
 func init() {
-	h := slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: programLevel})
+	logFile, err := goLogger.NewLogger().SetRollingDaily(model.LOGS_DIR, model.LOG_FILENAME)
+	if err != nil {
+		slog.New(slog.NewTextHandler(os.Stdout, nil)).Error("unable to create log file", "error", err)
+		os.Exit(1)
+	}
+
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+	h := slog.NewTextHandler(multiWriter, &slog.HandlerOptions{Level: programLevel})
 	instance = slog.New(h)
+
+	// Set as default logger.
 	slog.SetDefault(instance)
 }
 
