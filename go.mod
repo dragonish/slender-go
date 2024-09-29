@@ -13,7 +13,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.23
 	github.com/nicksnyder/go-i18n/v2 v2.4.0
 	github.com/pelletier/go-toml/v2 v2.2.3
-	github.com/psanford/memfs v0.0.0-20230130182539-4dbf7e3e865e
+	github.com/psanford/memfs v0.0.0-20240922203233-02fb08c0f8db
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/text v0.18.0
@@ -21,7 +21,7 @@ require (
 )
 
 require (
-	github.com/bytedance/sonic v1.12.2 // indirect
+	github.com/bytedance/sonic v1.12.3 // indirect
 	github.com/bytedance/sonic/loader v0.2.0 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
