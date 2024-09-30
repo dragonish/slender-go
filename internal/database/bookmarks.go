@@ -48,6 +48,8 @@ func AddBookmark(body *model.BookmarkPostBody) (int64, error) {
 		panic(cErr)
 	}
 
+	log.Info("add new bookmark", "bookmark_id", bookmarkID)
+
 	return bookmarkID, nil
 }
 
@@ -207,7 +209,7 @@ func UpdateBookmark(bookmarkID int64, body *model.BookmarkPatchBody) error {
 	if len(cond) > 0 || body.Files != nil {
 		tx := db.MustBegin()
 
-		//* basic information
+		//* Basic information
 		if len(cond) > 0 {
 			m["id"] = bookmarkID
 			modTimeStr := ""
@@ -224,7 +226,7 @@ func UpdateBookmark(bookmarkID int64, body *model.BookmarkPatchBody) error {
 			}
 		}
 
-		//* files
+		//* Files
 		if body.Files != nil {
 			var files = make([]model.MyInt64, 0)
 			err := readFiles(tx, bookmarkID, &files)
@@ -246,7 +248,7 @@ func UpdateBookmark(bookmarkID int64, body *model.BookmarkPatchBody) error {
 				return aErr
 			}
 
-			//! delete associated files.
+			//! Delete associated files.
 			for _, item := range pathList {
 				path := model.UPLOAD_FILES_PATH + "/" + item.String()
 				//? delete real file errors will not cause the transaction to rollback.
@@ -285,9 +287,23 @@ func DeleteBookmark(bookmarkID int64) error {
 
 	tx := db.MustBegin()
 
+	var unit struct {
+		Name model.MyString `db:"name"`
+		URL  model.MyString `db:"url"`
+	}
+
+	err := tx.Get(&unit, "select name, url from bookmarks where id = ?", bookmarkID)
+	if err == sql.ErrNoRows {
+		log.Warn("trying to delete a non-existent bookmark")
+		return nil
+	} else if err != nil {
+		return log.Err("error getting information about bookmark to be deleted", err)
+	}
+	log.SetMeta("name", unit.Name, "url", unit.URL)
+
 	list := make([]model.MyString, 0)
 
-	err := getFilesByBookmarkID(tx, bookmarkID, &list)
+	err = getFilesByBookmarkID(tx, bookmarkID, &list)
 	if err != nil {
 		return err
 	}
@@ -308,10 +324,15 @@ func DeleteBookmark(bookmarkID int64) error {
 	for _, item := range list {
 		path := model.UPLOAD_FILES_PATH + "/" + item.String()
 		//? delete real file errors will not cause the transaction to rollback.
-		data.DeleteFile(path)
+		fErr := data.DeleteFile(path)
+		if fErr == nil {
+			log.Info("auto delete file", "path", path)
+		} else {
+			log.Warn("auto delete file error", "path", path)
+		}
 	}
 
-	log.Info("delete bookmark")
+	log.Info("deleted bookmark")
 
 	return nil
 }
@@ -326,11 +347,11 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 
 	tx := db.MustBegin()
 
-	//? file list
+	//? File list
 	pathList := make([]model.MyString, 0)
 
 	if body.Action == "delete" {
-		//? read file list
+		//? Read file list
 		fQeury, fArgs, fErr := sqlx.In("select path from files where bookmark_id in (?)", body.DataSet)
 		if fErr != nil {
 			if rErr := tx.Rollback(); rErr != nil {
@@ -474,11 +495,20 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 		panic(cErr)
 	}
 
-	//! delete files
+	if body.Action == "delete" {
+		logger.Info("deleted bookmarks in batches", "data", body.DataSet)
+	}
+
+	//! Delete files
 	for _, item := range pathList {
 		path := model.UPLOAD_FILES_PATH + "/" + item.String()
-		//? delete real file errors will not cause the transaction to rollback.
-		data.DeleteFile(path)
+		//? Delete real file errors will not cause the transaction to rollback.
+		fErr := data.DeleteFile(path)
+		if fErr == nil {
+			logger.Info("auto delete file", "path", path)
+		} else {
+			logger.Warn("auto delete file error", "path", path)
+		}
 	}
 
 	return nil
@@ -524,6 +554,8 @@ func ImportBookmarks(list *[]model.BookmarkImportItem) (int64, error) {
 	if cErr := tx.Commit(); cErr != nil {
 		panic(cErr)
 	}
+
+	logger.Info("imported bookmarks", "amount", importLen)
 
 	return int64(importLen), nil
 }

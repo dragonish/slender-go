@@ -36,6 +36,8 @@ func AddFile(file string, bookmarkID model.NullInt64) (int64, error) {
 		panic(cErr)
 	}
 
+	log.Info("add new file", "file_id", fileID)
+
 	return fileID, nil
 }
 
@@ -49,12 +51,16 @@ func DeleteFile(fileID int64, force bool) error {
 
 	var fileInfo model.FileInfo
 	err := getFile(tx, fileID, &fileInfo)
-	if err != nil {
+	if err == model.ErrNotExist {
+		log.Warn("no information was found on files to be deleted")
+		return nil
+	} else if err != nil {
 		return err
 	}
+	log.SetMeta("path", fileInfo.Path)
 
 	if fileInfo.BookmarkID != 0 && !force {
-		//? nothing is actually deleted.
+		//? Nothing is actually deleted.
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)
 		}
@@ -81,6 +87,8 @@ func DeleteFile(fileID int64, force bool) error {
 	if cErr := tx.Commit(); cErr != nil {
 		panic(cErr)
 	}
+
+	log.Info("deleted file")
 
 	return nil
 }
@@ -144,6 +152,7 @@ func RemoveUnusedFiles() error {
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)
 		}
+		logger.Debug("no unused documents exist")
 		return nil
 	}
 
@@ -162,8 +171,15 @@ func RemoveUnusedFiles() error {
 	for _, item := range list {
 		path := model.UPLOAD_FILES_PATH + "/" + item.String()
 		//? delete real file errors will not cause the transaction to rollback.
-		data.DeleteFile(path)
+		fErr := data.DeleteFile(path)
+		if fErr == nil {
+			logger.Info("auto delete real file", "path", path)
+		} else {
+			logger.Warn("error when automatically deleting real files", "path", path)
+		}
 	}
+
+	logger.Info("deleted all unused files", "files", list)
 
 	return nil
 }
@@ -183,7 +199,7 @@ func getFile(tx *sqlx.Tx, fileID int64, info *model.FileInfo) error {
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)
 		}
-		return log.Err("get bookmark id corresponding to the file error", err)
+		return log.Err("getting the bookmark id of a file Error", err)
 	}
 
 	return nil
@@ -277,7 +293,7 @@ func getFiles(tx *sqlx.Tx, idList []model.MyInt64) ([]model.MyString, error) {
 	return pathList, nil
 }
 
-// deleteFiles delete files.
+// deleteFiles deletes files.
 // (transaction)
 func deleteFiles(tx *sqlx.Tx, list []model.MyInt64) error {
 	if len(list) == 0 {

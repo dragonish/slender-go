@@ -15,7 +15,7 @@ import (
 //
 // Causes panic when a transaction error occurs.
 func AddSearchEngine(body *model.SearchEnginePostBody) (int64, error) {
-	log := logger.New("name", body.Name)
+	log := logger.New("name", body.Name, "url", body.URL)
 
 	tx := db.MustBegin()
 
@@ -38,6 +38,8 @@ func AddSearchEngine(body *model.SearchEnginePostBody) (int64, error) {
 	if cErr := tx.Commit(); cErr != nil {
 		panic(cErr)
 	}
+
+	log.Info("add new search engine", "search_engine_id", searchEngineID)
 
 	return searchEngineID, nil
 }
@@ -171,12 +173,25 @@ func UpdateSearchEngine(searchEngineID int64, body *model.SearchEnginePatchBody)
 func DeleteSearchEngine(searchEngineID int64) error {
 	log := logger.New("search_engine_id", searchEngineID)
 
-	_, err := db.Exec("delete from search_engines where id = ?", searchEngineID)
+	var unit struct {
+		Name model.MyString `db:"name"`
+		URL  model.MyString `db:"url"`
+	}
+	err := db.Get(&unit, "select name, url from search_engines where id = ?", searchEngineID)
+	if err == sql.ErrNoRows {
+		log.Warn("trying to delete a non-existent search engine")
+		return nil
+	} else if err != nil {
+		return log.Err("error getting information about search engine to be deleted", err)
+	}
+	log.SetMeta("name", unit.Name, "url", unit.URL)
+
+	_, err = db.Exec("delete from search_engines where id = ?", searchEngineID)
 	if err != nil {
 		return log.Err("delete search engine error", err)
 	}
 
-	log.Info("delete search engine")
+	log.Info("deleted search engine")
 
 	return nil
 }
@@ -247,6 +262,10 @@ func SearchEngineBatchHandler(body *model.BatchPatchBody) error {
 
 	if cErr := tx.Commit(); cErr != nil {
 		panic(cErr)
+	}
+
+	if body.Action == "delete" {
+		logger.Info("deleted search engines in batches", "data", body.DataSet)
 	}
 
 	return nil

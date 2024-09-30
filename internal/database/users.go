@@ -10,12 +10,16 @@ import (
 )
 
 // Register handles register user action.
+//
+// Record a set of salt and secret for the specified username.
 func Register() error {
 	type User struct {
 		Salt   model.MyString `db:"salt"`
 		Secret model.MyString `db:"secret"`
 	}
 	var user User
+
+	log := logger.New("username", model.DB_USERNAME)
 
 	err := db.Get(&user, "select u.salt, u.secret from users u where u.username = ?", model.DB_USERNAME)
 	if err == sql.ErrNoRows {
@@ -25,18 +29,20 @@ func Register() error {
 
 			_, err := db.Exec("insert into users(username, salt, secret) values(?, ?, ?)", model.DB_USERNAME, global.Flags.Salt, global.Flags.Secret)
 			if err != nil {
-				return logger.Err("register user error", err)
+				return log.Err("register user error", err)
 			}
+			log.Debug("register user")
 		}
 	} else if err != nil {
-		return logger.Err("error checking username exists", err)
+		return log.Err("error checking username exists", err)
 	} else {
 		if global.Flags.AccessPassword == "" && global.Flags.AdminPassword == "" {
-			//? delete user from database
+			//? Delete user from database.
 			_, err := db.Exec("delete from users where username = ?", model.DB_USERNAME)
 			if err != nil {
-				return logger.Err("delete user error", err)
+				return log.Err("delete user error", err)
 			}
+			log.Debug("deleted user")
 		} else {
 			global.Flags.Salt = user.Salt.String()
 			global.Flags.Secret = user.Secret.String()
@@ -54,12 +60,17 @@ func Register() error {
 }
 
 // LogoutAll logouts all users.
+//
+// Reset the salt and secret for the specified username.
 func LogoutAll() error {
-	//? delete user from database
+	log := logger.New("username", model.DB_USERNAME)
+
+	//? Delete user from database.
 	_, err := db.Exec("delete from users where username = ?", model.DB_USERNAME)
 	if err != nil {
-		return logger.Err("delete user error", err)
+		return log.Err("delete user error", err)
 	}
+	log.Debug("deleted user")
 
 	if global.Flags.AccessPassword != "" || global.Flags.AdminPassword != "" {
 		global.Flags.Salt = data.SaltGenerator(64)
@@ -67,8 +78,9 @@ func LogoutAll() error {
 
 		_, err := db.Exec("insert into users(username, salt, secret) values(?, ?, ?)", model.DB_USERNAME, global.Flags.Salt, global.Flags.Secret)
 		if err != nil {
-			return logger.Err("register user error", err)
+			return log.Err("register user error", err)
 		}
+		log.Debug("re-register user")
 	}
 
 	if global.Flags.AccessPassword != "" {

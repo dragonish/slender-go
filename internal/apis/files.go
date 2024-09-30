@@ -91,9 +91,6 @@ func files(rGroup *gin.RouterGroup) {
 			err := database.DeleteFile(id, force)
 			if err == nil {
 				noContent(ctx)
-			} else if err == model.ErrNotExist {
-				//? response-only, nothing is actually deleted.
-				noContent(ctx)
 			} else {
 				internalServerError(ctx, err)
 			}

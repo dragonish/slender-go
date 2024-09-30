@@ -39,6 +39,8 @@ func AddFolder(body *model.FolderPostBody) (int64, error) {
 		panic(cErr)
 	}
 
+	log.Info("add new folder", "folder_id", folderID)
+
 	return folderID, nil
 }
 
@@ -172,12 +174,22 @@ func UpdateFolder(folderID int64, body *model.FolderPatchBody) error {
 func DeleteFolder(folderID int64) error {
 	log := logger.New("folder_id", folderID)
 
-	_, err := db.Exec("delete from folders where id = ?", folderID)
+	var name model.MyString
+	err := db.Get(&name, "select name from folders where id = ?", folderID)
+	if err == sql.ErrNoRows {
+		log.Warn("trying to delete a non-existent folder")
+		return nil
+	} else if err != nil {
+		return log.Err("error getting information about folder to be deleted", err)
+	}
+	log.SetMeta("name", name)
+
+	_, err = db.Exec("delete from folders where id = ?", folderID)
 	if err != nil {
 		return log.Err("delete folder error", err)
 	}
 
-	log.Info("delete folder")
+	log.Info("deleted folder")
 
 	return nil
 }
@@ -281,6 +293,10 @@ func FolderBatchHandler(body *model.BatchPatchBody) error {
 
 	if cErr := tx.Commit(); cErr != nil {
 		panic(cErr)
+	}
+
+	if body.Action == "delete" {
+		logger.Info("deleted folders in batches", "data", body.DataSet)
 	}
 
 	return nil
