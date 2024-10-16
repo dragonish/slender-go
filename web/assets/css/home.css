@@ -60,6 +60,18 @@ a {
   display: block;
 }
 
+#slender-color-switch::after {
+  content: 'System';
+}
+
+html.slender-color-light #slender-color-switch::after {
+  content: 'Light';
+}
+
+html.slender-color-dark #slender-color-switch::after {
+  content: 'Dark';
+}
+
 .slender-header-element {
   color: var(--color-primary);
   margin: 0 2px;

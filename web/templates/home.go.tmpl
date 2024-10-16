@@ -49,24 +49,6 @@
 
         if (colorSwitch) {
           const dropdownContent = document.getElementById('slender-dropdown-content');
-
-          if (color) {
-            switch (color) {
-              case 'light':
-                colorSwitch.textContent = 'Light';
-                break;
-              case 'dark':
-                colorSwitch.textContent = 'Dark';
-                break;
-              case 'system':
-              default:
-                colorSwitch.textContent = 'System';
-                break;
-            }
-          } else {
-            colorSwitch.textContent = 'System';
-          }
-
           if (dropdownContent) {
             const slenderDropdownShow = 'slender-dropdown-show';
             colorSwitch.addEventListener('click', e => {
@@ -88,20 +70,17 @@
                     case 'light':
                       document.documentElement.classList.remove('slender-color-dark');
                       document.documentElement.classList.add('slender-color-light');
-                      colorSwitch.textContent = 'Light';
                       localStorage.setItem(key, 'light');
                       break;
                     case 'dark':
                       document.documentElement.classList.remove('slender-color-light');
                       document.documentElement.classList.add('slender-color-dark');
-                      colorSwitch.textContent = 'Dark';
                       localStorage.setItem(key, 'dark');
                       break;
                     case 'system':
                     default:
                       document.documentElement.classList.remove('slender-color-light');
                       document.documentElement.classList.remove('slender-color-dark');
-                      colorSwitch.textContent = 'System';
                       localStorage.setItem(key, 'system');
                       break;
                   }
@@ -133,7 +112,7 @@
       {{ end }}
     </div>
     <div class="slender-header-right-module">
-      <a id="slender-color-switch" class="slender-header-element" href="javascript:void(0)">&nbsp;</a>
+      <a id="slender-color-switch" class="slender-header-element" href="javascript:void(0)"></a>
       <a id="slender-manager" class="slender-header-element" target="_self" ref="noopener" href="/manager">{{
         .ManagerText }}</a>
       <div id="slender-dropdown-content">
