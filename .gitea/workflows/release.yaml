@@ -41,7 +41,7 @@ jobs:
       - name: Download manager
         run: |
           response=$(curl -s "${{ vars.SERVER }}/api/v1/repos/dragonish/slender-manager/releases/latest" --header "Authorization: token ${{ secrets.USER_TOKEN }}" --header "Host: ${{ vars.HOST }}")
-          download_url=$(echo "$response" | jq -r ".assets[0].browser_download_url")
+          download_url=$(printf "%s" "$response" | jq -r ".assets[0].browser_download_url")
           curl -k -o "$MANAGER_FILE" "$download_url"
           curl -k -o "$MANAGER_FILE" "$download_url" --header "Host: ${{ vars.HTTPS_HOST }}" --header "Authorization: token ${{ secrets.USER_TOKEN }}"
           unzip $MANAGER_FILE -d ./web/manager/
