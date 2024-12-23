@@ -17,6 +17,14 @@ var instance *slog.Logger
 var programLevel = new(slog.LevelVar)
 
 func init() {
+	//? Do not initialize logs during testing.
+	if os.Getenv("LOGGING_TEST") == "true" {
+		testH := slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: programLevel})
+		instance = slog.New(testH)
+		slog.SetDefault(instance)
+		return
+	}
+
 	logFile, err := goLogger.NewLogger().SetRollingDaily(model.LOGS_DIR, model.LOG_FILENAME)
 	if err != nil {
 		slog.New(slog.NewTextHandler(os.Stdout, nil)).Error("unable to create log file", "error", err)
