@@ -1,6 +1,6 @@
 # slender-go
 
-<p align="center"><b>English</b> 👈(ﾟヮﾟ👈) | <a href="./README_zhCN.md">简体中文</a></p>
+<p align="center"><b>English</b> 👈(ﾟヮﾟ👈) | <a href="./README-zh_CN.md">简体中文</a></p>
 
 Personal website navigation.
 
