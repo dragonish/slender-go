@@ -64,7 +64,7 @@ func DeleteFile(fileID int64, force bool) error {
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)
 		}
-		return nil
+		return model.ErrDoNothing
 	}
 
 	_, err = tx.Exec("delete from files where id = ?", fileID)

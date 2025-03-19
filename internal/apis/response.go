@@ -47,6 +47,11 @@ func notFound(ctx *gin.Context, msg string) {
 	ctx.JSON(http.StatusNotFound, errorResponse(msg))
 }
 
+// conflict makes a response with record conflict.
+func conflict(ctx *gin.Context, msg string) {
+	ctx.JSON(http.StatusConflict, errorResponse(msg))
+}
+
 // internalServerError makes an internal error response.
 func internalServerError(ctx *gin.Context, err error) {
 	ctx.JSON(http.StatusInternalServerError, errorResponse(logger.ErrMsg(err)))
