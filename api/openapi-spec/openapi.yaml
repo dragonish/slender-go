@@ -1,0 +1,1670 @@
+openapi: 3.0.3
+info:
+  title: slender-go
+  description: 'Personal website navigation.'
+  contact:
+    name: dragonish
+    url: https://github.com/dragonish/slender-go
+    email: no.web.developer@outlook.com
+  license:
+    name: GPL-3.0 license
+  version: 1.0.0
+
+servers:
+  - url: http://{host}:{port}
+    variables:
+      host:
+        default: localhost
+        description: The host of the server
+      port:
+        default: '8080'
+        description: The port of the server
+tags:
+  - name: html
+  - name: bookmark
+  - name: folder
+  - name: search-engine
+  - name: config
+  - name: file
+  - name: login
+  - name: icon
+  - name: admin
+  - name: about
+
+paths:
+  /:
+    parameters:
+      - $ref: '#/components/parameters/Accept-Language'
+    get:
+      summary: Get home page
+      tags:
+        - html
+      security:
+        - accessApiKeyAuth: []
+        - adminApiKeyAuth: []
+      responses:
+        '200':
+          $ref: '#/components/responses/html'
+        '303':
+          $ref: '#/components/responses/redirect'
+
+  /admin:
+    parameters:
+      - $ref: '#/components/parameters/Accept-Language'
+      - $ref: '#/components/parameters/redirect'
+    get:
+      summary: Get admin login page
+      tags:
+        - html
+      security: []
+      responses:
+        '200':
+          $ref: '#/components/responses/html'
+        '303':
+          $ref: '#/components/responses/redirect'
+    post:
+      summary: Login admin
+      tags:
+        - html
+      security: []
+      requestBody:
+        $ref: '#/components/requestBodies/password'
+      responses:
+        '303':
+          $ref: '#/components/responses/redirectWithSetCookie'
+        '401':
+          $ref: '#/components/responses/unauthorizedWithHtml'
+        '500':
+          $ref: '#/components/responses/internalErrorWithHtml'
+
+  /admin/logout:
+    get:
+      summary: Logout admin
+      tags:
+        - html
+      security: []
+      responses:
+        '303':
+          $ref: '#/components/responses/redirectWithSetCookie'
+
+  /login:
+    parameters:
+      - $ref: '#/components/parameters/Accept-Language'
+    get:
+      summary: Get login page
+      tags:
+        - html
+      security: []
+      responses:
+        '200':
+          $ref: '#/components/responses/html'
+        '303':
+          $ref: '#/components/responses/redirect'
+    post:
+      summary: Post login form
+      requestBody:
+        $ref: '#/components/requestBodies/password'
+      tags:
+        - html
+      security: []
+      responses:
+        '303':
+          $ref: '#/components/responses/redirectWithSetCookie'
+        '401':
+          $ref: '#/components/responses/unauthorizedWithHtml'
+        '500':
+          $ref: '#/components/responses/internalErrorWithHtml'
+
+  /logout:
+    get:
+      summary: Logout
+      tags:
+        - html
+      security: []
+      responses:
+        '303':
+          $ref: '#/components/responses/redirectWithSetCookie'
+
+  /manager:
+    get:
+      summary: Get manager page
+      tags:
+        - html
+      responses:
+        '200':
+          $ref: '#/components/responses/html'
+        '303':
+          $ref: '#/components/responses/redirect'
+
+  /api/v1/about/icons:
+    get:
+      summary: Get about icons info
+      tags:
+        - about
+      security: []
+      responses:
+        '200':
+          description: About icons data
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                      - mdiVersion
+                      - siVersion
+                    properties:
+                      mdiVersion:
+                        type: string
+                      siVersion:
+                        type: string
+
+  /api/v1/about/info:
+    get:
+      summary: Get about info
+      tags:
+        - about
+      security: []
+      responses:
+        '200':
+          description: About info data
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                      - version
+                      - commit
+                      - os
+                      - arch
+                      - buildDate
+                    properties:
+                      version:
+                        type: string
+                      commit:
+                        type: string
+                      os:
+                        type: string
+                      arch:
+                        type: string
+                      buildDate:
+                        type: string
+
+  /api/v1/admin:
+    post:
+      summary: Request administrator status
+      tags:
+        - admin
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Password'
+      responses:
+        '200':
+          description: Administrator status requested successfully
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: string
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/bookmarks:
+    get:
+      summary: Get a list of bookmarks
+      tags:
+        - bookmark
+      parameters:
+        - in: query
+          name: order
+          schema:
+            type: string
+            enum:
+              - created-time
+              - modified-time
+              - visits
+              - folder-weight
+              - weight
+            default: created-time
+          description: The order of the bookmarks to return. Default is "created-time".
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/description'
+        - $ref: '#/components/parameters/url'
+        - $ref: '#/components/parameters/privacy'
+        - $ref: '#/components/parameters/folder'
+      responses:
+        '200':
+          description: A list of bookmarks was successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      allOf:
+                        - $ref: '#/components/schemas/PageData'
+                      required:
+                        - list
+                      properties:
+                        list:
+                          type: array
+                          items:
+                            type: object
+                            allOf:
+                              - $ref: '#/components/schemas/BookmarkItem'
+                            required:
+                              - folderName
+                            properties:
+                              folderName:
+                                type: string
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    post:
+      summary: Add a new bookmark
+      tags:
+        - bookmark
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/Bookmark'
+              required:
+                - files
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 0
+      responses:
+        '201':
+          $ref: '#/components/responses/createdWithID'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      summary: Update bookmarks in batches
+      tags:
+        - bookmark
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ActionData'
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - delete
+                    - setPrivacy
+                    - setWeight
+                    - incWeight
+                    - clearVisits
+                    - setFolder
+              required:
+                - action
+      responses:
+        '204':
+          description: Bookmarks updated successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/bookmarks/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      summary: Get bookmark by id
+      tags:
+        - bookmark
+      responses:
+        '200':
+          description: Bookmark retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    allOf:
+                      - $ref: '#/components/schemas/BookmarkBaseData'
+                    required:
+                      - files
+                    properties:
+                      files:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/FileBaseData'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      summary: Update bookmark by id
+      tags:
+        - bookmark
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/PatchCommon'
+              properties:
+                url:
+                  type: string
+                  format: uri
+                icon:
+                  type: string
+                visits:
+                  type: integer
+                  minimum: 0
+                folderId:
+                  type: integer
+                  minimum: 0
+                files:
+                  type: array
+                  items:
+                    type: integer
+                    minimum: 0
+      responses:
+        '204':
+          description: Bookmark updated successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete bookmark by id
+      tags:
+        - bookmark
+      responses:
+        '204':
+          description: Bookmark deleted successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/bookmarks/{id}/visits:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    post:
+      summary: Increase bookmark visits by id
+      tags:
+        - bookmark
+      security:
+        - accessApiKeyAuth: []
+        - adminApiKeyAuth: []
+      responses:
+        '204':
+          description: Bookmark visits increased successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/config:
+    get:
+      summary: Get config
+      tags:
+        - config
+      responses:
+        '200':
+          description: Config retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/UserConfig'
+        '401':
+          $ref: '#/components/responses/401'
+    put:
+      summary: Update config
+      tags:
+        - config
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserConfig'
+      responses:
+        '204':
+          description: Config updated successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+    patch:
+      summary: Patch update config
+      tags:
+        - config
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ConfigPatchBody'
+      responses:
+        '204':
+          description: Config updated successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+
+  /api/v1/files:
+    get:
+      summary: Get file list
+      tags:
+        - file
+      parameters:
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/page'
+        - in: query
+          name: path
+          schema:
+            type: string
+        - in: query
+          name: use
+          schema:
+            $ref: '#/components/schemas/RouteBoolean'
+      responses:
+        '200':
+          description: Files retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FileListData'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    post:
+      summary: Upload a new file
+      tags:
+        - file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: file uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/FileBaseData'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Remove all unused files
+      tags:
+        - file
+      responses:
+        '204':
+          description: Files removed successfully
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/files/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    delete:
+      summary: Delete a file by ID
+      tags:
+        - file
+      parameters:
+        - in: query
+          name: force
+          schema:
+            $ref: '#/components/schemas/RouteBoolean'
+          description: Force deletion of the file
+      responses:
+        '204':
+          description: File deleted successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '409':
+          $ref: '#/components/responses/409'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/folders:
+    get:
+      summary: Get folder list
+      tags:
+        - folder
+      parameters:
+        - in: query
+          name: order
+          schema:
+            type: string
+            enum:
+              - created-time
+              - modified-time
+              - bookmark-total
+              - weight
+            default: weight
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/name'
+        - $ref: '#/components/parameters/description'
+        - $ref: '#/components/parameters/privacy'
+      responses:
+        '200':
+          description: Folder list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/FolderListData'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    post:
+      summary: Create a new folder
+      tags:
+        - folder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/Common'
+              required:
+                - large
+              properties:
+                large:
+                  type: boolean
+      responses:
+        '201':
+          $ref: '#/components/responses/createdWithID'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      summary: Update folders in batches
+      tags:
+        - folder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ActionData'
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - delete
+                    - setLarge
+                    - setPrivacy
+                    - setWeight
+                    - incWeight
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/folders/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      summary: Get folder by id
+      tags:
+        - folder
+      responses:
+        '200':
+          description: OK with folder data
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/FolderBaseData'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      summary: Update folder by id
+      tags:
+        - folder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/PatchCommon'
+              properties:
+                large:
+                  type: boolean
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete folder by id
+      tags:
+        - folder
+      responses:
+        '204':
+          description: No Content
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/icons:
+    get:
+      summary: Get icon list
+      tags:
+        - icon
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          $ref: '#/components/responses/401'
+
+  /api/v1/import/bookmarks:
+    post:
+      summary: Import bookmarks
+      tags:
+        - bookmark
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                allOf:
+                  - $ref: '#/components/schemas/Common'
+                required:
+                  - url
+                  - icon
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                  icon:
+                    type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/list/folders:
+    get:
+      summary: List folders
+      tags:
+        - folder
+      responses:
+        '200':
+          description: A list of folders
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - id
+                        - name
+                        - privacy
+                      properties:
+                        id:
+                          type: integer
+                          minimum: 0
+                        name:
+                          type: string
+                        privacy:
+                          type: boolean
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/logins:
+    get:
+      summary: List logins
+      tags:
+        - login
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - in: query
+          name: order
+          schema:
+            type: string
+            enum:
+              - login_time
+            default: login_time
+        - in: query
+          name: ip
+          schema:
+            type: string
+        - in: query
+          name: ua
+          schema:
+            type: string
+        - in: query
+          name: admin
+          schema:
+            $ref: '#/components/schemas/RouteBoolean'
+      responses:
+        '200':
+          description: A list of logins
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/LoginListData'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    post:
+      summary: Logout all users
+      tags:
+        - login
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Clear login log
+      tags:
+        - login
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/search-engines:
+    get:
+      summary: Get search engines list
+      tags:
+        - search-engine
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+        - in: query
+          name: order
+          schema:
+            type: string
+            enum:
+              - created-time
+              - modified-time
+              - weight
+            default: created-time
+        - in: query
+          name: name
+          schema:
+            type: string
+        - in: query
+          name: url
+          schema:
+            type: string
+        - in: query
+          name: method
+          schema:
+            type: string
+            enum:
+              - GET
+              - POST
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SearchEngineListData'
+          description: Successful response
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    post:
+      summary: Create a new search engine
+      tags:
+        - search-engine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchEnginePostBody'
+      responses:
+        '201':
+          $ref: '#/components/responses/createdWithID'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      summary: Update search engines in batches
+      tags:
+        - search-engine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/ActionData'
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum:
+                    - delete
+                    - setWeight
+                    - incWeight
+      responses:
+        '204':
+          description: Search engines updated successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+  /api/v1/search-engines/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      summary: Get search engine by id
+      tags:
+        - search-engine
+      responses:
+        '200':
+          description: Search engine retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SearchEngineBaseData'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    patch:
+      summary: Update search engine by id
+      tags:
+        - search-engine
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                method:
+                  type: string
+                  enum:
+                    - GET
+                    - POST
+                body:
+                  type: string
+                url:
+                  type: string
+                icon:
+                  type: string
+                weight:
+                  type: integer
+                  minimum: -32768
+                  maximum: 32767
+      responses:
+        '204':
+          description: Search engine updated successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          $ref: '#/components/responses/404'
+        '500':
+          $ref: '#/components/responses/500'
+    delete:
+      summary: Delete search engine by id
+      tags:
+        - search-engine
+      responses:
+        '204':
+          description: Search engine deleted successfully
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
+security:
+  - adminApiKeyAuth: []
+
+components:
+  securitySchemes:
+    accessApiKeyAuth:
+      type: apiKey
+      in: cookie
+      name: slender-a-{{port}}
+      description: |
+        `{{port}}` is the port of the server
+    adminApiKeyAuth:
+      type: apiKey
+      in: cookie
+      name: slender-p-{{port}}
+      description: |
+        `{{port}}` is the port of the server
+
+  parameters:
+    Accept-Language:
+      in: header
+      name: Accept-Language
+      schema:
+        type: string
+      description: The language of the client
+    redirect:
+      in: query
+      name: redirect
+      schema:
+        type: string
+        format: uriref
+      description: The URL to redirect to after login
+    id:
+      in: path
+      name: id
+      schema:
+        type: integer
+        minimum: 0
+      required: true
+      description: The ID of the resource
+    size:
+      in: query
+      name: size
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+      description: The number of items to return per page
+    page:
+      in: query
+      name: page
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: The current page number
+    name:
+      in: query
+      name: name
+      schema:
+        type: string
+    description:
+      in: query
+      name: description
+      schema:
+        type: string
+    url:
+      in: query
+      name: url
+      schema:
+        type: string
+    privacy:
+      in: query
+      name: privacy
+      schema:
+        $ref: '#/components/schemas/RouteBoolean'
+      description: The privacy setting of the resource
+    folder:
+      in: query
+      name: folder
+      schema:
+        type: integer
+        minimum: 0
+      description: The ID of the folder to filter by
+
+  requestBodies:
+    password:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/Password'
+
+  headers:
+    Location:
+      required: true
+      schema:
+        type: string
+        format: uriref
+    Set-Cookie:
+      schema:
+        type: string
+      description: The session cookie for the user
+
+  responses:
+    '400':
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    '404':
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    '409':
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    '500':
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Message'
+    html:
+      description: Successful response
+      content:
+        text/html:
+          schema:
+            type: string
+    redirect:
+      description: See other
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RedirectData'
+    redirectWithSetCookie:
+      description: See other
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
+        Set-Cookie:
+          $ref: '#/components/headers/Set-Cookie'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RedirectData'
+    unauthorizedWithHtml:
+      description: Unauthorized response with HTML content
+      content:
+        text/html:
+          schema:
+            type: string
+    internalErrorWithHtml:
+      description: Internal error response with HTML content
+      content:
+        text/html:
+          schema:
+            type: string
+    createdWithID:
+      description: Created response with ID
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - data
+            properties:
+              data:
+                type: integer
+                minimum: 0
+
+  schemas:
+    RedirectData:
+      type: object
+      properties:
+        data:
+          type: string
+          format: uriref
+      required:
+        - data
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    Password:
+      type: object
+      properties:
+        password:
+          type: string
+          format: password
+      required:
+        - password
+    PageData:
+      type: object
+      properties:
+        pageSize:
+          description: Size per page
+          type: integer
+          minimum: 1
+        pageNo:
+          description: Current page number
+          type: integer
+          minimum: 1
+        total:
+          type: integer
+          minimum: 0
+      required:
+        - pageSize
+        - pageNo
+        - total
+    Base:
+      type: object
+      required:
+        - name
+        - weight
+      properties:
+        name:
+          type: string
+        weight:
+          type: integer
+          minimum: -32768
+          maximum: 32767
+    Common:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      required:
+        - description
+        - privacy
+      properties:
+        description:
+          type: string
+        privacy:
+          type: boolean
+    Time:
+      type: object
+      required:
+        - createdTime
+        - modifiedTime
+      properties:
+        createdTime:
+          type: string
+        modifiedTime:
+          type: string
+    Bookmark:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Common'
+      properties:
+        url:
+          type: string
+          format: uri
+        icon:
+          type: string
+        folderId:
+          type: integer
+          minimum: 0
+      required:
+        - url
+        - icon
+        - folderId
+    BookmarkItem:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Bookmark'
+      properties:
+        id:
+          type: integer
+          minimum: 0
+      required:
+        - id
+    BookmarkBaseData:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BookmarkItem'
+        - $ref: '#/components/schemas/Time'
+      required:
+        - visits
+      properties:
+        visits:
+          type: integer
+          minimum: 0
+    FileBaseData:
+      type: object
+      required:
+        - id
+        - path
+      properties:
+        id:
+          type: integer
+          minimum: 0
+        path:
+          type: string
+          format: uriref
+    UserConfig:
+      type: object
+      required:
+        - title
+        - customFooter
+        - showSidebar
+        - showSearchInput
+        - showScrollTop
+        - showLatest
+        - latestTotal
+        - showHot
+        - hotTotal
+        - useLetterIcon
+        - openInNewWindow
+      properties:
+        title:
+          type: string
+        customFooter:
+          type: string
+        showSidebar:
+          type: boolean
+        showSearchInput:
+          type: boolean
+        showScrollTop:
+          type: boolean
+        showLatest:
+          type: boolean
+        latestTotal:
+          type: integer
+          minimum: 0
+        showHot:
+          type: boolean
+        hotTotal:
+          type: integer
+          minimum: 0
+        useLetterIcon:
+          type: boolean
+        openInNewWindow:
+          type: boolean
+    ConfigPatchBody:
+      type: object
+      properties:
+        title:
+          type: string
+        customFooter:
+          type: string
+        showSidebar:
+          type: boolean
+        showSearchInput:
+          type: boolean
+        showScrollTop:
+          type: boolean
+        showLatest:
+          type: boolean
+        latestTotal:
+          type: integer
+          minimum: 0
+        showHot:
+          type: boolean
+        hotTotal:
+          type: integer
+          minimum: 0
+        useLetterIcon:
+          type: boolean
+        openInNewWindow:
+          type: boolean
+    FileListItem:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/FileBaseData'
+      required:
+        - used
+      properties:
+        used:
+          type: boolean
+    FileListData:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PageData'
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileListItem'
+    RouteBoolean:
+      type: string
+      enum:
+        - '1'
+        - 'yes'
+        - 'true'
+        - 'on'
+        - '0'
+        - 'no'
+        - 'false'
+        - 'off'
+    FolderBaseData:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Common'
+        - $ref: '#/components/schemas/Time'
+      required:
+        - id
+        - large
+      properties:
+        id:
+          type: integer
+          minimum: 0
+        large:
+          type: boolean
+    FolderListItem:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/FolderBaseData'
+      required:
+        - bookmarkTotal
+      properties:
+        bookmarkTotal:
+          type: integer
+          minimum: 0
+    FolderListData:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PageData'
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/FolderListItem'
+    ActionData:
+      type: object
+      properties:
+        dataSet:
+          type: array
+          items:
+            type: integer
+            minimum: 0
+        payload:
+          oneOf:
+            - type: boolean
+            - type: number
+              format: float
+      required:
+        - dataSet
+    PatchCommon:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        privacy:
+          type: boolean
+        weight:
+          type: integer
+          minimum: -32768
+          maximum: 32767
+    LoginListItem:
+      type: object
+      required:
+        - loginId
+        - loginTime
+        - ip
+        - ua
+        - isAdmin
+      properties:
+        loginId:
+          type: string
+        loginTime:
+          type: string
+        ip:
+          type: string
+        ua:
+          type: string
+        isAdmin:
+          type: boolean
+    LoginListData:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PageData'
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoginListItem'
+    SearchEnginePostBody:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Base'
+      required:
+        - method
+        - url
+        - body
+        - icon
+      properties:
+        method:
+          type: string
+        url:
+          type: string
+          format: uri
+        body:
+          type: string
+        icon:
+          type: string
+    SearchEngineBaseData:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/SearchEnginePostBody'
+        - $ref: '#/components/schemas/Time'
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          minimum: 0
+    SearchEngineListData:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PageData'
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchEngineBaseData'
