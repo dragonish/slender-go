@@ -1,2 +1,2 @@
-// Package handles built-in icon resource files.
+// Package icons handles built-in icon resource files.
 package icons
