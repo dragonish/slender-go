@@ -4,6 +4,7 @@ import (
 	"slender/internal/data"
 	"slender/internal/database"
 	"slender/internal/global"
+	"slender/internal/ip"
 	"slender/internal/logger"
 	"slender/internal/model"
 	"time"
@@ -25,12 +26,12 @@ func admin(rGroup *gin.RouterGroup) {
 				return
 			}
 
-			ip := ctx.ClientIP()
+			readIp := ip.GetRealIP(ctx)
 			ua := ctx.GetHeader("User-Agent")
 			now := time.Now()
 			expires := now.AddDate(0, 0, int(global.Flags.TokenAge))
 
-			logger.Info("admin logining", "login_time", now, "ip", ip, "user_agent", ua)
+			logger.Info("admin logining", "login_time", now, "ip", readIp, "user_agent", ua)
 
 			if body.Password == global.Flags.AdminPassword {
 				uid, err := uuid.NewV4()
@@ -40,7 +41,7 @@ func admin(rGroup *gin.RouterGroup) {
 					claims := data.ClaimsGenerator(requestID, global.Flags.AdminToken, now, expires)
 					jwt := data.JWTGenerator(global.Flags.Secret, claims)
 
-					err := database.AddLogin(requestID, now, ip, ua, true)
+					err := database.AddLogin(requestID, now, readIp, ua, true)
 					if err != nil {
 						//* It will not affect the successful status of login.
 						logger.Warn("this login was not recorded in the database")
