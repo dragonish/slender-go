@@ -1,4 +1,4 @@
-FROM golang:alpine3.21 AS Builder
+FROM golang:alpine3.21 AS builder
 ARG VERSION
 ARG COMMIT
 
@@ -20,7 +20,7 @@ RUN export BUILD_DATE=`date +%FT%T%z` && \
 RUN upx -9 -o slender.minify slender && mv slender.minify slender
 
 FROM alpine:3.21
-COPY --from=Builder /app/slender /bin/slender
+COPY --from=builder /app/slender /bin/slender
 COPY assets /app/assets
 COPY web /app/web
 

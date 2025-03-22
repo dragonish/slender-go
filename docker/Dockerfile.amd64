@@ -1,5 +1,5 @@
 ARG BASE_IMAGE
-FROM $BASE_IMAGE AS Builder
+FROM $BASE_IMAGE AS builder
 ARG VERSION
 ARG COMMIT
 RUN export BUILD_DATE=`date +%FT%T%z` && \
@@ -12,7 +12,7 @@ ARG VERSION
 ARG COMMIT
 LABEL slender.version="${VERSION}"
 LABEL slender.commit="${COMMIT}"
-COPY --from=Builder /app/slender /bin/slender
+COPY --from=builder /app/slender /bin/slender
 COPY assets /app/assets
 COPY web /app/web
 
