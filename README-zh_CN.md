@@ -71,7 +71,7 @@ CGO_ENABLED=1 go run main.go
 | `SLENDER_PORT` | `int` | `8080` | Web 服务运行端口 |
 | `SLENDER_TOKEN_AGE` | `int` | `30` | 令牌保存期限 (天) |
 | `SLENDER_PERFORMANCE_MODE` | `string` | `0` | 为真值(`1, yes, true, on`)时启用性能模式。*建议仅在遇到数据库更新性能不佳时才开启* |
-| `SLENDER_SERVICE_CONFIG` | `string` | `./slender.yaml` | 指定服务配置文件 |
+| `SLENDER_SERVICE_CONFIG` | `string` | `""` | 指定服务配置文件 |
 
 ## 服务配置
 
@@ -81,7 +81,7 @@ CGO_ENABLED=1 go run main.go
 
 ### YAML 格式
 
-程序默认读取程序目录下的 `slender.yaml` 作为服务配置文件(若存在)，若需要使用位于其他位置的服务配置文件，请通过[环境变量](#环境变量)或添加[启动命令](#启动命令)指定其文件路径。
+若需要使用 YAML 格式的服务配置文件，请通过[环境变量](#环境变量)或添加[启动命令](#启动命令)指定其文件路径。
 
 文件中的各个字段是可选的。文件可声明字段如下：
 
