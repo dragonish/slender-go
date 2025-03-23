@@ -11,5 +11,5 @@ type Env struct {
 
 	TokenAge uint16 `env:"TOKEN_AGE" envDefault:"30"` // token age (days). default: 30
 
-	ServiceConfig string `env:"SERVICE_CONFIG" envDefault:"./slender.yaml"` // service config file path. default: "./slender.yaml"
+	ServiceConfig string `env:"SERVICE_CONFIG" envDefault:""` // service config file path. default: ""
 }
