@@ -927,8 +927,8 @@ paths:
           $ref: '#/components/responses/401'
         '500':
           $ref: '#/components/responses/500'
-    post:
-      summary: Logout all users
+    patch:
+      summary: Logout all logins
       tags:
         - login
       responses:
@@ -949,7 +949,20 @@ paths:
           $ref: '#/components/responses/401'
         '500':
           $ref: '#/components/responses/500'
-
+    post:
+      deprecated: true
+      summary: Deprecated method
+      tags:
+        - login
+      responses:
+        '401':
+          $ref: '#/components/responses/401'
+        '410':
+          description: Gone
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
   /api/v1/search-engines:
     get:
       summary: Get search engines list
