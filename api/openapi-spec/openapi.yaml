@@ -963,6 +963,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Message'
+
+  /api/v1/logins/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    patch:
+      summary: Logout login by ID
+      tags:
+        - login
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
+
   /api/v1/search-engines:
     get:
       summary: Get search engines list
