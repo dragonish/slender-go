@@ -17,7 +17,7 @@ func logout(router *gin.Engine) {
 		if accessID != "" {
 			err := database.Logout(accessID)
 			if err == nil {
-				ctx.SetCookie(global.Flags.GetAccessCookieName(), "", 0, model.PAGE_HOME, "", false, true)
+				ctx.SetCookie(global.Flags.GetAccessCookieName(), "", -1, model.PAGE_HOME, "", false, true)
 			}
 		}
 

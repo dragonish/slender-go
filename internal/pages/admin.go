@@ -132,7 +132,7 @@ func admin(router *gin.Engine) {
 		if adminID != "" {
 			err := database.Logout(adminID)
 			if err == nil {
-				ctx.SetCookie(global.Flags.GetAdminCookieName(), "", 0, model.PAGE_HOME, "", false, true)
+				ctx.SetCookie(global.Flags.GetAdminCookieName(), "", -1, model.PAGE_HOME, "", false, true)
 			}
 		}
 
