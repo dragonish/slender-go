@@ -25,10 +25,6 @@ func accessHandler(ctx *gin.Context) {
 
 // adminHandler defines admin validation middleware.
 func adminHandler(ctx *gin.Context) {
-	if global.Flags.AdminPassword == "" {
-		return
-	}
-
 	if !validator.AdminValidator(ctx) {
 		redirect.RedirectAdmin(ctx)
 		ctx.Abort()
@@ -55,13 +51,6 @@ func accessBypasser(ctx *gin.Context) {
 // adminBypasser defines admin bypasser.
 func adminBypasser(ctx *gin.Context) {
 	rURL := ctx.DefaultQuery("redirect", model.PAGE_MANAGER)
-
-	if global.Flags.AdminPassword == "" {
-		//* redirect url without an admin password.
-		redirect.Redirect(ctx, rURL)
-		ctx.Abort()
-		return
-	}
 
 	if validator.AdminValidator(ctx) {
 		//* redirect url when there is a valid certificate.

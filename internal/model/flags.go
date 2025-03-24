@@ -14,7 +14,7 @@ type Flags struct {
 	PerformanceMode bool // enable performance mode.
 
 	AccessPassword string // access password.
-	AdminPassword  string // admin password. default: AccessPassword(not empty) or "p@$$w0rd"
+	AdminPassword  string // admin password (never empty). default: AccessPassword(not empty) or "p@$$w0rd"
 
 	TokenAge uint16 // token max-age (days). minimum: 1
 

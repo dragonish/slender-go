@@ -24,10 +24,6 @@ func accessHandler(ctx *gin.Context) {
 
 // adminHandler defines admin validation middleware.
 func adminHandler(ctx *gin.Context) {
-	if global.Flags.AdminPassword == "" {
-		return
-	}
-
 	if !validator.AdminValidator(ctx) {
 		unauthorized(ctx, "invalid certificate")
 		ctx.Abort()
@@ -36,13 +32,6 @@ func adminHandler(ctx *gin.Context) {
 
 // adminBypasser defines admin bypasser.
 func adminBypasser(ctx *gin.Context) {
-	if global.Flags.AdminPassword == "" {
-		//* bypass without an admin password.
-		noContent(ctx)
-		ctx.Abort()
-		return
-	}
-
 	if validator.AdminValidator(ctx) {
 		//* bypass when there is a valid certificate.
 		noContent(ctx)
