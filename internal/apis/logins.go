@@ -35,8 +35,8 @@ func logins(rGroup *gin.RouterGroup) {
 		}
 	})
 
-	// logout all users
-	rGroup.POST(model.API_LOGINS, func(ctx *gin.Context) {
+	// logout all logins
+	rGroup.PATCH(model.API_LOGINS, func(ctx *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
 				internalServerErrorWithPanic(ctx, err)
@@ -48,6 +48,11 @@ func logins(rGroup *gin.RouterGroup) {
 		} else {
 			internalServerError(ctx, err)
 		}
+	})
+
+	//// deprecated method
+	rGroup.POST(model.API_LOGINS, func(ctx *gin.Context) {
+		gone(ctx, "this method is deprecated")
 	})
 }
 

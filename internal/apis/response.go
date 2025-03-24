@@ -59,6 +59,12 @@ func conflict(ctx *gin.Context, msg string) {
 	ctx.JSON(http.StatusConflict, errorResponse(msg))
 }
 
+// gone makes a response with resource gone.
+// (410)
+func gone(ctx *gin.Context, msg string) {
+	ctx.JSON(http.StatusGone, errorResponse(msg))
+}
+
 // internalServerError makes an internal error response.
 // (500)
 func internalServerError(ctx *gin.Context, err error) {
