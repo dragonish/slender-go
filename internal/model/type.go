@@ -184,7 +184,7 @@ func (d MyDatetimeString) String() string {
 	return string(d)
 }
 
-// MyInt defines SQL int type
+// MyInt defines SQL int type.
 //
 // Note: unable to write NULL value to database; read NULL value from database as 0.
 type MyInt int
@@ -193,7 +193,7 @@ const MyIntNull MyInt = 0
 
 // Value implements the driver.Valuer interface, which is automatically called when writing to the database.
 func (i MyInt) Value() (driver.Value, error) {
-	//! driver.value need `int64` type param
+	//! driver.Value need to be `int64` type
 	return i.Int64(), nil
 }
 
@@ -236,7 +236,7 @@ func (i MyInt) String() string {
 	return strconv.Itoa(i.Int())
 }
 
-// MyInt64 defines SQL int64 type
+// MyInt64 defines SQL int64 type.
 //
 // Note: unable to write NULL value to database; read NULL value from database as 0.
 type MyInt64 int64
@@ -280,7 +280,7 @@ func (i MyInt64) String() string {
 	return strconv.FormatInt(i.Int64(), 10)
 }
 
-// MyInt16 defines SQL int16 type
+// MyInt16 defines SQL int16 type.
 //
 // Note: unable to write NULL value to database; read NULL value from database as 0.
 type MyInt16 int16
@@ -289,7 +289,7 @@ const MyInt16Null MyInt16 = 0
 
 // Value implements the driver.Valuer interface, which is automatically called when writing to the database.
 func (i MyInt16) Value() (driver.Value, error) {
-	//! driver.value need `int64` type param
+	//! driver.Value need to be `int64` type
 	return i.Int64(), nil
 }
 
@@ -332,7 +332,7 @@ func (i MyInt16) String() string {
 	return strconv.FormatInt(i.Int64(), 10)
 }
 
-// MyFloat64 defines SQL float64 type
+// MyFloat64 defines SQL float64 type.
 //
 // Note: unable to write NULL value to database; read NULL value from database as 0.0.
 type MyFloat64 float64
@@ -376,7 +376,7 @@ func (f MyFloat64) String() string {
 	return strconv.FormatFloat(f.Float64(), 'f', -1, 64)
 }
 
-// MyFloat32 defines SQL float32 type
+// MyFloat32 defines SQL float32 type.
 //
 // Note: unable to write NULL value to database; read NULL value from database as 0.0.
 type MyFloat32 float32
@@ -425,7 +425,7 @@ func (f MyFloat32) String() string {
 	return strconv.FormatFloat(f.Float64(), 'f', -1, 32)
 }
 
-// MyBool defines SQL bool type
+// MyBool defines SQL bool type.
 //
 // Note: unable to write NULL value to database; read NULL value from database as false.
 type MyBool bool
@@ -457,9 +457,9 @@ func (b MyBool) Bool() bool {
 	return bool(b)
 }
 
-// NullInt64 defines SQL int64 or NULL type
+// NullInt64 defines SQL int64 or NULL type.
 //
-// Note: 0 as NULL
+// Note: 0 as NULL.
 type NullInt64 int64
 
 const NullInt64Null NullInt64 = 0
