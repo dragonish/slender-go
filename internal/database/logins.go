@@ -1,23 +1,43 @@
 package database
 
 import (
+	"slender/internal/global"
 	"slender/internal/logger"
 	"slender/internal/model"
+	"slices"
 	"strings"
 	"time"
+
+	"github.com/jmoiron/sqlx"
 )
 
 // AddLogin records login log.
-func AddLogin(loginID string, loginTime time.Time, ip, ua string, isAdmin bool) error {
-	log := logger.New("login_id", loginID, "login_time", loginTime, "ip", ip, "user_agent", ua, "is_admin", isAdmin)
+func AddLogin(loginID string, loginTime time.Time, ip, ua string, isAdmin bool, maxAge uint16) error {
+	log := logger.New("login_id", loginID, "login_time", loginTime, "ip", ip, "user_agent", ua, "is_admin", isAdmin, "max_age", maxAge)
 
-	_, err := db.Exec("insert into logins(login_id, login_time, ip, ua, is_admin) values(?, ?, ?, ?, ?)", loginID, loginTime, ip, ua, isAdmin)
+	_, err := db.Exec("insert into logins(login_id, login_time, ip, ua, is_admin, max_age, active) values(?, ?, ?, ?, ?, ?, ?)", loginID, loginTime, ip, ua, isAdmin, maxAge, true)
 	if err == nil {
 		log.Info("logged in")
 	} else {
 		return log.Err("error recording login log", err)
 	}
 
+	global.Flags.LoginIDs = append(global.Flags.LoginIDs, loginID)
+	return nil
+}
+
+// Logout records logout log.
+func Logout(LoginID string) error {
+	log := logger.New("login_id", LoginID)
+
+	_, err := db.Exec("update logins set active=false where login_id=?", LoginID)
+	if err == nil {
+		log.Info("logged out")
+	} else {
+		return log.Err("error recording logout log", err)
+	}
+
+	global.Flags.LoginIDs = slices.DeleteFunc(global.Flags.LoginIDs, func(id string) bool { return id == LoginID })
 	return nil
 }
 
@@ -45,7 +65,7 @@ func GetLoginList(cond *model.LoginListCondition, body *model.LoginListData) err
 
 	o := getLoginListOrder(cond.Order)
 
-	qStmt, err := db.PrepareNamed("select l.login_id, l.login_time, l.ip, l.ua, l.is_admin from logins l " + filter + " order by " + o + " limit :offset,:size")
+	qStmt, err := db.PrepareNamed("select l.login_id, l.login_time, l.ip, l.ua, l.is_admin, l.max_age, l.active from logins l " + filter + " order by " + o + " limit :offset,:size")
 	if err != nil {
 		return logger.Err("prepared login list query statement error", err)
 	}
@@ -70,6 +90,43 @@ func ClearLogins() error {
 	}
 
 	logger.Info("clear logins")
+
+	return nil
+}
+
+// GetLoginedList returns logined list.
+func GetLoginedList(list *[]string) error {
+	err := db.Select(list, "select login_id from logins where active = true")
+	if err != nil {
+		return logger.Err("get logined list error", err)
+	}
+
+	return nil
+}
+
+// ResetLoginedList resets login list.
+func ResetLoginedList() error {
+	_, err := db.Exec("update logins set active = null where active = true")
+	if err != nil {
+		return logger.Err("reset logined list error", err)
+	}
+
+	return nil
+}
+
+// LogoutAllLogins logouts all logins.
+//
+// Transaction operation.
+func LogoutAllLogins(tx *sqlx.Tx) error {
+	_, err := tx.Exec("update logins set active = false where active = true")
+	if err != nil {
+		if rErr := tx.Rollback(); rErr != nil {
+			panic(rErr)
+		}
+		return logger.Err("logout all logins error", err)
+	}
+
+	logger.Info("logout all logins")
 
 	return nil
 }

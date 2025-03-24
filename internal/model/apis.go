@@ -225,6 +225,9 @@ type LoginListItem struct {
 	IP        MyString         `json:"ip" db:"ip"`
 	UA        MyString         `json:"ua" db:"ua"`
 	IsAdmin   MyBool           `json:"isAdmin" db:"is_admin"`
+
+	MaxAge MyUint16     `json:"maxAge" db:"max_age"`
+	Active NullableBool `json:"active" db:"active"`
 }
 
 // LoginListData defines login list data.

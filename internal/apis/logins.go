@@ -37,6 +37,11 @@ func logins(rGroup *gin.RouterGroup) {
 
 	// logout all users
 	rGroup.POST(model.API_LOGINS, func(ctx *gin.Context) {
+		defer func() {
+			if err := recover(); err != nil {
+				internalServerErrorWithPanic(ctx, err)
+			}
+		}()
 		err := database.LogoutAll()
 		if err == nil {
 			noContent(ctx)

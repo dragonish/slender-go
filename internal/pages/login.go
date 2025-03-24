@@ -105,13 +105,13 @@ func login(router *gin.Engine) {
 				claims := data.ClaimsGenerator(requestID, global.Flags.AccessToken, now, expires)
 				jwt := data.JWTGenerator(global.Flags.Secret, claims)
 
-				err := database.AddLogin(requestID, now, readIp, ua, false)
+				err := database.AddLogin(requestID, now, readIp, ua, false, global.Flags.TokenAge)
 				if err != nil {
 					//* It will not affect the successful status of login.
 					logger.Warn("this login was not recorded in the database")
 				}
 
-				ctx.SetCookie(model.COOKIE_ACCESS_PREFIX+global.Flags.GetPortStr(), jwt, global.Flags.GetTokenAgeSeconds(), model.PAGE_HOME, "", false, true)
+				ctx.SetCookie(global.Flags.GetAccessCookieName(), jwt, global.Flags.GetTokenAgeSeconds(), model.PAGE_HOME, "", false, true)
 
 				redirect.RedirectHome(ctx)
 			} else {

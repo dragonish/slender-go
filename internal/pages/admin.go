@@ -10,6 +10,7 @@ import (
 	"slender/internal/logger"
 	"slender/internal/model"
 	"slender/internal/redirect"
+	"slender/internal/validator"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -91,13 +92,13 @@ func admin(router *gin.Engine) {
 				claims := data.ClaimsGenerator(requestID, global.Flags.AdminToken, now, expires)
 				jwt := data.JWTGenerator(global.Flags.Secret, claims)
 
-				err := database.AddLogin(requestID, now, readIp, ua, true)
+				err := database.AddLogin(requestID, now, readIp, ua, true, global.Flags.TokenAge)
 				if err != nil {
 					//* It will not affect the successful status of login.
 					logger.Warn("this login was not recorded in the database")
 				}
 
-				ctx.SetCookie(model.COOKIE_ADMIN_PREFIX+global.Flags.GetPortStr(), jwt, global.Flags.GetTokenAgeSeconds(), model.PAGE_HOME, "", false, true)
+				ctx.SetCookie(global.Flags.GetAdminCookieName(), jwt, global.Flags.GetTokenAgeSeconds(), model.PAGE_HOME, "", false, true)
 
 				redirect.Redirect(ctx, rURL)
 			} else {
@@ -127,7 +128,14 @@ func admin(router *gin.Engine) {
 	// logout admin
 	//? When logging out, there is no need to verify its status again
 	router.GET(model.PAGE_ADMIN+"/logout", func(ctx *gin.Context) {
-		ctx.SetCookie(model.COOKIE_ADMIN_PREFIX+global.Flags.GetPortStr(), "", 0, model.PAGE_HOME, "", false, true)
+		adminID := validator.GetAdminID(ctx)
+		if adminID != "" {
+			err := database.Logout(adminID)
+			if err == nil {
+				ctx.SetCookie(global.Flags.GetAdminCookieName(), "", 0, model.PAGE_HOME, "", false, true)
+			}
+		}
+
 		redirect.RedirectHome(ctx)
 	})
 }

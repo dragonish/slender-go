@@ -92,6 +92,7 @@ func TestParseJWT(t *testing.T) {
 	res5, _ := ParseJWT(secret, "abcdef")
 
 	assert.Equal(t, token, res1.Token)
+	assert.Equal(t, user, res1.Subject)
 	assert.Empty(t, res2.Token)
 	assert.Empty(t, res3.Token)
 	assert.Empty(t, res4.Token)

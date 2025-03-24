@@ -1,7 +1,9 @@
 package model
 
 import (
+	"database/sql"
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"html"
 	"math"
@@ -332,6 +334,48 @@ func (i MyInt16) String() string {
 	return strconv.FormatInt(i.Int64(), 10)
 }
 
+// MyUint16 defines SQL uint16 type.
+//
+// Note: unable to write NULL value to database; read NULL value from database as 0.
+type MyUint16 uint16
+
+const MyUint16Null MyUint16 = 0
+
+// Value implements the driver.Valuer interface, which is automatically called when writing to the database.
+func (u MyUint16) Value() (driver.Value, error) {
+	//! driver.Value need to be `int64` type
+	return u.Int64(), nil
+}
+
+// Scan implements sql.Scanner interface, which is automatically called when reading from the database.
+func (u *MyUint16) Scan(src interface{}) error {
+	switch v := src.(type) {
+	case int64: //* accept int64 type
+		*u = MyUint16(v)
+	case int16: // the theory will not return to this type, only reserved
+		*u = MyUint16(v)
+	case float64:
+		*u = MyUint16(math.Round(v))
+	case []byte: //? maybe can scan the []byte([]uint8) type
+		strValue := string(v)
+		intValue, err := strconv.ParseInt(strValue, 10, 16)
+		if err != nil {
+			return fmt.Errorf("unexpected type for MyUint16: %T", src)
+		}
+		*u = MyUint16(intValue)
+	case nil:
+		*u = MyUint16Null
+	default:
+		return fmt.Errorf("unexpected type for MyUint16: %T", src)
+	}
+	return nil
+}
+
+// Int64 returns int64 type value.
+func (u MyUint16) Int64() int64 {
+	return int64(u)
+}
+
 // MyFloat64 defines SQL float64 type.
 //
 // Note: unable to write NULL value to database; read NULL value from database as 0.0.
@@ -455,6 +499,63 @@ func (b *MyBool) Scan(src interface{}) error {
 // Bool returns bool type value.
 func (b MyBool) Bool() bool {
 	return bool(b)
+}
+
+// NullableBool defines SQL nullable bool type.
+type NullableBool struct {
+	sql.NullBool
+}
+
+// Value implements the driver.Valuer interface.
+func (nb NullableBool) Value() (driver.Value, error) {
+	if !nb.Valid {
+		return nil, nil
+	}
+	return nb.Bool, nil
+}
+
+// Scan implements sql.Scanner interface.
+func (nb *NullableBool) Scan(src interface{}) error {
+	nb.Valid = (src != nil)
+	if nb.Valid {
+		switch v := src.(type) {
+		case bool:
+			nb.Bool = v
+		case int64:
+			nb.Bool = (v != 0)
+		default:
+			return fmt.Errorf("unexpected type for NullableBool: %T", src)
+		}
+	}
+	return nil
+}
+
+// MarshalJSON implements json.Marshaler interface.
+func (nb NullableBool) MarshalJSON() ([]byte, error) {
+	if !nb.Valid {
+		return json.Marshal(nil)
+	}
+	return json.Marshal(nb.Bool)
+}
+
+// UnmarshalJSON implements json.Unmarshaler interface.
+func (nb *NullableBool) UnmarshalJSON(data []byte) error {
+	var src interface{}
+	err := json.Unmarshal(data, &src)
+	if err != nil {
+		return err
+	}
+
+	switch v := src.(type) {
+	case bool:
+		nb.Bool = v
+		nb.Valid = true
+	case nil:
+		nb.Valid = false
+	default:
+		return fmt.Errorf("unexpected type for NullableBool: %T", src)
+	}
+	return nil
 }
 
 // NullInt64 defines SQL int64 or NULL type.

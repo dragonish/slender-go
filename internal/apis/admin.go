@@ -41,13 +41,13 @@ func admin(rGroup *gin.RouterGroup) {
 					claims := data.ClaimsGenerator(requestID, global.Flags.AdminToken, now, expires)
 					jwt := data.JWTGenerator(global.Flags.Secret, claims)
 
-					err := database.AddLogin(requestID, now, readIp, ua, true)
+					err := database.AddLogin(requestID, now, readIp, ua, true, global.Flags.TokenAge)
 					if err != nil {
 						//* It will not affect the successful status of login.
 						logger.Warn("this login was not recorded in the database")
 					}
 
-					ctx.SetCookie(model.COOKIE_ADMIN_PREFIX+global.Flags.GetPortStr(), jwt, global.Flags.GetTokenAgeSeconds(), model.PAGE_HOME, "", false, true)
+					ctx.SetCookie(global.Flags.GetAdminCookieName(), jwt, global.Flags.GetTokenAgeSeconds(), model.PAGE_HOME, "", false, true)
 
 					okWithData(ctx, jwt)
 				} else {

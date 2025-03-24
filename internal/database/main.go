@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"os"
 	"sync"
 
@@ -114,12 +115,60 @@ func Load(filename string, wal bool) {
 			login_time datetime not null,
 			ip varchar(45) not null,
 			ua text,
-			is_admin bool not null default false
+			is_admin bool not null default false,
+			max_age smallint unsigned not null default 0,
+			active bool default null
 		);`)
 		createTableFatal(err, "logins")
 
 		_, err = iDb.Exec("create index if not exists idx_logins_login_time on logins(login_time)")
 		createIndexFatal(err, "logins", "idx_logins_login_time")
+
+		//? add new column max_age to logins table
+		ageMeta := []any{"table", "logins", "column", "max_age"}
+		var ageCol model.MyString
+		ageErr := iDb.Get(&ageCol, "select name from pragma_table_info(?) where name = ?", "logins", "max_age")
+		if ageErr == sql.ErrNoRows {
+			log.Debug("add new column to table", ageMeta...)
+			tx := iDb.MustBegin()
+
+			_, ageErr = tx.Exec("alter table logins add column max_age smallint unsigned not null default 0")
+			if ageErr != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				log.Fatal("failed to add column to table", ageErr, ageMeta...)
+			}
+
+			if cErr := tx.Commit(); cErr != nil {
+				panic(cErr)
+			}
+		} else if ageErr != nil {
+			log.Fatal("failed to read column info from table", ageErr, ageMeta...)
+		}
+
+		//? add new column active to logins table
+		activeMeta := []any{"table", "logins", "column", "active"}
+		var activeCol model.MyString
+		activeErr := iDb.Get(&activeCol, "select name from pragma_table_info(?) where name = ?", "logins", "active")
+		if activeErr == sql.ErrNoRows {
+			log.Debug("add new column to table", activeMeta...)
+			tx := iDb.MustBegin()
+
+			_, activeErr = tx.Exec("alter table logins add column active bool default null")
+			if activeErr != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				log.Fatal("failed to add column to table", activeErr, activeMeta...)
+			}
+
+			if cErr := tx.Commit(); cErr != nil {
+				panic(cErr)
+			}
+		} else if activeErr != nil {
+			log.Fatal("failed to read column info from table", activeErr, activeMeta...)
+		}
 	})
 
 	connect(dbFile, wal)

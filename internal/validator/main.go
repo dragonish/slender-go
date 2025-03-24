@@ -15,12 +15,10 @@ func AccessValidator(ctx *gin.Context) (valid bool) {
 		return
 	}
 
-	port := global.Flags.GetPortStr()
-
-	accessCookie, _ := ctx.Cookie(model.COOKIE_ACCESS_PREFIX + port)
+	accessCookie, _ := ctx.Cookie(global.Flags.GetAccessCookieName())
 	if accessCookie != "" {
 		accessJWT, _ := data.ParseJWT(global.Flags.Secret, accessCookie)
-		if accessJWT.Token == global.Flags.AccessToken {
+		if accessJWT.Token == global.Flags.AccessToken && global.Flags.IsLogined(accessJWT.Subject) {
 			valid = true
 			ctx.Set(model.CONTEXT_IDENTITY, "access")
 			return
@@ -32,16 +30,36 @@ func AccessValidator(ctx *gin.Context) (valid bool) {
 
 // AdminValidator returns true when admin verification passed.
 func AdminValidator(ctx *gin.Context) (valid bool) {
-	port := global.Flags.GetPortStr()
-
-	adminCookie, _ := ctx.Cookie(model.COOKIE_ADMIN_PREFIX + port)
+	adminCookie, _ := ctx.Cookie(global.Flags.GetAdminCookieName())
 	if adminCookie != "" {
 		adminJWT, _ := data.ParseJWT(global.Flags.Secret, adminCookie)
-		if adminJWT.Token == global.Flags.AdminToken {
+		if adminJWT.Token == global.Flags.AdminToken && global.Flags.IsLogined(adminJWT.Subject) {
 			valid = true
 			ctx.Set(model.CONTEXT_IDENTITY, "admin")
 		}
 	}
 
 	return
+}
+
+// GetAccessID returns the access id.
+func GetAccessID(ctx *gin.Context) string {
+	accessCookie, _ := ctx.Cookie(global.Flags.GetAccessCookieName())
+	if accessCookie != "" {
+		accessJWT, _ := data.ParseJWT(global.Flags.Secret, accessCookie)
+		return accessJWT.Subject
+	}
+
+	return ""
+}
+
+// GetAdminID returns the admin id.
+func GetAdminID(ctx *gin.Context) string {
+	adminCookie, _ := ctx.Cookie(global.Flags.GetAdminCookieName())
+	if adminCookie != "" {
+		adminJWT, _ := data.ParseJWT(global.Flags.Secret, adminCookie)
+		return adminJWT.Subject
+	}
+
+	return ""
 }
