@@ -11,11 +11,13 @@ import (
 )
 
 // okWithData makes a response to successful data.
+// (200)
 func okWithData(ctx *gin.Context, resData ...interface{}) {
 	ctx.JSON(http.StatusOK, data.DataResponse(resData...))
 }
 
 // created makes a response to created data.
+// (201)
 func created(ctx *gin.Context, resData ...interface{}) {
 	ctx.JSON(http.StatusCreated, data.DataResponse(resData...))
 }
@@ -27,37 +29,44 @@ func noContent(ctx *gin.Context) {
 }
 
 // badRequest makes specific request error response.
+// (400)
 func badRequest(ctx *gin.Context, msg string) {
 	ctx.JSON(http.StatusBadRequest, errorResponse(msg))
 }
 
 // badRequestWithParse makes a response that cannot parse the request.
+// (400)
 func badRequestWithParse(ctx *gin.Context, err error) {
 	logger.WarnWithErr("parse request error", err, "path", data.ParseRequestPath(ctx.Request))
 	badRequest(ctx, "Unable to parse request")
 }
 
 // unauthorized makes a unauthorized response.
+// (401)
 func unauthorized(ctx *gin.Context, msg string) {
 	ctx.JSON(http.StatusUnauthorized, errorResponse(msg))
 }
 
 // notFound makes a response with record not found.
+// (404)
 func notFound(ctx *gin.Context, msg string) {
 	ctx.JSON(http.StatusNotFound, errorResponse(msg))
 }
 
 // conflict makes a response with record conflict.
+// (409)
 func conflict(ctx *gin.Context, msg string) {
 	ctx.JSON(http.StatusConflict, errorResponse(msg))
 }
 
 // internalServerError makes an internal error response.
+// (500)
 func internalServerError(ctx *gin.Context, err error) {
 	ctx.JSON(http.StatusInternalServerError, errorResponse(logger.ErrMsg(err)))
 }
 
 // internalServerErrorWithPanic makes an exception error response.
+// (500)
 func internalServerErrorWithPanic(ctx *gin.Context, err interface{}) {
 	msg := "unexpected error"
 	if e, ok := err.(error); ok {
