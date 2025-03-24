@@ -68,7 +68,7 @@ Support defining [environment variables](#environment-variables) or [service con
 | `SLENDER_ADMIN_PWD` | `string` | `""` | Admin password |
 | `SLENDER_LOG_LEVEL` | `string` | `Info` | Log output level. Optional: `Debug`, `Info`, `Warn`, `Error` |
 | `SLENDER_PORT` | `int` | `8080` | Web service running port |
-| `SLENDER_TOKEN_AGE` | `int` | `30` | Token age (days) |
+| `SLENDER_TOKEN_AGE` | `int` | `30` | Token max-age (days) |
 | `SLENDER_PERFORMANCE_MODE` | `string` | `0` | Enable performance mode when a truthy value (`1, yes, true, on`). *It is recommended to enable only when the database update performance is bad* |
 | `SLENDER_SERVICE_CONFIG` | `string` | `""` | Specify service config file path |
 
@@ -89,7 +89,7 @@ access_password: string # Access password
 admin_password: string # Admin password
 log_level: Debug|Info|Warn|Error # Log output level
 port: number # Web service running port
-token_age: number # Token age (days)
+token_age: number # Token max-age (days)
 performance_mode: true # Performance mode. It is recommended to enable only when the database update performance is bad
 ```
 
@@ -105,7 +105,7 @@ Each field in the file is optional. The file can declare fields as follows:
   "adminPassword": "string", // Admin password
   "logLevel": "Debug|Info|Warn|Error", // Log output level
   "port": 8080, // Web service running port
-  "tokenAge": 30, // Token age (days)
+  "tokenAge": 30, // Token max-age (days)
   "performanceMode": true, // Performance mode. It is recommended to enable only when the database update performance is bad
 }
 ```
@@ -123,7 +123,7 @@ Each field in the file is optional. The file can declare fields as follows:
 | `--config, -c` | `string` | Specify service config file path |
 | `--access_pwd, -a` | `string` | Specify access password |
 | `--admin_pwd, -d` | `string` | Specify admin password |
-| `--token_age, -t` | `int` | Specify token age (days) |
+| `--token_age, -t` | `int` | Specify token max-age (days) |
 | `--log, -l` | `string` | Specify log output level. Optional: `Debug`, `Info`, `Warn`, `Error` |
 | `--port, -p` | `int` | Specify web service running port |
 

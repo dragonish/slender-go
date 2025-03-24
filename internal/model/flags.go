@@ -16,7 +16,7 @@ type Flags struct {
 	AccessPassword string // access password.
 	AdminPassword  string // admin password. default: AccessPassword(not empty) or "p@$$w0rd"
 
-	TokenAge uint16 // token age (days). minimum: 1
+	TokenAge uint16 // token max-age (days). minimum: 1
 
 	LogLevel string // log output level.
 	Port     uint16 // web service running port.
@@ -45,7 +45,7 @@ func (f *Flags) GetAdminCookieName() string {
 	return COOKIE_ADMIN_PREFIX + f.GetPortStr()
 }
 
-// GetTokenAgeSeconds returns token age seconds.
+// GetTokenAgeSeconds returns token max-age seconds.
 func (f *Flags) GetTokenAgeSeconds() int {
 	return int(f.TokenAge) * 24 * 60 * 60
 }

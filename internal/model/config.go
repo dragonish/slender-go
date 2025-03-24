@@ -8,7 +8,7 @@ type ServiceConfig struct {
 	Port            *uint16 `json:"port,omitempty" yaml:"port,omitempty"`                        // web service running port.
 	PerformanceMode *bool   `json:"performanceMode,omitempty" yaml:"performance_mode,omitempty"` // performance mode.
 
-	TokenAge *uint16 `json:"tokenAge,omitempty" yaml:"token_age,omitempty"` // token age (days).
+	TokenAge *uint16 `json:"tokenAge,omitempty" yaml:"token_age,omitempty"` // token max-age (days).
 }
 
 // UserConfig defines the user configuration field.

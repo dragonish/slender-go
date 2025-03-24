@@ -28,7 +28,7 @@ const (
 
 	KEY_TOKEN_AGE       = "token_age"
 	KEY_TOKEN_AGE_SHORT = "t"
-	KEY_TOKEN_AGE_DES   = "Specify token age (days)"
+	KEY_TOKEN_AGE_DES   = "Specify token max-age (days)"
 
 	KEY_LOG_LEVEL       = "log"
 	KEY_LOG_LEVEL_SHORT = "l"

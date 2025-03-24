@@ -9,7 +9,7 @@ type Env struct {
 	Port            uint16 `env:"PORT" envDefault:"8080"`          // web service running port. default: 8080
 	PerformanceMode string `env:"PERFORMANCE_MODE" envDefault:"0"` // performance mode. default: "0"
 
-	TokenAge uint16 `env:"TOKEN_AGE" envDefault:"30"` // token age (days). default: 30
+	TokenAge uint16 `env:"TOKEN_AGE" envDefault:"30"` // token max-age (days). default: 30
 
 	ServiceConfig string `env:"SERVICE_CONFIG" envDefault:""` // service config file path. default: ""
 }

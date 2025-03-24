@@ -24,7 +24,7 @@ func Parse() {
 		}
 	}
 
-	// Configure token age.
+	// Configure token max-age.
 	if flags.TokenAge < 1 {
 		flags.TokenAge = 1
 	}
@@ -46,7 +46,7 @@ func Parse() {
 
 	logger.Info("access password", "access_pwd", data.MaskWithStars(flags.AccessPassword))
 	logger.Info("admin password", "admin_pwd", data.MaskWithStars(flags.AdminPassword))
-	logger.Info("token age", "days", flags.TokenAge)
+	logger.Info("token max-age", "days", flags.TokenAge)
 	logger.Info("log output level", "log_level", flags.LogLevel)
 	logger.Info("web service running port", "port", flags.Port)
 
