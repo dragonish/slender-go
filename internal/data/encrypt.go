@@ -3,7 +3,6 @@ package data
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"errors"
 	"math/rand"
 	"time"
 
@@ -110,14 +109,7 @@ func ParseJWT(secret string, tokenString string) (model.JWTClaims, error) {
 	})
 
 	if err != nil {
-		if errors.Is(err, jwt.ErrTokenExpired) {
-			logger.Debug("the JWT has expired")
-		} else if errors.Is(err, jwt.ErrTokenNotValidYet) {
-			logger.Debug("the JWT has not valid yet")
-		} else {
-			logger.Debug("the JWT invalid")
-		}
-
+		logger.Debug("error parsing JWT string", "err", err)
 		return resClaims, err
 	}
 
