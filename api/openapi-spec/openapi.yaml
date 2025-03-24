@@ -82,7 +82,9 @@ paths:
       summary: Logout admin
       tags:
         - html
-      security: []
+      security:
+        - adminApiKeyAuth: []
+        - {}
       responses:
         '303':
           $ref: '#/components/responses/redirectWithSetCookie'
@@ -120,7 +122,9 @@ paths:
       summary: Logout
       tags:
         - html
-      security: []
+      security:
+        - accessApiKeyAuth: []
+        - {}
       responses:
         '303':
           $ref: '#/components/responses/redirectWithSetCookie'
