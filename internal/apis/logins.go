@@ -54,6 +54,17 @@ func logins(rGroup *gin.RouterGroup) {
 	rGroup.POST(model.API_LOGINS, func(ctx *gin.Context) {
 		gone(ctx, "this method is deprecated")
 	})
+
+	// logout login
+	rGroup.PATCH(model.API_LOGINS+"/:id", func(ctx *gin.Context) {
+		id := ctx.Param("id")
+		err := database.Logout(id)
+		if err == nil {
+			noContent(ctx)
+		} else {
+			internalServerError(ctx, err)
+		}
+	})
 }
 
 func getLoginListCond(ctx *gin.Context) model.LoginListCondition {
