@@ -911,6 +911,10 @@ paths:
           name: admin
           schema:
             $ref: '#/components/schemas/RouteBoolean'
+        - in: query
+          name: active
+          schema:
+            $ref: '#/components/schemas/RouteBoolean'
       responses:
         '200':
           description: A list of logins
