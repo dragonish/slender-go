@@ -215,7 +215,8 @@ type LoginListCondition struct {
 	IP MyString `json:"ip"`
 	UA MyString `json:"ua"`
 
-	Admin *MyBool `json:"admin,omitempty"`
+	Admin  *MyBool `json:"admin,omitempty"`
+	Active *MyBool `json:"active,omitempty"`
 }
 
 // LoginListItem defines login list item.

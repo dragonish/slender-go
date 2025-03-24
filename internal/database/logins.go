@@ -141,6 +141,11 @@ func getLoginFilterCondition(cond *model.LoginListCondition) (string, map[string
 		params["is_admin"] = *cond.Admin
 	}
 
+	if cond.Active != nil {
+		condList = append(condList, "(l.active = :active)")
+		params["active"] = *cond.Active
+	}
+
 	if cond.IP != "" {
 		condList = append(condList, `l.ip like :ip escape '\'`)
 		params["ip"] = cond.IP.LikeMatchingString()

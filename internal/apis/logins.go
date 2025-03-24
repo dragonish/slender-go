@@ -80,5 +80,11 @@ func getLoginListCond(ctx *gin.Context) model.LoginListCondition {
 		*loginListCond.Admin = model.MyBool(data.IsRouteTruthy(admin))
 	}
 
+	active := ctx.Query("active")
+	if data.IsRouteTruthy(active) || data.IsRouteFalsy(active) {
+		loginListCond.Active = new(model.MyBool)
+		*loginListCond.Active = model.MyBool(data.IsRouteTruthy(active))
+	}
+
 	return loginListCond
 }
