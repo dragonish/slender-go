@@ -34,5 +34,6 @@ assets/simple-icons/*
 !assets/simple-icons/.gitkeep
 latest.json
 slender-manager.zip
+slender.tar.gz
 
 .vscode/settings.json
