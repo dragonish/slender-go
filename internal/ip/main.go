@@ -1,6 +1,7 @@
 package ip
 
 import (
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -23,6 +24,21 @@ func GetRealIP(ctx *gin.Context) (realIp string) {
 
 	if realIp == "" {
 		realIp = ctx.ClientIP()
+	}
+	return
+}
+
+// GetProtocol returns the protocol (http or https) used for the request.
+func GetProtocol(r *http.Request) (proto string) {
+	xfp := r.Header.Get("X-Forwarded-Proto")
+	if xfp == "http" || xfp == "https" {
+		proto = xfp
+		return
+	}
+
+	proto = "http"
+	if r.TLS != nil {
+		proto = "https"
 	}
 	return
 }

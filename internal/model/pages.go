@@ -3,6 +3,7 @@ package model
 import (
 	"net/http"
 	"regexp"
+	"slender/internal/ip"
 	"strings"
 )
 
@@ -51,10 +52,9 @@ type PageDynamicURL struct {
 func (d *PageDynamicURL) Parse(r *http.Request) {
 	d.Parsed = true
 
-	scheme := "http:"
+	scheme := ip.GetProtocol(r) + ":"
 	defaultPort := "80"
-	if r.TLS != nil {
-		scheme = "https:"
+	if scheme == "https:" {
 		defaultPort = "443"
 	}
 	host := r.Host
