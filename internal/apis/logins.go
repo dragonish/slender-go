@@ -25,9 +25,9 @@ func logins(rGroup *gin.RouterGroup) {
 		}
 	})
 
-	// clear login log
+	// clear expired logins
 	rGroup.DELETE(model.API_LOGINS, func(ctx *gin.Context) {
-		err := database.ClearLogins()
+		err := database.ClearExpiredLogins()
 		if err == nil {
 			noContent(ctx)
 		} else {

@@ -82,14 +82,14 @@ func GetLoginList(cond *model.LoginListCondition, body *model.LoginListData) err
 	return nil
 }
 
-// ClearLogins clears login log.
-func ClearLogins() error {
-	_, err := db.Exec("delete from logins")
+// ClearExpiredLogins clear expired logins.
+func ClearExpiredLogins() error {
+	_, err := db.Exec("delete from logins where (active = true and julianday('now') - julianday(login_time) > max_age) or (active is null)or (active = false)")
 	if err != nil {
-		return logger.Err("clear logins error", err)
+		return logger.Err("clear expired logins error", err)
 	}
 
-	logger.Info("clear logins")
+	logger.Info("clear expired logins")
 
 	return nil
 }
