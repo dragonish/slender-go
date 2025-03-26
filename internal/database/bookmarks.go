@@ -19,7 +19,7 @@ func AddBookmark(body *model.BookmarkPostBody) (int64, error) {
 
 	tx := db.MustBegin()
 
-	res, err := tx.NamedExec("insert into bookmarks(url, name, description, icon, privacy, weight, created_time, modified_time, folder_id) values(:url, :name, :description, :icon, :privacy, :weight, datetime('now', 'localtime'), datetime('now', 'localtime'), :folder_id)", body)
+	res, err := tx.NamedExec("insert into bookmarks(url, name, description, icon, privacy, weight, created_time, modified_time, folder_id, hide_in_other) values(:url, :name, :description, :icon, :privacy, :weight, datetime('now', 'localtime'), datetime('now', 'localtime'), :folder_id, :hide_in_other)", body)
 	if err != nil {
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)
@@ -80,7 +80,7 @@ func GetBookmarkList(cond *model.BookmarkListCondition, body *model.BookmarkList
 
 	o := getBookmarkListOrder(cond.Order)
 
-	qStmt, err := db.PrepareNamed("select b.id, b.url, b.name, b.description, b.icon, b.privacy, b.weight, b.created_time, b.modified_time, b.visits, b.folder_id, f.name as folder_name from bookmarks b left outer join folders f on b.folder_id = f.id " + filter + " order by " + o + " limit :offset,:size")
+	qStmt, err := db.PrepareNamed("select b.id, b.url, b.name, b.description, b.icon, b.privacy, b.weight, b.created_time, b.modified_time, b.visits, b.folder_id, b.hide_in_other, f.name as folder_name from bookmarks b left outer join folders f on b.folder_id = f.id " + filter + " order by " + o + " limit :offset,:size")
 	if err != nil {
 		return logger.Err("prepared bookmark list query statement error", err)
 	}
@@ -99,9 +99,9 @@ func GetBookmarkList(cond *model.BookmarkListCondition, body *model.BookmarkList
 
 // GetHomeBookmarkList gets bookmark list used by the homepage.
 func GetHomeBookmarkList(privacy bool, list *[]model.HomeBookmarkListItem) error {
-	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.folder_id from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.privacy = false))) order by b.weight desc, b.id"
+	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.folder_id, b.hide_in_other from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.privacy = false))) order by b.weight desc, b.id"
 	if privacy {
-		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.folder_id from bookmarks b order by b.weight desc, b.id"
+		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.folder_id, b.hide_in_other from bookmarks b order by b.weight desc, b.id"
 	}
 
 	err := db.Select(list, sqlStr)
@@ -114,9 +114,9 @@ func GetHomeBookmarkList(privacy bool, list *[]model.HomeBookmarkListItem) error
 
 // GetHomeLatestBookmarkList gets latest bookmark list used by the homepage.
 func GetHomeLatestBookmarkList(privacy bool, size uint8, list *[]model.HomeBookmarkListItem) error {
-	sqlStr := "select b.id, b.url, b.name, b.description, b.icon from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
+	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
 	if privacy {
-		sqlStr = "select b.id, b.url, b.name, b.description, b.icon from bookmarks b where ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
+		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
 	}
 
 	err := db.Select(list, sqlStr, size)
@@ -129,9 +129,9 @@ func GetHomeLatestBookmarkList(privacy bool, size uint8, list *[]model.HomeBookm
 
 // GetHomeHotBookmarkList gets hot bookmark list used by the homepage.
 func GetHomeHotBookmarkList(privacy bool, size uint8, list *[]model.HomeBookmarkListItem) error {
-	sqlStr := "select b.id, b.url, b.name, b.description, b.icon from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
+	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
 	if privacy {
-		sqlStr = "select b.id, b.url, b.name, b.description, b.icon from bookmarks b where ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
+		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
 	}
 
 	err := db.Select(list, sqlStr, size)
@@ -532,7 +532,7 @@ func ImportBookmarks(list *[]model.BookmarkImportItem) (int64, error) {
 
 	tx := db.MustBegin()
 
-	nstmt, err := tx.PrepareNamed("insert into bookmarks(url, name, description, icon, privacy, weight, created_time, modified_time) values(:url, :name, :description, :icon, :privacy, :weight, datetime('now', 'localtime'), datetime('now', 'localtime'))")
+	nstmt, err := tx.PrepareNamed("insert into bookmarks(url, name, description, icon, privacy, weight, hide_in_other, created_time, modified_time) values(:url, :name, :description, :icon, :privacy, :weight, :hide_in_other, datetime('now', 'localtime'), datetime('now', 'localtime'))")
 	if err != nil {
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)

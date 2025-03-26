@@ -23,6 +23,8 @@ type HomeBookmarkListItem struct {
 	Des      MyString `db:"description"`
 	Icon     MyString `db:"icon"`
 	FolderID MyInt64  `db:"folder_id"`
+
+	HideInOther MyBool `db:"hide_in_other"`
 }
 
 // HomeSearchEngineListItem defines search engine list item used by the homepage.
@@ -98,4 +100,16 @@ func (d *PageDynamicURL) Convert(url string) (res string) {
 	}
 
 	return
+}
+
+// IsInSameNetwork checks if URL is in the same network.
+func (d *PageDynamicURL) IsInSameNetwork(url string) bool {
+	if d.Parsed {
+		if !strings.HasPrefix(url, "http") {
+			return true
+		} else if strings.Contains(d.Convert(url), d.Hostname) {
+			return true
+		}
+	}
+	return false
 }

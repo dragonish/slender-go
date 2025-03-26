@@ -6,6 +6,7 @@ import (
 	"slender/internal/global"
 	"slender/internal/icons"
 	"slender/internal/model"
+	"slices"
 )
 
 // generateBookmarks returns bookmarks and sidebar templates.
@@ -24,6 +25,11 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 	if bErr != nil {
 		return template.HTML(bookmarksTpl), template.HTML(sidebarTpl)
 	}
+
+	//? Handling bookmarks hidden in other network environments.
+	bookmarkList = slices.DeleteFunc(bookmarkList, func(b model.HomeBookmarkListItem) bool {
+		return b.HideInOther.Bool() && !dynamic.IsInSameNetwork(b.URL.String())
+	})
 
 	largeFolderList := make([]model.HomeFolderListItem, 0)
 	generalFolderList := make([]model.HomeFolderListItem, 0)
@@ -58,6 +64,10 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 		hotBookmarkList := make([]model.HomeBookmarkListItem, 0)
 		hErr := database.GetHomeHotBookmarkList(privacy, global.Config.HotTotal, &hotBookmarkList)
 		if hErr == nil && len(hotBookmarkList) > 0 {
+			hotBookmarkList = slices.DeleteFunc(hotBookmarkList, func(b model.HomeBookmarkListItem) bool {
+				return b.HideInOther.Bool() && !dynamic.IsInSameNetwork(b.URL.String())
+			})
+
 			h := model.HomeFolderListItem{
 				ID:    -2,
 				Name:  model.MyString(hot),
@@ -75,6 +85,10 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 		latestBookamrkList := make([]model.HomeBookmarkListItem, 0)
 		lErr := database.GetHomeLatestBookmarkList(privacy, global.Config.LatestTotal, &latestBookamrkList)
 		if lErr == nil && len(latestBookamrkList) > 0 {
+			latestBookamrkList = slices.DeleteFunc(latestBookamrkList, func(b model.HomeBookmarkListItem) bool {
+				return b.HideInOther.Bool() && !dynamic.IsInSameNetwork(b.URL.String())
+			})
+
 			l := model.HomeFolderListItem{
 				ID:    -1,
 				Name:  model.MyString(latest),

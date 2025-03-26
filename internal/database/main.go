@@ -82,9 +82,33 @@ func Load(filename string, wal bool) {
 			modified_time datetime not null,
 			visits int unsigned not null default 0,
 			folder_id integer,
+			hide_in_other bool not null default false,
 			foreign key(folder_id) references folders(id) on delete set null on update cascade
 		);`)
 		createTableFatal(err, "bookmarks")
+
+		//? add new column hide_in_other to bookmarks table
+		hideMeta := []any{"table", "bookmarks", "column", "hide_in_other"}
+		var hideCol model.MyString
+		hideErr := iDb.Get(&hideCol, "select name from pragma_table_info(?) where name = ?", "bookmarks", "hide_in_other")
+		if hideErr == sql.ErrNoRows {
+			log.Debug("add new column to table", hideMeta...)
+			tx := iDb.MustBegin()
+
+			_, hideErr = tx.Exec("alter table bookmarks add column hide_in_other bool not null default false")
+			if hideErr != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				log.Fatal("failed to add column to table", hideErr, hideMeta...)
+			}
+
+			if cErr := tx.Commit(); cErr != nil {
+				panic(cErr)
+			}
+		} else if hideErr != nil {
+			log.Fatal("failed to read column info from table", hideErr, hideMeta...)
+		}
 
 		_, err = iDb.Exec("create index if not exists idx_bookmarks_created_time on bookmarks(created_time)")
 		createIndexFatal(err, "bookmarks", "idx_bookmarks_created_time")
