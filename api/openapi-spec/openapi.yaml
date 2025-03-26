@@ -943,7 +943,7 @@ paths:
         '500':
           $ref: '#/components/responses/500'
     delete:
-      summary: Clear login log
+      summary: Clear expired logins
       tags:
         - login
       responses:
