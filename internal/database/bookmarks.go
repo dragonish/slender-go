@@ -407,6 +407,31 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return model.ErrQueryParamMissing
 		}
+	} else if body.Action == "setHideInOther" {
+		b, ok := body.Payload.(bool)
+		if ok {
+			log := logger.New("column", "hide_in_other")
+
+			query, args, err := sqlx.In("update bookmarks set modified_time = datetime('now', 'localtime'), hide_in_other = ? where id in (?)", b, body.DataSet)
+			if err != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				return log.Err("in for update bookmarks statement error", err)
+			}
+			_, err = tx.Exec(query, args...)
+			if err != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				return log.Err("update bookmarks error", err)
+			}
+		} else {
+			if rErr := tx.Rollback(); rErr != nil {
+				panic(rErr)
+			}
+			return model.ErrQueryParamMissing
+		}
 	} else if body.Action == "setWeight" || body.Action == "incWeight" {
 		i, ok := body.Payload.(float64)
 		if ok {

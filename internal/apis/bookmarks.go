@@ -56,7 +56,7 @@ func bookmarks(rGroup *gin.RouterGroup) {
 	})
 
 	// handle bookmark in batches
-	// action: "delete" | "setPrivacy" | "setWeight" | "incWeight" | "clearVisits" | "setFolder"
+	// action: "delete" | "setPrivacy" | "setWeight" | "incWeight" | "clearVisits" | "setFolder" | "setHideInOther"
 	rGroup.PATCH(model.API_BOOKMARKS, func(ctx *gin.Context) {
 		var body model.BatchPatchBody
 		err := ctx.ShouldBindJSON(&body)
