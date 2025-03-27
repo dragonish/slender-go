@@ -55,6 +55,8 @@ type BookmarkListCondition struct {
 
 	Privacy *MyBool    `json:"privacy,omitempty"`
 	Folder  *NullInt64 `json:"folder,omitempty"`
+
+	HideInOther *MyBool `json:"hideInOther,omitempty"`
 }
 
 // FolderListCondition defines folder list condition.

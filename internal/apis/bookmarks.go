@@ -177,5 +177,11 @@ func getBookmarkListCond(ctx *gin.Context) model.BookmarkListCondition {
 		}
 	}
 
+	hideInOther := ctx.Query("hide-in-other")
+	if data.IsRouteTruthy(hideInOther) || data.IsRouteFalsy(hideInOther) {
+		bookmarkListCond.HideInOther = new(model.MyBool)
+		*bookmarkListCond.HideInOther = model.MyBool(data.IsRouteTruthy(hideInOther))
+	}
+
 	return bookmarkListCond
 }

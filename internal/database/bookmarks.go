@@ -595,6 +595,11 @@ func getBookmarkFilterCondition(cond *model.BookmarkListCondition) (string, map[
 		params["privacy"] = *cond.Privacy
 	}
 
+	if cond.HideInOther != nil {
+		condList = append(condList, "(b.hide_in_other = :hide_in_other)")
+		params["hide_in_other"] = *cond.HideInOther
+	}
+
 	if cond.Folder != nil {
 		if *cond.Folder == 0 {
 			condList = append(condList, "(b.folder_id is null)")
