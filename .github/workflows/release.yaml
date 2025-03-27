@@ -86,6 +86,10 @@ jobs:
           body: |
             ${{ steps.changelog_text.outputs.changes }}
 
+            ## Manager Changelog
+
+            See: [dragonish/slender-manager](https://github.com/dragonish/slender-manager/releases)
+
             ## Icons
 
             | Name | Version |
