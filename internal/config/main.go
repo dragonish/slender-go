@@ -17,7 +17,7 @@ var configFilename string
 func DefaultConfigGenerator() model.UserConfig {
 	return model.UserConfig{
 		Title:           "Slender",
-		CustomFooter:    `<div style="width: 100%; text-align: center;"><a href="https://github.com/dragonish/slender-go" target="_blank" rel="noopener">Slender</a> ©2024 Created by <a href="https://github.com/dragonish" target="_blank" rel="noopener">dragonish</a></div>`,
+		CustomFooter:    `<div style="width: 100%; text-align: center;"><a href="https://github.com/dragonish/slender-go" target="_blank" rel="noopener">Slender</a> ©2024-2025 Created by <a href="https://github.com/dragonish" target="_blank" rel="noopener">dragonish</a></div>`,
 		ShowSearchInput: true,
 		ShowSidebar:     true,
 		ShowScrollTop:   true,
