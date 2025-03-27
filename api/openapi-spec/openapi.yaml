@@ -237,6 +237,26 @@ paths:
           $ref: '#/components/responses/401'
         '500':
           $ref: '#/components/responses/500'
+    get:
+      summary: Get current administrator id
+      tags:
+        - admin
+      responses:
+        '200':
+          description: Current administrator id retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: string
+        '401':
+          $ref: '#/components/responses/401'
+        '500':
+          $ref: '#/components/responses/500'
 
   /api/v1/bookmarks:
     get:
