@@ -62,4 +62,14 @@ func admin(rGroup *gin.RouterGroup) {
 
 		ctx.Abort()
 	})
+
+	// Get current admin id
+	rGroup.GET(model.API_ADMIN, adminHandler, func(ctx *gin.Context) {
+		adminId := ctx.GetString(model.CONTEXT_ADMIN_ID)
+		if adminId == "" {
+			internalServerError(ctx, logger.NewErr("unable to get admin id"))
+		} else {
+			okWithData(ctx, adminId)
+		}
+	})
 }

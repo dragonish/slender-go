@@ -36,6 +36,7 @@ func AdminValidator(ctx *gin.Context) (valid bool) {
 		if adminJWT.Token == global.Flags.AdminToken && global.Flags.IsLogined(adminJWT.Subject) {
 			valid = true
 			ctx.Set(model.CONTEXT_IDENTITY, "admin")
+			ctx.Set(model.CONTEXT_ADMIN_ID, adminJWT.Subject)
 		}
 	}
 

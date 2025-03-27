@@ -31,3 +31,6 @@ const (
 
 // CONTEXT_IDENTITY defines identity context key.
 const CONTEXT_IDENTITY = "identity"
+
+// CONTEXT_ADMIN_ID defines admin id context key.
+const CONTEXT_ADMIN_ID = "admin_id"
