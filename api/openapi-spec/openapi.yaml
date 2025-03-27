@@ -420,6 +420,8 @@ paths:
                 folderId:
                   type: integer
                   minimum: 0
+                hideInOther:
+                  type: boolean
                 files:
                   type: array
                   items:
@@ -832,12 +834,15 @@ paths:
                 required:
                   - url
                   - icon
+                  - hideInOther
                 properties:
                   url:
                     type: string
                     format: uri
                   icon:
                     type: string
+                  hideInOther:
+                    type: boolean
       responses:
         '204':
           description: No Content
@@ -1441,10 +1446,13 @@ components:
         folderId:
           type: integer
           minimum: 0
+        hideInOther:
+          type: boolean
       required:
         - url
         - icon
         - folderId
+        - hideInOther
     BookmarkItem:
       type: object
       allOf:
