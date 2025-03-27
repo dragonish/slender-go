@@ -263,6 +263,10 @@ paths:
         - $ref: '#/components/parameters/url'
         - $ref: '#/components/parameters/privacy'
         - $ref: '#/components/parameters/folder'
+        - in: query
+          name: hide-in-other
+          schema:
+            $ref: '#/components/schemas/RouteBoolean'
       responses:
         '200':
           description: A list of bookmarks was successfully retrieved.
