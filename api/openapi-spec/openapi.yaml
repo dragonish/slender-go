@@ -348,6 +348,7 @@ paths:
                     - incWeight
                     - clearVisits
                     - setFolder
+                    - setHideInOther
               required:
                 - action
       responses:
