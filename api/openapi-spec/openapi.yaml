@@ -220,6 +220,7 @@ paths:
           description: Administrator status requested successfully
           headers:
             Set-Cookie:
+              required: true
               schema:
                 type: string
           content:
