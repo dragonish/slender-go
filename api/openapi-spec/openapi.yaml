@@ -231,6 +231,8 @@ paths:
                 properties:
                   data:
                     type: string
+        '204':
+          description: No content to return
         '400':
           $ref: '#/components/responses/400'
         '401':
