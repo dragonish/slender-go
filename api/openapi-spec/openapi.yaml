@@ -1679,6 +1679,8 @@ components:
         - ip
         - ua
         - isAdmin
+        - maxAge
+        - active
       properties:
         loginId:
           type: string
@@ -1690,6 +1692,12 @@ components:
           type: string
         isAdmin:
           type: boolean
+        maxAge:
+          type: integer
+          minimum: 0
+        active:
+          type: boolean
+          nullable: true
     LoginListData:
       type: object
       allOf:
