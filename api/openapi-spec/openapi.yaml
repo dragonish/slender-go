@@ -648,14 +648,23 @@ paths:
             $ref: '#/components/schemas/RouteBoolean'
           description: Force deletion of the file
       responses:
+        '202':
+          description: File deletion accepted, but not deleted immediately due to dependencies or other reasons.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: integer
         '204':
           description: File deleted successfully
         '400':
           $ref: '#/components/responses/400'
         '401':
           $ref: '#/components/responses/401'
-        '409':
-          $ref: '#/components/responses/409'
         '500':
           $ref: '#/components/responses/500'
 
@@ -1318,12 +1327,6 @@ components:
             $ref: '#/components/schemas/Message'
     '404':
       description: Not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Message'
-    '409':
-      description: Conflict
       content:
         application/json:
           schema:
