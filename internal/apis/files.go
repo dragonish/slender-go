@@ -92,7 +92,7 @@ func files(rGroup *gin.RouterGroup) {
 			if err == nil {
 				noContent(ctx)
 			} else if err == model.ErrDoNothing {
-				conflict(ctx, "the file cannot be deleted")
+				accepted(ctx, id)
 			} else {
 				internalServerError(ctx, err)
 			}

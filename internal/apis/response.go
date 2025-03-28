@@ -22,6 +22,12 @@ func created(ctx *gin.Context, resData ...interface{}) {
 	ctx.JSON(http.StatusCreated, data.DataResponse(resData...))
 }
 
+// accepted makes a response with record accepted.
+// (202)
+func accepted(ctx *gin.Context, resData ...interface{}) {
+	ctx.JSON(http.StatusAccepted, data.DataResponse(resData...))
+}
+
 // noContent makes an empty response.
 // (204)
 func noContent(ctx *gin.Context) {
@@ -51,12 +57,6 @@ func unauthorized(ctx *gin.Context, msg string) {
 // (404)
 func notFound(ctx *gin.Context, msg string) {
 	ctx.JSON(http.StatusNotFound, errorResponse(msg))
-}
-
-// conflict makes a response with record conflict.
-// (409)
-func conflict(ctx *gin.Context, msg string) {
-	ctx.JSON(http.StatusConflict, errorResponse(msg))
 }
 
 // gone makes a response with resource gone.
