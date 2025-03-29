@@ -1531,6 +1531,7 @@ components:
         - hotTotal
         - useLetterIcon
         - openInNewWindow
+        - internalNetwork
       properties:
         title:
           type: string
@@ -1556,6 +1557,8 @@ components:
           type: boolean
         openInNewWindow:
           type: boolean
+        internalNetwork:
+          type: string
     ConfigPatchBody:
       type: object
       properties:
@@ -1583,6 +1586,8 @@ components:
           type: boolean
         openInNewWindow:
           type: boolean
+        internalNetwork:
+          type: string
     FileListItem:
       type: object
       allOf:
