@@ -129,6 +129,9 @@ func GetHomeLatestBookmarkList(privacy bool, inOtherNetwork bool, size uint8, li
 
 	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where (b.privacy = false)" + otherCond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
 	if privacy {
+		if inOtherNetwork {
+			otherCond = " (b.hide_in_other = false) and"
+		}
 		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where" + otherCond + " ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
 	}
 
@@ -149,6 +152,9 @@ func GetHomeHotBookmarkList(privacy bool, inOtherNetwork bool, size uint8, list 
 
 	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where (b.privacy = false)" + otherCond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
 	if privacy {
+		if inOtherNetwork {
+			otherCond = " (b.hide_in_other = false) and"
+		}
 		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where" + otherCond + " ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
 	}
 
