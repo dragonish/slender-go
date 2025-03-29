@@ -27,6 +27,7 @@ func DefaultConfigGenerator() model.UserConfig {
 		HotTotal:        12,
 		UseLetterIcon:   true,
 		OpenInNewWindow: true,
+		InternalNetwork: "",
 	}
 }
 
@@ -142,6 +143,9 @@ func PatchUpdate(conf model.ConfigPatchBody) {
 	}
 	if conf.OpenInNewWindow != nil {
 		global.Config.OpenInNewWindow = *conf.OpenInNewWindow
+	}
+	if conf.InternalNetwork != nil {
+		global.Config.InternalNetwork = *conf.InternalNetwork
 	}
 
 	saveConfig()

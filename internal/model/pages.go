@@ -101,15 +101,3 @@ func (d *PageDynamicURL) Convert(url string) (res string) {
 
 	return
 }
-
-// IsInSameNetwork checks if URL is in the same network.
-func (d *PageDynamicURL) IsInSameNetwork(url string) bool {
-	if d.Parsed {
-		if !strings.HasPrefix(url, "http") {
-			return true
-		} else if strings.Contains(d.Convert(url), d.Hostname) {
-			return true
-		}
-	}
-	return false
-}

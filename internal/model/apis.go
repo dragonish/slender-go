@@ -197,6 +197,8 @@ type ConfigPatchBody struct {
 
 	UseLetterIcon   *bool `json:"useLetterIcon,omitempty"`   // use first letter as icon.
 	OpenInNewWindow *bool `json:"openInNewWindow,omitempty"` // always open the bookmark in the new window.
+
+	InternalNetwork *string `json:"internalNetwork,omitempty"` // internal network.
 }
 
 // BatchPatchBody defines batch patch body.

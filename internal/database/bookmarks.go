@@ -98,45 +98,63 @@ func GetBookmarkList(cond *model.BookmarkListCondition, body *model.BookmarkList
 }
 
 // GetHomeBookmarkList gets bookmark list used by the homepage.
-func GetHomeBookmarkList(privacy bool, list *[]model.HomeBookmarkListItem) error {
-	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.folder_id, b.hide_in_other from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.privacy = false))) order by b.weight desc, b.id"
+func GetHomeBookmarkList(privacy bool, inOtherNetwork bool, list *[]model.HomeBookmarkListItem) error {
+	otherCond := ""
+	if inOtherNetwork {
+		otherCond = " and (b.hide_in_other = false)"
+	}
+
+	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.folder_id, b.hide_in_other from bookmarks b where (b.privacy = false)" + otherCond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.privacy = false))) order by b.weight desc, b.id"
 	if privacy {
-		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.folder_id, b.hide_in_other from bookmarks b order by b.weight desc, b.id"
+		if inOtherNetwork {
+			otherCond = " where b.hide_in_other = false"
+		}
+		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.folder_id, b.hide_in_other from bookmarks b" + otherCond + " order by b.weight desc, b.id"
 	}
 
 	err := db.Select(list, sqlStr)
 	if err != nil {
-		return logger.Err("get bookmark list used by the homepage error", err, "privacy", privacy)
+		return logger.Err("get bookmark list used by the homepage error", err, "privacy", privacy, "in_other_newwork", inOtherNetwork)
 	}
 
 	return nil
 }
 
 // GetHomeLatestBookmarkList gets latest bookmark list used by the homepage.
-func GetHomeLatestBookmarkList(privacy bool, size uint8, list *[]model.HomeBookmarkListItem) error {
-	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
+func GetHomeLatestBookmarkList(privacy bool, inOtherNetwork bool, size uint8, list *[]model.HomeBookmarkListItem) error {
+	otherCond := ""
+	if inOtherNetwork {
+		otherCond = " and (b.hide_in_other = false)"
+	}
+
+	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where (b.privacy = false)" + otherCond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
 	if privacy {
-		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
+		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where" + otherCond + " ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
 	}
 
 	err := db.Select(list, sqlStr, size)
 	if err != nil {
-		return logger.Err("get latest bookmark list used by the homepage error", err, "privacy", privacy)
+		return logger.Err("get latest bookmark list used by the homepage error", err, "privacy", privacy, "in_other_network", inOtherNetwork)
 	}
 
 	return nil
 }
 
 // GetHomeHotBookmarkList gets hot bookmark list used by the homepage.
-func GetHomeHotBookmarkList(privacy bool, size uint8, list *[]model.HomeBookmarkListItem) error {
-	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where b.privacy = false and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
+func GetHomeHotBookmarkList(privacy bool, inOtherNetwork bool, size uint8, list *[]model.HomeBookmarkListItem) error {
+	otherCond := ""
+	if inOtherNetwork {
+		otherCond = " and (b.hide_in_other = false)"
+	}
+
+	sqlStr := "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where (b.privacy = false)" + otherCond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
 	if privacy {
-		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
+		sqlStr = "select b.id, b.url, b.name, b.description, b.icon, b.hide_in_other from bookmarks b where" + otherCond + " ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
 	}
 
 	err := db.Select(list, sqlStr, size)
 	if err != nil {
-		return logger.Err("get hot bookmark list used by the homepage error", err, "privacy", privacy)
+		return logger.Err("get hot bookmark list used by the homepage error", err, "privacy", privacy, "in_other_network", inOtherNetwork)
 	}
 
 	return nil

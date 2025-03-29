@@ -1,5 +1,7 @@
 package model
 
+import "strings"
+
 type ServiceConfig struct {
 	AccessPassword *string `json:"accessPassword,omitempty" yaml:"access_password,omitempty"` // access password.
 	AdminPassword  *string `json:"adminPassword,omitempty" yaml:"admin_password,omitempty"`   // admin password.
@@ -27,4 +29,35 @@ type UserConfig struct {
 
 	UseLetterIcon   bool `json:"useLetterIcon" yaml:"use_letter_icon"`      // use first letter as icon.
 	OpenInNewWindow bool `json:"openInNewWindow" yaml:"open_in_new_window"` // always open the bookmark in the new window.
+
+	InternalNetwork string `json:"internalNetwork" yaml:"internal_network"` // Internal network address list. Multiple values are separated by commas (,).
+}
+
+// GetInternalNetwork returns the internal network address list as a slice of strings.
+func (uc *UserConfig) GetInternalNetwork() []string {
+	parts := strings.Split(uc.InternalNetwork, ",")
+
+	var trimmedParts []string
+	for _, part := range parts {
+		trimmedPart := strings.TrimSpace(part)
+		if len(trimmedPart) > 0 {
+			trimmedParts = append(trimmedParts, trimmedPart)
+		}
+	}
+
+	return trimmedParts
+}
+
+// InOtherNetwork checks if the origin is in other networks.
+func (uc *UserConfig) InOtherNetwork(origin string) bool {
+	if len(uc.InternalNetwork) == 0 {
+		return false
+	}
+
+	for _, network := range uc.GetInternalNetwork() {
+		if strings.Contains(origin, network) {
+			return false
+		}
+	}
+	return true
 }
