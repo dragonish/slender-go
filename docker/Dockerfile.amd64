@@ -7,7 +7,7 @@ RUN export BUILD_DATE=`date +%FT%T%z` && \
   GOARCH=amd64 go build -ldflags "-w -s -X 'slender/internal/version.Version=$VERSION' -X 'slender/internal/version.Commit=$COMMIT' -X 'slender/internal/version.BuildDate=$BUILD_DATE'" -o slender main.go
 RUN upx -9 -o slender.minify slender && mv slender.minify slender
 
-FROM alpine:3.21
+FROM alpine:latest
 ARG VERSION
 ARG COMMIT
 LABEL slender.version="${VERSION}"
@@ -16,10 +16,7 @@ COPY --from=builder /app/slender /bin/slender
 COPY assets /app/assets
 COPY web /app/web
 
-RUN echo '' > /etc/apk/repositories && \
-  echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.21/main"         >> /etc/apk/repositories && \
-  echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.21/community"    >> /etc/apk/repositories && \
-  echo "Asia/Shanghai" > /etc/timezone
+RUN echo "Asia/Shanghai" > /etc/timezone
 ENV TZ=Asia/Shanghai
 RUN apk add tzdata && \
   cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
