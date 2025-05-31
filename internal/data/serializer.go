@@ -50,7 +50,7 @@ func StructToMap(input any, filterList ...string) map[string]interface{} {
 	val := reflect.ValueOf(input)
 	typeOfInput := val.Type()
 
-	for i := 0; i < val.NumField(); i++ {
+	for i := range val.NumField() {
 		field := typeOfInput.Field(i)
 		if len(filterList) > 0 && slices.Contains(filterList, field.Name) {
 			continue
@@ -141,7 +141,7 @@ func IsRouteFalsy(param string) bool {
 // The element that exists on the left but not on the right.
 func Defference[T comparable](left, right []T) []T {
 	diff := make([]T, 0)
-	for i := 0; i < len(left); i++ {
+	for i := range left {
 		if !slices.Contains(right, left[i]) {
 			diff = append(diff, left[i])
 		}
