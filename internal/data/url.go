@@ -12,7 +12,7 @@ func ParseRequestPath(r *http.Request) string {
 }
 
 // DataResponse generates body with data.
-func DataResponse(resData ...interface{}) gin.H {
+func DataResponse(resData ...any) gin.H {
 	l := len(resData)
 	if l > 0 {
 		if l == 1 {

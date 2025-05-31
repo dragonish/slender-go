@@ -25,7 +25,7 @@ func (s MyString) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface, which is automatically called when reading from the database.
-func (s *MyString) Scan(src interface{}) error {
+func (s *MyString) Scan(src any) error {
 	switch v := src.(type) {
 	case string:
 		*s = MyString(v)
@@ -108,7 +108,7 @@ func (d MyDateString) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface, which is automatically called when reading from the database.
-func (d *MyDateString) Scan(src interface{}) error {
+func (d *MyDateString) Scan(src any) error {
 	switch v := src.(type) {
 	case string:
 		*d = MyDateString(v)
@@ -159,7 +159,7 @@ func (d MyDatetimeString) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface, which is automatically called when reading from the database.
-func (d *MyDatetimeString) Scan(src interface{}) error {
+func (d *MyDatetimeString) Scan(src any) error {
 	switch v := src.(type) {
 	case string:
 		*d = MyDatetimeString(v)
@@ -200,7 +200,7 @@ func (i MyInt) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface, which is automatically called when reading from the database.
-func (i *MyInt) Scan(src interface{}) error {
+func (i *MyInt) Scan(src any) error {
 	switch v := src.(type) {
 	case int:
 		*i = MyInt(v)
@@ -251,7 +251,7 @@ func (i MyInt64) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface, which is automatically called when reading from the database.
-func (i *MyInt64) Scan(src interface{}) error {
+func (i *MyInt64) Scan(src any) error {
 	switch v := src.(type) {
 	case int64:
 		*i = MyInt64(v)
@@ -296,7 +296,7 @@ func (i MyInt16) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface, which is automatically called when reading from the database.
-func (i *MyInt16) Scan(src interface{}) error {
+func (i *MyInt16) Scan(src any) error {
 	switch v := src.(type) {
 	case int64: //* accept int64 type
 		*i = MyInt16(v)
@@ -348,7 +348,7 @@ func (u MyUint16) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface, which is automatically called when reading from the database.
-func (u *MyUint16) Scan(src interface{}) error {
+func (u *MyUint16) Scan(src any) error {
 	switch v := src.(type) {
 	case int64: //* accept int64 type
 		*u = MyUint16(v)
@@ -389,7 +389,7 @@ func (f MyFloat64) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface, which is automatically called when reading from the database.
-func (f *MyFloat64) Scan(src interface{}) error {
+func (f *MyFloat64) Scan(src any) error {
 	switch v := src.(type) {
 	case float64:
 		*f = MyFloat64(v)
@@ -433,7 +433,7 @@ func (f MyFloat32) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface, which is automatically called when reading from the database.
-func (f *MyFloat32) Scan(src interface{}) error {
+func (f *MyFloat32) Scan(src any) error {
 	switch v := src.(type) {
 	case float32:
 		*f = MyFloat32(v)
@@ -482,7 +482,7 @@ func (b MyBool) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface, which is automatically called when reading from the database.
-func (b *MyBool) Scan(src interface{}) error {
+func (b *MyBool) Scan(src any) error {
 	switch v := src.(type) {
 	case bool:
 		*b = MyBool(v)
@@ -515,7 +515,7 @@ func (nb NullableBool) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface.
-func (nb *NullableBool) Scan(src interface{}) error {
+func (nb *NullableBool) Scan(src any) error {
 	nb.Valid = (src != nil)
 	if nb.Valid {
 		switch v := src.(type) {
@@ -540,7 +540,7 @@ func (nb NullableBool) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements json.Unmarshaler interface.
 func (nb *NullableBool) UnmarshalJSON(data []byte) error {
-	var src interface{}
+	var src any
 	err := json.Unmarshal(data, &src)
 	if err != nil {
 		return err
@@ -574,7 +574,7 @@ func (i NullInt64) Value() (driver.Value, error) {
 }
 
 // Scan implements sql.Scanner interface, which is automatically called when reading from the database.
-func (i *NullInt64) Scan(src interface{}) error {
+func (i *NullInt64) Scan(src any) error {
 	switch v := src.(type) {
 	case int64:
 		*i = NullInt64(v)

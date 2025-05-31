@@ -6,7 +6,7 @@ import (
 )
 
 // Meta returns slog.Attr.
-func Meta(field string, value interface{}) slog.Attr {
+func Meta(field string, value any) slog.Attr {
 	switch v := value.(type) {
 	case bool:
 		return slog.Bool(field, v)

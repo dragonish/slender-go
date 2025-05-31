@@ -461,14 +461,14 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 		if ok {
 			log := logger.New("column", "weight")
 
-			var params []interface{}
+			var params []any
 			str := ""
 			if body.Action == "setWeight" {
 				str = "update bookmarks set modified_time = datetime('now', 'localtime'), weight = ? where id in (?)"
-				params = []interface{}{i, body.DataSet}
+				params = []any{i, body.DataSet}
 			} else {
 				str = "update bookmarks set modified_time = datetime('now', 'localtime'), weight = weight " + data.Int16ToStringWithSign(int16(math.Round(i))) + " where id in (?)"
-				params = []interface{}{body.DataSet}
+				params = []any{body.DataSet}
 			}
 
 			query, args, err := sqlx.In(str, params...)
@@ -610,9 +610,9 @@ func ImportBookmarks(list *[]model.BookmarkImportItem) (int64, error) {
 }
 
 // getBookmarkFilterCondition returns bookmark list filter condition.
-func getBookmarkFilterCondition(cond *model.BookmarkListCondition) (string, map[string]interface{}) {
+func getBookmarkFilterCondition(cond *model.BookmarkListCondition) (string, map[string]any) {
 	condList := make([]string, 0)
-	params := map[string]interface{}{}
+	params := map[string]any{}
 
 	if cond.Privacy != nil {
 		condList = append(condList, "(b.privacy = :privacy)")

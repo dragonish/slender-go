@@ -223,14 +223,14 @@ func SearchEngineBatchHandler(body *model.BatchPatchBody) error {
 		if ok {
 			log := logger.New("column", "weight")
 
-			var params []interface{}
+			var params []any
 			str := ""
 			if body.Action == "setWeight" {
 				str = "update search_engines set modified_time = datetime('now', 'localtime'), weight = ? where id in (?)"
-				params = []interface{}{i, body.DataSet}
+				params = []any{i, body.DataSet}
 			} else {
 				str = "update search_engines set modified_time = datetime('now', 'localtime'), weight = weight " + data.Int16ToStringWithSign(int16(math.Round(i))) + " where id in (?)"
-				params = []interface{}{body.DataSet}
+				params = []any{body.DataSet}
 			}
 
 			query, args, err := sqlx.In(str, params...)
@@ -272,9 +272,9 @@ func SearchEngineBatchHandler(body *model.BatchPatchBody) error {
 }
 
 // getSearchEngineFilterCondition returns search engine list filter condtion.
-func getSearchEngineFilterCondition(cond *model.SearchEngineListCondition) (string, map[string]interface{}) {
+func getSearchEngineFilterCondition(cond *model.SearchEngineListCondition) (string, map[string]any) {
 	condList := make([]string, 0)
-	params := map[string]interface{}{}
+	params := map[string]any{}
 
 	if cond.Method != nil {
 		condList = append(condList, ("(s.method = :method)"))

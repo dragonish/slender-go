@@ -203,9 +203,9 @@ type ConfigPatchBody struct {
 
 // BatchPatchBody defines batch patch body.
 type BatchPatchBody struct {
-	DataSet []int64     `json:"dataSet"`
-	Action  string      `json:"action"`
-	Payload interface{} `json:"payload"`
+	DataSet []int64 `json:"dataSet"`
+	Action  string  `json:"action"`
+	Payload any     `json:"payload"`
 }
 
 // BookmarkImportItem defines import bookmark item.

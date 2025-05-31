@@ -12,19 +12,19 @@ import (
 
 // okWithData makes a response to successful data.
 // (200)
-func okWithData(ctx *gin.Context, resData ...interface{}) {
+func okWithData(ctx *gin.Context, resData ...any) {
 	ctx.JSON(http.StatusOK, data.DataResponse(resData...))
 }
 
 // created makes a response to created data.
 // (201)
-func created(ctx *gin.Context, resData ...interface{}) {
+func created(ctx *gin.Context, resData ...any) {
 	ctx.JSON(http.StatusCreated, data.DataResponse(resData...))
 }
 
 // accepted makes a response with record accepted.
 // (202)
-func accepted(ctx *gin.Context, resData ...interface{}) {
+func accepted(ctx *gin.Context, resData ...any) {
 	ctx.JSON(http.StatusAccepted, data.DataResponse(resData...))
 }
 
@@ -73,7 +73,7 @@ func internalServerError(ctx *gin.Context, err error) {
 
 // internalServerErrorWithPanic makes an exception error response.
 // (500)
-func internalServerErrorWithPanic(ctx *gin.Context, err interface{}) {
+func internalServerErrorWithPanic(ctx *gin.Context, err any) {
 	msg := "unexpected error"
 	if e, ok := err.(error); ok {
 		logger.Err(msg, e, "path", data.ParseRequestPath(ctx.Request))

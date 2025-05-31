@@ -45,8 +45,8 @@ func camelCaseToSnakeCase(str string) string {
 // If the field in the struct is a pointer type,
 // the value of the reference is solved.
 // If the pointer is nil, it will not be included in the map.
-func StructToMap(input any, filterList ...string) map[string]interface{} {
-	m := make(map[string]interface{})
+func StructToMap(input any, filterList ...string) map[string]any {
+	m := make(map[string]any)
 	val := reflect.ValueOf(input)
 	typeOfInput := val.Type()
 

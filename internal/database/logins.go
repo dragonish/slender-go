@@ -132,9 +132,9 @@ func LogoutAllLogins(tx *sqlx.Tx) error {
 }
 
 // getLoginFilterCondition returns login list filter condition.
-func getLoginFilterCondition(cond *model.LoginListCondition) (string, map[string]interface{}) {
+func getLoginFilterCondition(cond *model.LoginListCondition) (string, map[string]any) {
 	condList := make([]string, 0)
-	params := map[string]interface{}{}
+	params := map[string]any{}
 
 	if cond.Admin != nil {
 		condList = append(condList, "(l.is_admin = :is_admin)")

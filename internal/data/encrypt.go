@@ -104,7 +104,7 @@ func JWTGenerator(secret string, claims model.JWTClaims) string {
 // ParseJWT parses JWT string.
 func ParseJWT(secret string, tokenString string) (model.JWTClaims, error) {
 	var resClaims model.JWTClaims
-	token, err := jwt.ParseWithClaims(tokenString, &model.JWTClaims{}, func(t *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &model.JWTClaims{}, func(t *jwt.Token) (any, error) {
 		return []byte(secret), nil
 	})
 

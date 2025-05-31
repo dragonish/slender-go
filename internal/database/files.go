@@ -348,9 +348,9 @@ func updateFiles(tx *sqlx.Tx, bookmarkID int64, list []model.MyInt64) error {
 }
 
 // getFileFilterCondition returns file list filter condition.
-func getFileFilterCondition(cond *model.FileListCondition) (string, map[string]interface{}) {
+func getFileFilterCondition(cond *model.FileListCondition) (string, map[string]any) {
 	condList := make([]string, 0)
-	params := map[string]interface{}{}
+	params := map[string]any{}
 
 	if cond.Use != nil {
 		if *cond.Use {
