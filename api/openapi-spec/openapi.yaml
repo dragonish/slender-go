@@ -719,9 +719,16 @@ paths:
                 - $ref: '#/components/schemas/Common'
               required:
                 - large
+                - sortBy
               properties:
                 large:
                   type: boolean
+                sortBy:
+                  type: string
+                  enum:
+                    - weight
+                    - visits
+                    - created_time
       responses:
         '201':
           $ref: '#/components/responses/createdWithID'
@@ -754,6 +761,7 @@ paths:
                     - setPrivacy
                     - setWeight
                     - incWeight
+                    - setSortBy
       responses:
         '204':
           description: No Content
@@ -806,6 +814,12 @@ paths:
               properties:
                 large:
                   type: boolean
+                sortBy:
+                  type: string
+                  enum:
+                    - weight
+                    - visits
+                    - created_time
       responses:
         '204':
           description: No Content
@@ -1627,12 +1641,15 @@ components:
       required:
         - id
         - large
+        - sortBy
       properties:
         id:
           type: integer
           minimum: 0
         large:
           type: boolean
+        sortBy:
+          type: string
     FolderListItem:
       type: object
       allOf:
@@ -1667,6 +1684,11 @@ components:
             - type: boolean
             - type: number
               format: float
+            - type: string
+              enum:
+                - weight
+                - visits
+                - created_time
       required:
         - dataSet
     PatchCommon:
