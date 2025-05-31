@@ -19,7 +19,7 @@ func AddFolder(body *model.FolderPostBody) (int64, error) {
 
 	tx := db.MustBegin()
 
-	res, err := tx.NamedExec("insert into folders(name, description, large, privacy, weight, created_time, modified_time) values(:name, :description, :large, :privacy, :weight, datetime('now', 'localtime'), datetime('now', 'localtime'))", body)
+	res, err := tx.NamedExec("insert into folders(name, description, large, privacy, weight, sort_by, created_time, modified_time) values(:name, :description, :large, :privacy, :weight, :sort_by, datetime('now', 'localtime'), datetime('now', 'localtime'))", body)
 	if err != nil {
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)
@@ -68,7 +68,7 @@ func GetFolderList(cond *model.FolderListCondition, body *model.FolderListData) 
 
 	o := getFolderListOrder(cond.Order)
 
-	qStmt, err := db.PrepareNamed("select f.id, f.name, f.description, f.large, f.privacy, f.weight, f.created_time, f.modified_time, count(b.id) as bookmark_total from folders f left outer join bookmarks b on f.id = b.folder_id " + filter + " group by f.id order by " + o + " limit :offset,:size")
+	qStmt, err := db.PrepareNamed("select f.id, f.name, f.description, f.large, f.privacy, f.weight, f.sort_by, f.created_time, f.modified_time, count(b.id) as bookmark_total from folders f left outer join bookmarks b on f.id = b.folder_id " + filter + " group by f.id order by " + o + " limit :offset,:size")
 	if err != nil {
 		return logger.Err("prepared folder list query statement error", err)
 	}
@@ -87,7 +87,7 @@ func GetFolderList(cond *model.FolderListCondition, body *model.FolderListData) 
 
 // GetHomeFolderList gets folder list used by the homepage.
 func GetHomeFolderList(list *[]model.HomeFolderListItem) error {
-	err := db.Select(list, "select id, name, description, large from folders order by large desc, weight desc, id")
+	err := db.Select(list, "select id, name, description, large, sort_by from folders order by large desc, weight desc, id")
 	if err != nil {
 		return logger.Err("get folder list used by the homepage error", err)
 	}
@@ -265,6 +265,35 @@ func FolderBatchHandler(body *model.BatchPatchBody) error {
 			}
 
 			query, args, err := sqlx.In(str, params...)
+			if err != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				return log.Err("in for update folders statement error", err)
+			}
+			_, err = tx.Exec(query, args...)
+			if err != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				return log.Err("update folders error", err)
+			}
+		} else {
+			if rErr := tx.Rollback(); rErr != nil {
+				panic(rErr)
+			}
+			return model.ErrQueryParamMissing
+		}
+	} else if body.Action == "setSortBy" {
+		s, ok := body.Payload.(string)
+		if ok {
+			log := logger.New("column", "sort_by")
+
+			if s != "visits" && s != "created_time" {
+				s = "weight"
+			}
+
+			query, args, err := sqlx.In("update folders set modified_time = datetime('now', 'localtime'), sort_by = ? where id in (?)", s, body.DataSet)
 			if err != nil {
 				if rErr := tx.Rollback(); rErr != nil {
 					panic(rErr)

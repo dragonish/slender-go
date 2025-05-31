@@ -6,6 +6,7 @@ import (
 	"slender/internal/global"
 	"slender/internal/icons"
 	"slender/internal/model"
+	"sort"
 )
 
 // generateBookmarks returns bookmarks and sidebar templates.
@@ -117,6 +118,16 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 
 func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderListItem, bookmarks []model.HomeBookmarkListItem) string {
 	tpl := ""
+
+	if folder.SortBy == "visits" {
+		sort.SliceStable(bookmarks, func(i, j int) bool {
+			return bookmarks[i].Visits > bookmarks[j].Visits
+		})
+	} else if folder.SortBy == "created_time" {
+		sort.SliceStable(bookmarks, func(i, j int) bool {
+			return bookmarks[i].CreatedTime.After(bookmarks[j].CreatedTime)
+		})
+	}
 
 	target := "_self"
 	if global.Config.OpenInNewWindow {

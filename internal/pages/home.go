@@ -98,7 +98,6 @@ func home(router *gin.Engine) {
 			"ShowSidebar":     global.Config.ShowSidebar,
 			"ShowSearchInput": global.Config.ShowSearchInput,
 			"ShowScrollTop":   global.Config.ShowScrollTop,
-			"ShowHot":         global.Config.ShowHot,
 			"CustomFooter":    template.HTML(global.Config.CustomFooter),
 
 			"FoldersText": folders,

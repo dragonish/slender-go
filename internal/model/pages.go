@@ -9,10 +9,11 @@ import (
 
 // HomeFolderListItem defines folder list item used by the homepage.
 type HomeFolderListItem struct {
-	ID    MyInt64  `db:"id"`
-	Name  MyString `db:"name"`
-	Des   MyString `db:"description"`
-	Large MyBool   `db:"large"`
+	ID     MyInt64  `db:"id"`
+	Name   MyString `db:"name"`
+	Des    MyString `db:"description"`
+	Large  MyBool   `db:"large"`
+	SortBy MyString `db:"sort_by"`
 }
 
 // HomeBookmarkListItem defines bookmark list item used by the homepage.
@@ -24,7 +25,9 @@ type HomeBookmarkListItem struct {
 	Icon     MyString `db:"icon"`
 	FolderID MyInt64  `db:"folder_id"`
 
-	HideInOther MyBool `db:"hide_in_other"`
+	HideInOther MyBool           `db:"hide_in_other"`
+	CreatedTime MyDatetimeString `db:"created_time"`
+	Visits      MyInt64          `db:"visits"`
 }
 
 // HomeSearchEngineListItem defines search engine list item used by the homepage.

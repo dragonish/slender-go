@@ -65,10 +65,34 @@ func Load(filename string, wal bool) {
 			large bool not null default false,
 			privacy bool not null default false,
 			weight smallint not null default 0 check(weight >= -32768 and weight <= 32767),
+			sort_by varchar(25) not null default 'weight',
 			created_time datetime not null,
 			modified_time datetime not null
 		);`)
 		createTableFatal(err, "folders")
+
+		//? add new colume sort_by to folders table
+		sortMeta := []any{"table", "folders", "column", "sort_by"}
+		var sortCol model.MyString
+		sortErr := iDb.Get(&sortCol, "select name from pragma_table_info(?) where name = ?", "folders", "sort_by")
+		if sortErr == sql.ErrNoRows {
+			log.Debug("add new column to table", sortMeta...)
+			tx := iDb.MustBegin()
+
+			_, sortErr = tx.Exec("alter table folders add column sort_by varchar(25) not null default 'weight'")
+			if sortErr != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				log.Fatal("failed to add column to table", sortErr, sortMeta...)
+			}
+
+			if cErr := tx.Commit(); cErr != nil {
+				panic(cErr)
+			}
+		} else if sortErr != nil {
+			log.Fatal("failed to read column info from table", sortErr, sortMeta...)
+		}
 
 		_, err = iDb.Exec(`create table if not exists bookmarks(
 			id integer primary key autoincrement,

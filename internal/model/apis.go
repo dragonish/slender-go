@@ -137,6 +137,7 @@ type FolderPostBody struct {
 	Large   MyBool   `json:"large" db:"large"`
 	Privacy MyBool   `json:"privacy" db:"privacy"`
 	Weight  MyInt16  `json:"weight" db:"weight"`
+	SortBy  MyString `json:"sortBy" db:"sort_by"`
 }
 
 // FolderPatchBody defines update folder body.
@@ -146,6 +147,7 @@ type FolderPatchBody struct {
 	Large   *MyBool   `json:"large,omitempty" db:"large"`
 	Privacy *MyBool   `json:"privacy,omitempty" db:"privacy"`
 	Weight  *MyInt16  `json:"weight,omitempty" db:"weight"`
+	SortBy  *MyString `json:"sortBy,omitempty" db:"sort_by"`
 }
 
 // FolderBaseData defines folder base data.
@@ -154,9 +156,10 @@ type FolderBaseData struct {
 	Name MyString `json:"name" db:"name"`
 	Des  MyString `json:"description" db:"description"`
 
-	Large   MyBool  `json:"large" db:"large"`
-	Privacy MyBool  `json:"privacy" db:"privacy"`
-	Weight  MyInt16 `json:"weight" db:"weight"`
+	Large   MyBool   `json:"large" db:"large"`
+	Privacy MyBool   `json:"privacy" db:"privacy"`
+	Weight  MyInt16  `json:"weight" db:"weight"`
+	SortBy  MyString `json:"sortBy" db:"sort_by"`
 
 	CreatedTime  MyDatetimeString `json:"createdTime" db:"created_time"`
 	ModifiedTime MyDatetimeString `json:"modifiedTime" db:"modified_time"`

@@ -186,6 +186,18 @@ func (d MyDatetimeString) String() string {
 	return string(d)
 }
 
+// After returns true when the datetime string is after another datetime string.
+func (d MyDatetimeString) After(other MyDatetimeString) bool {
+	t1, err1 := time.Parse("2006-01-02 15:04:05", d.String())
+	t2, err2 := time.Parse("2006-01-02 15:04:05", other.String())
+
+	if err1 != nil || err2 != nil {
+		return false
+	}
+
+	return t1.After(t2)
+}
+
 // MyInt defines SQL int type.
 //
 // Note: unable to write NULL value to database; read NULL value from database as 0.
