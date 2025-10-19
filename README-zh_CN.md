@@ -1,5 +1,7 @@
 # slender-go
 
+<!-- markdownlint-disable MD033 -->
+
 <p align="center"><a href="./README.md">English</a> | (👉ﾟヮﾟ)👉 <b>简体中文</b></p>
 
 个人网站导航。
@@ -9,7 +11,6 @@
 ![desktop](./images/desktop_zhCN.png)
 
 <img src="./images/mobile_zhCN.png" width="360" alt="mobile" />
-
 
 ## 特性
 
@@ -154,14 +155,13 @@ performance_mode: true # 性能模式。建议仅在遇到数据库更新性能�
 | `port` | `8080` |
 | `protocol` | `https:` |
 
-**示例**
+### 示例
 
 假设某书签网址配置为 `https://{hostname}:8888/test` 时:
 
 - 当 Slender 服务的首页地址为 `https://192.168.0.1:8080/`，其显示为 `https://192.168.0.1:8888/test`。
 - 当 Slender 服务的首页地址为 `https://172.17.0.1:8080/`，其显示为 `https://172.17.0.1:8888/test`。
 - 当 Slender 服务的首页地址为 `https://link.example.com/`，其显示为 `https://link.example.com:8888/test`。
-
 
 ## 感谢
 

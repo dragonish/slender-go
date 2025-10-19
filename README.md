@@ -1,5 +1,7 @@
 # slender-go
 
+<!-- markdownlint-disable MD033 -->
+
 <p align="center"><b>English</b> 👈(ﾟヮﾟ👈) | <a href="./README-zh_CN.md">简体中文</a></p>
 
 Personal website navigation.
@@ -153,7 +155,7 @@ Suppose the homepage address of the Slender service is `https://192.168.0.1:8080
 | `port` | `8080` |
 | `protocol` | `https:` |
 
-**Example**
+### Example
 
 If a bookmark URL is configured as `https://{hostname}:8888/test`:
 
