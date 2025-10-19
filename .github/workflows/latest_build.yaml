@@ -28,9 +28,9 @@ jobs:
           curl -o ./assets/simple-icons/index.js https://gcore.jsdelivr.net/npm/simple-icons@latest/index.js
       - name: Generate app version
         run: |
-          echo APP_VERSION=`git describe --tags --abbrev=0` >> $GITHUB_ENV
+          echo APP_VERSION=`git describe --tags --abbrev=0` >> ${GITHUB_ENV}
           github_sha=${{ github.sha }}
-          echo APP_COMMIT=${github_sha:0:7} >> $GITHUB_ENV
+          echo APP_COMMIT=${github_sha:0:7} >> ${GITHUB_ENV}
       - name: Download manager
         id: download_manager
         uses: robinraju/release-downloader@v1.10

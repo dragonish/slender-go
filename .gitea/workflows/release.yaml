@@ -36,8 +36,8 @@ jobs:
           curl -o ./assets/simple-icons/index.js https://gcore.jsdelivr.net/npm/simple-icons@latest/index.js
           mdi_version=$(cat $mdi_json | jq -r '.version')
           si_version=$(cat $si_json | jq -r '.version')
-          echo "mdi_version=${mdi_version}" >> $GITHUB_OUTPUT
-          echo "si_version=${si_version}" >> $GITHUB_OUTPUT
+          echo "mdi_version=${mdi_version}" >> ${GITHUB_OUTPUT}
+          echo "si_version=${si_version}" >> ${GITHUB_OUTPUT}
       - name: Download manager
         run: |
           response=$(curl -s "${{ vars.SERVER }}/api/v1/repos/dragonish/slender-manager/releases/latest" --header "Authorization: token ${{ secrets.USER_TOKEN }}" --header "Host: ${{ vars.HOST }}")
@@ -59,9 +59,9 @@ jobs:
         id: git_tags
         run: |
           current=$(git describe --abbrev=0 --tags)
-          echo "current=${current}" >> $GITHUB_OUTPUT
+          echo "current=${current}" >> ${GITHUB_OUTPUT}
           prev=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --max-count=1`)
-          echo "prev=${prev}" >> $GITHUB_OUTPUT
+          echo "prev=${prev}" >> ${GITHUB_OUTPUT}
       - name: Create changelog text
         id: changelog_text
         uses: dragonish/tag-changelog@v1
