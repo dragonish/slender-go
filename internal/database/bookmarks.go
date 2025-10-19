@@ -374,7 +374,8 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 	//? File list
 	pathList := make([]model.MyString, 0)
 
-	if body.Action == "delete" {
+	switch body.Action {
+	case "delete":
 		//? Read file list
 		fQeury, fArgs, fErr := sqlx.In("select path from files where bookmark_id in (?)", body.DataSet)
 		if fErr != nil {
@@ -406,7 +407,7 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return logger.Err("delete bookmarks error", err)
 		}
-	} else if body.Action == "setPrivacy" {
+	case "setPrivacy":
 		b, ok := body.Payload.(bool)
 		if ok {
 			log := logger.New("column", "privacy")
@@ -431,7 +432,7 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return model.ErrQueryParamMissing
 		}
-	} else if body.Action == "setHideInOther" {
+	case "setHideInOther":
 		b, ok := body.Payload.(bool)
 		if ok {
 			log := logger.New("column", "hide_in_other")
@@ -456,7 +457,7 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return model.ErrQueryParamMissing
 		}
-	} else if body.Action == "setWeight" || body.Action == "incWeight" {
+	case "setWeight", "incWeight":
 		i, ok := body.Payload.(float64)
 		if ok {
 			log := logger.New("column", "weight")
@@ -491,7 +492,7 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return model.ErrQueryParamMissing
 		}
-	} else if body.Action == "clearVisits" {
+	case "clearVisits":
 		log := logger.New("column", "visits")
 
 		query, args, err := sqlx.In("update bookmarks set visits = 0 where id in (?)", body.DataSet)
@@ -508,7 +509,7 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return log.Err("update bookmarks error", err)
 		}
-	} else if body.Action == "setFolder" {
+	case "setFolder":
 		i, ok := body.Payload.(float64)
 		if ok {
 			log := logger.New("column", "folder_id")
@@ -533,7 +534,7 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return model.ErrQueryParamMissing
 		}
-	} else {
+	default:
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)
 		}
@@ -681,11 +682,12 @@ func isBookmarkExists(bookmarkID int64) (bool, error) {
 
 	var readID model.MyInt64
 	err := db.Get(&readID, "select id from bookmarks where id = ?", bookmarkID)
-	if err == nil {
+	switch err {
+	case nil:
 		return true, nil
-	} else if err == sql.ErrNoRows {
+	case sql.ErrNoRows:
 		return false, nil
-	} else {
+	default:
 		return false, log.Err("an error occurred while checking whether the bookmark exists", err)
 	}
 }

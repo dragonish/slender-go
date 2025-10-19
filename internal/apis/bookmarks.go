@@ -67,13 +67,14 @@ func bookmarks(rGroup *gin.RouterGroup) {
 				}
 			}()
 			err = database.BookmarkBatchHandler(&body)
-			if err == nil {
+			switch err {
+			case nil:
 				noContent(ctx)
-			} else if err == model.ErrDoNothing {
+			case model.ErrDoNothing:
 				badRequest(ctx, "unable to recognize action")
-			} else if err == model.ErrQueryParamMissing {
+			case model.ErrQueryParamMissing:
 				badRequest(ctx, "invalid payload")
-			} else {
+			default:
 				internalServerError(ctx, err)
 			}
 		} else {
@@ -92,11 +93,12 @@ func bookmarks(rGroup *gin.RouterGroup) {
 			}
 
 			err := database.GetBookmark(id, &body)
-			if err == nil {
+			switch err {
+			case nil:
 				okWithData(ctx, body)
-			} else if err == model.ErrNotExist {
+			case model.ErrNotExist:
 				notFound(ctx, "bookmark does not exist")
-			} else {
+			default:
 				internalServerError(ctx, err)
 			}
 		} else {
@@ -117,13 +119,14 @@ func bookmarks(rGroup *gin.RouterGroup) {
 					}
 				}()
 				err = database.UpdateBookmark(id, &body)
-				if err == nil {
+				switch err {
+				case nil:
 					noContent(ctx)
-				} else if err == model.ErrNotExist {
+				case model.ErrNotExist:
 					notFound(ctx, "bookmark does not exist")
-				} else if err == model.ErrDoNothing {
+				case model.ErrDoNothing:
 					badRequest(ctx, "invalid request data")
-				} else {
+				default:
 					internalServerError(ctx, err)
 				}
 			} else {

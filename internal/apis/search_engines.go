@@ -71,13 +71,14 @@ func search_engines(rGroup *gin.RouterGroup) {
 				}
 			}()
 			err = database.SearchEngineBatchHandler(&body)
-			if err == nil {
+			switch err {
+			case nil:
 				noContent(ctx)
-			} else if err == model.ErrDoNothing {
+			case model.ErrDoNothing:
 				badRequest(ctx, "unable to recognize action")
-			} else if err == model.ErrQueryParamMissing {
+			case model.ErrQueryParamMissing:
 				badRequest(ctx, "invalid payload")
-			} else {
+			default:
 				internalServerError(ctx, err)
 			}
 		} else {
@@ -94,11 +95,12 @@ func search_engines(rGroup *gin.RouterGroup) {
 			var body = model.SearchEngineBaseData{}
 
 			err := database.GetSearchEngine(id, &body)
-			if err == nil {
+			switch err {
+			case nil:
 				okWithData(ctx, body)
-			} else if err == model.ErrNotExist {
+			case model.ErrNotExist:
 				notFound(ctx, "search engine does not exist")
-			} else {
+			default:
 				internalServerError(ctx, err)
 			}
 		} else {
@@ -119,13 +121,14 @@ func search_engines(rGroup *gin.RouterGroup) {
 					}
 				}()
 				err = database.UpdateSearchEngine(id, &body)
-				if err == nil {
+				switch err {
+				case nil:
 					noContent(ctx)
-				} else if err == model.ErrNotExist {
+				case model.ErrNotExist:
 					notFound(ctx, "search does not exist")
-				} else if err == model.ErrDoNothing {
+				case model.ErrDoNothing:
 					badRequest(ctx, "invalid reques data")
-				} else {
+				default:
 					internalServerError(ctx, err)
 				}
 			} else {

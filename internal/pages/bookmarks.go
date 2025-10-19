@@ -119,11 +119,12 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderListItem, bookmarks []model.HomeBookmarkListItem) string {
 	tpl := ""
 
-	if folder.SortBy == "visits" {
+	switch folder.SortBy {
+	case "visits":
 		sort.SliceStable(bookmarks, func(i, j int) bool {
 			return bookmarks[i].Visits > bookmarks[j].Visits
 		})
-	} else if folder.SortBy == "created_time" {
+	case "created_time":
 		sort.SliceStable(bookmarks, func(i, j int) bool {
 			return bookmarks[i].CreatedTime.After(bookmarks[j].CreatedTime)
 		})

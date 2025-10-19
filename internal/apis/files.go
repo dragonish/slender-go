@@ -89,11 +89,12 @@ func files(rGroup *gin.RouterGroup) {
 			force := data.IsRouteTruthy(ctx.Query("force"))
 
 			err := database.DeleteFile(id, force)
-			if err == nil {
+			switch err {
+			case nil:
 				noContent(ctx)
-			} else if err == model.ErrDoNothing {
+			case model.ErrDoNothing:
 				accepted(ctx, id)
-			} else {
+			default:
 				internalServerError(ctx, err)
 			}
 		} else {

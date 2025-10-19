@@ -203,7 +203,8 @@ func SearchEngineBatchHandler(body *model.BatchPatchBody) error {
 
 	tx := db.MustBegin()
 
-	if body.Action == "delete" {
+	switch body.Action {
+	case "delete":
 		query, args, err := sqlx.In("delete from search_engines where id in (?)", body.DataSet)
 		if err != nil {
 			if rErr := tx.Rollback(); rErr != nil {
@@ -218,7 +219,7 @@ func SearchEngineBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return logger.Err("delete search engines error", err)
 		}
-	} else if body.Action == "setWeight" || body.Action == "incWeight" {
+	case "setWeight", "incWeight":
 		i, ok := body.Payload.(float64)
 		if ok {
 			log := logger.New("column", "weight")
@@ -253,7 +254,7 @@ func SearchEngineBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return model.ErrQueryParamMissing
 		}
-	} else {
+	default:
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)
 		}
@@ -320,11 +321,12 @@ func isSearchEngineExists(searchEngineID int64) (bool, error) {
 
 	var readID model.MyInt64
 	err := db.Get(&readID, "select id from search_engines where id = ?", searchEngineID)
-	if err == nil {
+	switch err {
+	case nil:
 		return true, nil
-	} else if err == sql.ErrNoRows {
+	case sql.ErrNoRows:
 		return false, nil
-	} else {
+	default:
 		return false, log.Err("an error occurred while checking whether the search engine exists", err)
 	}
 }

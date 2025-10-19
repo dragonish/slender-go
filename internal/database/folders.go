@@ -204,7 +204,8 @@ func FolderBatchHandler(body *model.BatchPatchBody) error {
 
 	tx := db.MustBegin()
 
-	if body.Action == "delete" {
+	switch body.Action {
+	case "delete":
 		query, args, err := sqlx.In("delete from folders where id in (?)", body.DataSet)
 		if err != nil {
 			if rErr := tx.Rollback(); rErr != nil {
@@ -219,7 +220,7 @@ func FolderBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return logger.Err("delete folders error", err)
 		}
-	} else if body.Action == "setLarge" || body.Action == "setPrivacy" {
+	case "setLarge", "setPrivacy":
 		b, ok := body.Payload.(bool)
 		if ok {
 			column := "large"
@@ -249,7 +250,7 @@ func FolderBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return model.ErrQueryParamMissing
 		}
-	} else if body.Action == "setWeight" || body.Action == "incWeight" {
+	case "setWeight", "incWeight":
 		i, ok := body.Payload.(float64)
 		if ok {
 			log := logger.New("column", "weight")
@@ -284,7 +285,7 @@ func FolderBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return model.ErrQueryParamMissing
 		}
-	} else if body.Action == "setSortBy" {
+	case "setSortBy":
 		s, ok := body.Payload.(string)
 		if ok {
 			log := logger.New("column", "sort_by")
@@ -313,7 +314,7 @@ func FolderBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return model.ErrQueryParamMissing
 		}
-	} else {
+	default:
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)
 		}
@@ -382,11 +383,12 @@ func isFolderExists(folderID int64) (bool, error) {
 
 	var readID model.MyInt64
 	err := db.Get(&readID, "select id from folders where id = ?", folderID)
-	if err == nil {
+	switch err {
+	case nil:
 		return true, nil
-	} else if err == sql.ErrNoRows {
+	case sql.ErrNoRows:
 		return false, nil
-	} else {
+	default:
 		return false, log.Err("an error occurred while checking whether the folder exists", err)
 	}
 }

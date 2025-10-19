@@ -66,13 +66,14 @@ func folders(rGroup *gin.RouterGroup) {
 				}
 			}()
 			err = database.FolderBatchHandler(&body)
-			if err == nil {
+			switch err {
+			case nil:
 				noContent(ctx)
-			} else if err == model.ErrDoNothing {
+			case model.ErrDoNothing:
 				badRequest(ctx, "unable to recognize action")
-			} else if err == model.ErrQueryParamMissing {
+			case model.ErrQueryParamMissing:
 				badRequest(ctx, "invalid payload")
-			} else {
+			default:
 				internalServerError(ctx, err)
 			}
 		} else {
@@ -88,11 +89,12 @@ func folders(rGroup *gin.RouterGroup) {
 		if err == nil {
 			var body model.FolderBaseData
 			err := database.GetFolder(id, &body)
-			if err == nil {
+			switch err {
+			case nil:
 				okWithData(ctx, body)
-			} else if err == model.ErrNotExist {
+			case model.ErrNotExist:
 				notFound(ctx, "folder does not exist")
-			} else {
+			default:
 				internalServerError(ctx, err)
 			}
 		} else {
@@ -108,13 +110,14 @@ func folders(rGroup *gin.RouterGroup) {
 			err := ctx.ShouldBindJSON(&body)
 			if err == nil {
 				err = database.UpdateFolder(id, &body)
-				if err == nil {
+				switch err {
+				case nil:
 					noContent(ctx)
-				} else if err == model.ErrNotExist {
+				case model.ErrNotExist:
 					notFound(ctx, "folder does not exist")
-				} else if err == model.ErrDoNothing {
+				case model.ErrDoNothing:
 					badRequest(ctx, "invalid request data")
-				} else {
+				default:
 					internalServerError(ctx, err)
 				}
 			} else {
