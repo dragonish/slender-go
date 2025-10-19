@@ -147,9 +147,9 @@ func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderL
 			iconELe := ""
 			icon := icons.GetBuiltInIcon(item.Icon.String())
 			if icon != "" {
-				iconELe = `<img class="slender-large-bookmark-icon slender-built-in-icon" src="` + icon + `" alt="icon" />`
+				iconELe = `<img class="slender-large-bookmark-icon slender-built-in-icon" src="` + icon + `" alt="icon" loading="lazy" />`
 			} else if item.Icon != "" {
-				iconELe = `<img class="slender-large-bookmark-icon" src="` + item.Icon.String() + `" alt="icon" />`
+				iconELe = `<img class="slender-large-bookmark-icon" src="` + item.Icon.String() + `" alt="icon" loading="lazy" />`
 			} else if global.Config.UseLetterIcon && name != "" {
 				first := string([]rune(name)[0])
 				iconELe = `<div class="slender-large-bookmark-icon slender-built-in-icon">` + first + `</div>`
@@ -176,9 +176,9 @@ func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderL
 			iconELe := ""
 			icon := icons.GetBuiltInIcon(item.Icon.String())
 			if icon != "" {
-				iconELe = `<img class="slender-bookmark-icon slender-built-in-icon" src="` + icon + `" alt="icon" />`
+				iconELe = `<img class="slender-bookmark-icon slender-built-in-icon" src="` + icon + `" alt="icon" loading="lazy" />`
 			} else if item.Icon != "" {
-				iconELe = `<img class="slender-bookmark-icon" src="` + item.Icon.String() + `" alt="icon" />`
+				iconELe = `<img class="slender-bookmark-icon" src="` + item.Icon.String() + `" alt="icon" loading="lazy" />`
 			} else if global.Config.UseLetterIcon && name != "" {
 				first := string([]rune(name)[0])
 				iconELe = `<span class="slender-bookmark-icon slender-built-in-icon">` + first + `</span>`
