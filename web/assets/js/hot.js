@@ -30,4 +30,8 @@
       }
     });
   }
+
+  window.rainseeHomeEvent = function (top, bottom) {
+    document.querySelector('body').style.padding = `${top}px 0 ${bottom}px 0`;
+  };
 })();
