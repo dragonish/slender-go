@@ -47,6 +47,7 @@ type PageDynamicURL struct {
 
 	Host     string
 	Hostname string
+	Domain   string
 	Href     string
 	Origin   string
 	Pathname string
@@ -76,6 +77,7 @@ func (d *PageDynamicURL) Parse(r *http.Request) {
 
 	d.Host = host
 	d.Hostname = hostname
+	d.Domain = ip.GetDomain(hostname)
 	d.Href = strings.Join([]string{scheme, "//", host, r.RequestURI}, "")
 	d.Origin = strings.Join([]string{scheme, "//", host}, "")
 	d.Pathname = r.URL.Path
@@ -91,6 +93,7 @@ func (d *PageDynamicURL) Convert(url string) (res string) {
 		replacements := map[string]string{
 			"{host}":     d.Host,
 			"{hostname}": d.Hostname,
+			"{domain}":   d.Domain,
 			"{href}":     d.Href,
 			"{origin}":   d.Origin,
 			"{pathname}": d.Pathname,
