@@ -10,7 +10,7 @@ import (
 )
 
 // generateBookmarks returns bookmarks and sidebar templates.
-func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped string, latest string, hot string) (template.HTML, template.HTML) {
+func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped string, latest string, hot string, isFirefox bool) (template.HTML, template.HTML) {
 	bookmarksTpl := ""
 	sidebarTpl := ""
 
@@ -50,7 +50,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 
 	for _, largeFolder := range largeFolderList {
 		if len(bookmarks[largeFolder.ID]) > 0 {
-			bookmarksTpl += renderBookmarkList(dynamic, &largeFolder, bookmarks[largeFolder.ID], inOtherNetwork)
+			bookmarksTpl += renderBookmarkList(dynamic, &largeFolder, bookmarks[largeFolder.ID], inOtherNetwork, isFirefox)
 			if global.Config.ShowSidebar {
 				sidebarTpl += renderSidebar(&largeFolder)
 			}
@@ -67,7 +67,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 				Des:   "",
 				Large: false,
 			}
-			bookmarksTpl += renderBookmarkList(dynamic, &h, hotBookmarkList, inOtherNetwork)
+			bookmarksTpl += renderBookmarkList(dynamic, &h, hotBookmarkList, inOtherNetwork, isFirefox)
 			if global.Config.ShowSidebar {
 				sidebarTpl += renderSidebar(&h)
 			}
@@ -84,7 +84,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 				Des:   "",
 				Large: false,
 			}
-			bookmarksTpl += renderBookmarkList(dynamic, &l, latestBookamrkList, inOtherNetwork)
+			bookmarksTpl += renderBookmarkList(dynamic, &l, latestBookamrkList, inOtherNetwork, isFirefox)
 			if global.Config.ShowSidebar {
 				sidebarTpl += renderSidebar(&l)
 			}
@@ -98,7 +98,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 			Des:   "",
 			Large: false,
 		}
-		bookmarksTpl += renderBookmarkList(dynamic, &u, bookmarks[0], inOtherNetwork)
+		bookmarksTpl += renderBookmarkList(dynamic, &u, bookmarks[0], inOtherNetwork, isFirefox)
 		if global.Config.ShowSidebar {
 			sidebarTpl += renderSidebar(&u)
 		}
@@ -106,7 +106,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 
 	for _, generalFolder := range generalFolderList {
 		if len(bookmarks[generalFolder.ID]) > 0 {
-			bookmarksTpl += renderBookmarkList(dynamic, &generalFolder, bookmarks[generalFolder.ID], inOtherNetwork)
+			bookmarksTpl += renderBookmarkList(dynamic, &generalFolder, bookmarks[generalFolder.ID], inOtherNetwork, isFirefox)
 			if global.Config.ShowSidebar {
 				sidebarTpl += renderSidebar(&generalFolder)
 			}
@@ -116,7 +116,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 	return template.HTML(bookmarksTpl), template.HTML(sidebarTpl)
 }
 
-func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderListItem, bookmarks []model.HomeBookmarkListItem, inOtherNetwork bool) string {
+func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderListItem, bookmarks []model.HomeBookmarkListItem, inOtherNetwork bool, isFirefox bool) string {
 	tpl := ""
 
 	switch folder.SortBy {
@@ -135,6 +135,11 @@ func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderL
 		target = "_blank"
 	}
 
+	loading := "lazy"
+	if isFirefox {
+		loading = "eager"
+	}
+
 	if folder.Large {
 		for _, item := range bookmarks {
 			useUrl := item.URL
@@ -151,9 +156,9 @@ func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderL
 			iconELe := ""
 			icon := icons.GetBuiltInIcon(item.Icon.String())
 			if icon != "" {
-				iconELe = `<img class="slender-large-bookmark-icon slender-built-in-icon" src="` + icon + `" alt="icon" loading="lazy" />`
+				iconELe = `<img class="slender-large-bookmark-icon slender-built-in-icon" src="` + icon + `" alt="icon" loading="` + loading + `" />`
 			} else if item.Icon != "" {
-				iconELe = `<img class="slender-large-bookmark-icon" src="` + item.Icon.String() + `" alt="icon" loading="lazy" />`
+				iconELe = `<img class="slender-large-bookmark-icon" src="` + item.Icon.String() + `" alt="icon" loading="` + loading + `" />`
 			} else if global.Config.UseLetterIcon && name != "" {
 				first := string([]rune(name)[0])
 				iconELe = `<div class="slender-large-bookmark-icon slender-built-in-icon">` + first + `</div>`
@@ -184,9 +189,9 @@ func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderL
 			iconELe := ""
 			icon := icons.GetBuiltInIcon(item.Icon.String())
 			if icon != "" {
-				iconELe = `<img class="slender-bookmark-icon slender-built-in-icon" src="` + icon + `" alt="icon" loading="lazy" />`
+				iconELe = `<img class="slender-bookmark-icon slender-built-in-icon" src="` + icon + `" alt="icon" loading="` + loading + `" />`
 			} else if item.Icon != "" {
-				iconELe = `<img class="slender-bookmark-icon" src="` + item.Icon.String() + `" alt="icon" loading="lazy" />`
+				iconELe = `<img class="slender-bookmark-icon" src="` + item.Icon.String() + `" alt="icon" loading="` + loading + `" />`
 			} else if global.Config.UseLetterIcon && name != "" {
 				first := string([]rune(name)[0])
 				iconELe = `<span class="slender-bookmark-icon slender-built-in-icon">` + first + `</span>`

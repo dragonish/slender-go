@@ -6,6 +6,7 @@ import (
 	"slender/internal/model"
 	"slender/internal/redirect"
 	"slender/internal/validator"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -66,4 +67,10 @@ func adminBypasser(ctx *gin.Context) {
 func setCacheHeader(c *gin.Context) {
 	c.Header("Cache-Control", "public, max-age=86400")
 	c.Header("Expires", time.Now().Add(24*time.Hour).Format(http.TimeFormat))
+}
+
+// parseUserAgent checks if the user agent contains a specific string.
+func parseUserAgent(c *http.Request, checkStr string) bool {
+	ua := strings.ToLower(c.UserAgent())
+	return strings.Contains(ua, strings.ToLower(checkStr))
 }

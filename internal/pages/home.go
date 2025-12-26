@@ -91,7 +91,8 @@ func home(router *gin.Engine) {
 		searchModule := generateSearchModule(clearSearchTip, inHomeSearch, useInHomeSearch)
 
 		identity := ctx.GetString(model.CONTEXT_IDENTITY)
-		bookmarks, sidebar := generateBookmarks(&dynamic, identity == "admin", ungrouped, latest, hot)
+		isFirefox := parseUserAgent(ctx.Request, "Firefox")
+		bookmarks, sidebar := generateBookmarks(&dynamic, identity == "admin", ungrouped, latest, hot, isFirefox)
 
 		ctx.HTML(http.StatusOK, "home.go.tmpl", gin.H{
 			"Title":           global.Config.Title,
