@@ -284,6 +284,7 @@ paths:
         - $ref: '#/components/parameters/name'
         - $ref: '#/components/parameters/description'
         - $ref: '#/components/parameters/url'
+        - $ref: '#/components/parameters/intranet'
         - $ref: '#/components/parameters/privacy'
         - $ref: '#/components/parameters/folder'
         - in: query
@@ -438,6 +439,9 @@ paths:
                 - $ref: '#/components/schemas/PatchCommon'
               properties:
                 url:
+                  type: string
+                  format: uri
+                intranet:
                   type: string
                   format: uri
                 icon:
@@ -884,10 +888,14 @@ paths:
                   - $ref: '#/components/schemas/Common'
                 required:
                   - url
+                  - intranet
                   - icon
                   - hideInOther
                 properties:
                   url:
+                    type: string
+                    format: uri
+                  intranet:
                     type: string
                     format: uri
                   icon:
@@ -1293,6 +1301,11 @@ components:
       name: url
       schema:
         type: string
+    intranet:
+      in: query
+      name: intranet
+      schema:
+        type: string
     privacy:
       in: query
       name: privacy
@@ -1486,6 +1499,9 @@ components:
         url:
           type: string
           format: uri
+        intranet:
+          type: string
+          format: uri
         icon:
           type: string
         folderId:
@@ -1495,6 +1511,7 @@ components:
           type: boolean
       required:
         - url
+        - intranet
         - icon
         - folderId
         - hideInOther
