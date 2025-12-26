@@ -51,7 +51,7 @@ func (uc *UserConfig) GetInternalNetwork() []string {
 // InOtherNetwork checks if the origin is in other networks.
 func (uc *UserConfig) InOtherNetwork(origin string) bool {
 	if len(uc.InternalNetwork) == 0 {
-		return false
+		return true
 	}
 
 	for _, network := range uc.GetInternalNetwork() {
