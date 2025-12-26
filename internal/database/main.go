@@ -71,7 +71,7 @@ func Load(filename string, wal bool) {
 		);`)
 		createTableFatal(err, "folders")
 
-		//? add new colume sort_by to folders table
+		//? add new column sort_by to folders table
 		sortMeta := []any{"table", "folders", "column", "sort_by"}
 		var sortCol model.MyString
 		sortErr := iDb.Get(&sortCol, "select name from pragma_table_info(?) where name = ?", "folders", "sort_by")
