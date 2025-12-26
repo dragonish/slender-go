@@ -164,6 +164,7 @@ func getBookmarkListCond(ctx *gin.Context) model.BookmarkListCondition {
 		Name:          model.MyString(ctx.Query("name")),
 		Des:           model.MyString(ctx.Query("description")),
 		URL:           model.MyString(ctx.Query("url")),
+		Intranet:      model.MyString(ctx.Query("intranet")),
 	}
 
 	privacy := ctx.Query("privacy")

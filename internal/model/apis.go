@@ -17,6 +17,7 @@ type PageData struct {
 // BookmarkPostBody defines add bookmark body.
 type BookmarkPostBody struct {
 	URL      MyString  `json:"url" db:"url"`
+	Intranet MyString  `json:"intranet" db:"intranet"`
 	Name     MyString  `json:"name" db:"name"`
 	Des      MyString  `json:"description" db:"description"`
 	Icon     MyString  `json:"icon" db:"icon"`
@@ -32,6 +33,7 @@ type BookmarkPostBody struct {
 // BookmarkPatchBody defines update bookmark body.
 type BookmarkPatchBody struct {
 	URL      *MyString  `json:"url,omitempty" db:"url"`
+	Intranet *MyString  `json:"intranet" db:"intranet"`
 	Name     *MyString  `json:"name,omitempty" db:"name"`
 	Des      *MyString  `json:"description,omitempty" db:"description"`
 	Icon     *MyString  `json:"icon,omitempty" db:"icon"`
@@ -49,9 +51,10 @@ type BookmarkPatchBody struct {
 type BookmarkListCondition struct {
 	ListCondition
 
-	Name MyString `json:"name"`
-	Des  MyString `json:"description"`
-	URL  MyString `json:"url"`
+	Name     MyString `json:"name"`
+	Des      MyString `json:"description"`
+	URL      MyString `json:"url"`
+	Intranet MyString `json:"intranet"`
 
 	Privacy *MyBool    `json:"privacy,omitempty"`
 	Folder  *NullInt64 `json:"folder,omitempty"`
@@ -71,11 +74,12 @@ type FolderListCondition struct {
 
 // BookmarkBaseData defines bookmark base data.
 type BookmarkBaseData struct {
-	ID   MyInt64  `json:"id" db:"id"`
-	URL  MyString `json:"url" db:"url"`
-	Name MyString `json:"name" db:"name"`
-	Des  MyString `json:"description" db:"description"`
-	Icon MyString `json:"icon" db:"icon"`
+	ID       MyInt64  `json:"id" db:"id"`
+	URL      MyString `json:"url" db:"url"`
+	Intranet MyString `json:"intranet" db:"intranet"`
+	Name     MyString `json:"name" db:"name"`
+	Des      MyString `json:"description" db:"description"`
+	Icon     MyString `json:"icon" db:"icon"`
 
 	Privacy MyBool  `json:"privacy" db:"privacy"`
 	Weight  MyInt16 `json:"weight" db:"weight"`
@@ -213,12 +217,13 @@ type BatchPatchBody struct {
 
 // BookmarkImportItem defines import bookmark item.
 type BookmarkImportItem struct {
-	URL     MyString `json:"url" db:"url"`
-	Name    MyString `json:"name" db:"name"`
-	Des     MyString `json:"description" db:"description"`
-	Icon    MyString `json:"icon" db:"icon"`
-	Privacy MyBool   `json:"privacy" db:"privacy"`
-	Weight  MyInt16  `json:"weight" db:"weight"`
+	URL      MyString `json:"url" db:"url"`
+	Intranet MyString `json:"intranet" db:"intranet"`
+	Name     MyString `json:"name" db:"name"`
+	Des      MyString `json:"description" db:"description"`
+	Icon     MyString `json:"icon" db:"icon"`
+	Privacy  MyBool   `json:"privacy" db:"privacy"`
+	Weight   MyInt16  `json:"weight" db:"weight"`
 
 	HideInOther MyBool `json:"hideInOther"`
 }

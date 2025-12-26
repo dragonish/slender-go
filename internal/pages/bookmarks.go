@@ -50,7 +50,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 
 	for _, largeFolder := range largeFolderList {
 		if len(bookmarks[largeFolder.ID]) > 0 {
-			bookmarksTpl += renderBookmarkList(dynamic, &largeFolder, bookmarks[largeFolder.ID])
+			bookmarksTpl += renderBookmarkList(dynamic, &largeFolder, bookmarks[largeFolder.ID], inOtherNetwork)
 			if global.Config.ShowSidebar {
 				sidebarTpl += renderSidebar(&largeFolder)
 			}
@@ -67,7 +67,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 				Des:   "",
 				Large: false,
 			}
-			bookmarksTpl += renderBookmarkList(dynamic, &h, hotBookmarkList)
+			bookmarksTpl += renderBookmarkList(dynamic, &h, hotBookmarkList, inOtherNetwork)
 			if global.Config.ShowSidebar {
 				sidebarTpl += renderSidebar(&h)
 			}
@@ -84,7 +84,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 				Des:   "",
 				Large: false,
 			}
-			bookmarksTpl += renderBookmarkList(dynamic, &l, latestBookamrkList)
+			bookmarksTpl += renderBookmarkList(dynamic, &l, latestBookamrkList, inOtherNetwork)
 			if global.Config.ShowSidebar {
 				sidebarTpl += renderSidebar(&l)
 			}
@@ -98,7 +98,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 			Des:   "",
 			Large: false,
 		}
-		bookmarksTpl += renderBookmarkList(dynamic, &u, bookmarks[0])
+		bookmarksTpl += renderBookmarkList(dynamic, &u, bookmarks[0], inOtherNetwork)
 		if global.Config.ShowSidebar {
 			sidebarTpl += renderSidebar(&u)
 		}
@@ -106,7 +106,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 
 	for _, generalFolder := range generalFolderList {
 		if len(bookmarks[generalFolder.ID]) > 0 {
-			bookmarksTpl += renderBookmarkList(dynamic, &generalFolder, bookmarks[generalFolder.ID])
+			bookmarksTpl += renderBookmarkList(dynamic, &generalFolder, bookmarks[generalFolder.ID], inOtherNetwork)
 			if global.Config.ShowSidebar {
 				sidebarTpl += renderSidebar(&generalFolder)
 			}
@@ -116,7 +116,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 	return template.HTML(bookmarksTpl), template.HTML(sidebarTpl)
 }
 
-func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderListItem, bookmarks []model.HomeBookmarkListItem) string {
+func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderListItem, bookmarks []model.HomeBookmarkListItem, inOtherNetwork bool) string {
 	tpl := ""
 
 	switch folder.SortBy {
@@ -137,7 +137,11 @@ func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderL
 
 	if folder.Large {
 		for _, item := range bookmarks {
-			url := dynamic.Convert(item.URL.String())
+			useUrl := item.URL
+			if !inOtherNetwork && item.Intranet != "" {
+				useUrl = item.Intranet
+			}
+			url := dynamic.Convert(useUrl.String())
 			name := item.Name.String()
 
 			if name == "" {
@@ -166,7 +170,11 @@ func renderBookmarkList(dynamic *model.PageDynamicURL, folder *model.HomeFolderL
 		tpl = `<div id="slender-folder-` + folder.ID.String() + `" class="slender-folder-container slender-large-folder"><h3 class="slender-bookmark-folder-title" data-folder="` + folder.ID.String() + `">` + folder.Name.String() + `</h3><div class="slender-large-bookmark-list">` + tpl + `</div></div>`
 	} else {
 		for _, item := range bookmarks {
-			url := dynamic.Convert(item.URL.String())
+			useUrl := item.URL
+			if !inOtherNetwork && item.Intranet != "" {
+				useUrl = item.Intranet
+			}
+			url := dynamic.Convert(useUrl.String())
 			name := item.Name.String()
 
 			if name == "" {

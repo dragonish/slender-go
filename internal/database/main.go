@@ -97,6 +97,7 @@ func Load(filename string, wal bool) {
 		_, err = iDb.Exec(`create table if not exists bookmarks(
 			id integer primary key autoincrement,
 			url text not null,
+			intranet text not null default '',
 			name varchar(255) not null,
 			description text,
 			icon text,
@@ -132,6 +133,29 @@ func Load(filename string, wal bool) {
 			}
 		} else if hideErr != nil {
 			log.Fatal("failed to read column info from table", hideErr, hideMeta...)
+		}
+
+		//? add new column intranet to bookmarks table
+		intranetMeta := []any{"table", "bookmarks", "column", "intranet"}
+		var intranetCol model.MyString
+		intranetErr := iDb.Get(&intranetCol, "select name from pragma_table_info(?) where name = ?", "bookmarks", "intranet")
+		if intranetErr == sql.ErrNoRows {
+			log.Debug("add new column to table", intranetMeta...)
+			tx := iDb.MustBegin()
+
+			_, intranetErr = tx.Exec("alter table bookmarks add column intranet text not null default ''")
+			if intranetErr != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				log.Fatal("failed to add column to table", intranetErr, intranetMeta...)
+			}
+
+			if cErr := tx.Commit(); cErr != nil {
+				panic(cErr)
+			}
+		} else if intranetErr != nil {
+			log.Fatal("failed to read column info from table", intranetErr, intranetMeta...)
 		}
 
 		_, err = iDb.Exec("create index if not exists idx_bookmarks_created_time on bookmarks(created_time)")

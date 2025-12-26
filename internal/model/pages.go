@@ -20,6 +20,7 @@ type HomeFolderListItem struct {
 type HomeBookmarkListItem struct {
 	ID       MyInt64  `db:"id"`
 	URL      MyString `db:"url"`
+	Intranet MyString `db:"intranet"`
 	Name     MyString `db:"name"`
 	Des      MyString `db:"description"`
 	Icon     MyString `db:"icon"`
