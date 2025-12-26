@@ -118,10 +118,10 @@ Each field in the file is optional. The file can declare fields as follows:
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `--debug, -D` || Enable debug mode |
-| `--version, -v` || Show application version |
-| `--help, -h` || Show help document |
-| `--performance, -P` || Enable performance mode. *It is recommended to enable only when the database update performance is bad* |
+| `--debug, -D` | | Enable debug mode |
+| `--version, -v` | | Show application version |
+| `--help, -h` | | Show help document |
+| `--performance, -P` | | Enable performance mode. *It is recommended to enable only when the database update performance is bad* |
 | `--config, -c` | `string` | Specify service config file path |
 | `--access_pwd, -a` | `string` | Specify access password |
 | `--admin_pwd, -d` | `string` | Specify admin password |
@@ -149,6 +149,7 @@ Suppose the homepage address of the Slender service is `https://192.168.0.1:8080
 | --- | --- |
 | `host` | `192.168.0.1:8080` |
 | `hostname` | `192.168.0.1` |
+| `domain` | `192.168.0.1` |
 | `href` | `https://192.168.0.1:8080/` |
 | `origin` | `https://192.168.0.1:8080` |
 | `pathname` | `/` |
