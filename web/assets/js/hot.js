@@ -34,10 +34,4 @@
   window.rainseeHomeEvent = function (top, bottom) {
     document.querySelector('body').style.padding = `${top}px 0 ${bottom}px 0`;
   };
-
-  if (navigator.userAgent.includes('Firefox') && location.protocol === 'http:') {
-    document.querySelectorAll('img[src*=".svg"][loading="lazy"]').forEach(img => {
-      img.loading = 'eager';
-    });
-  }
 })();
