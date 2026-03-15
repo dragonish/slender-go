@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -43,7 +43,7 @@ jobs:
           config_file: .github/scripts/tag-changelog-config.cjs
       - name: Download manager
         id: download_manager
-        uses: robinraju/release-downloader@v1.10
+        uses: robinraju/release-downloader@v1
         with:
           repository: "dragonish/slender-manager"
           latest: true
@@ -55,17 +55,17 @@ jobs:
         run: |
           unzip ./act-downloads/slender-manager_${{ steps.download_manager.outputs.tag_name }}.zip -d ./web/manager
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
         if: success()
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: .
