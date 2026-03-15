@@ -1,19 +1,13 @@
-name: Release
+name: Only Release
 
 on:
   push:
     tags:
       - '*'
 
-env:
-  DOCKERHUB_REPO: giterhub/slender:latest
-  IMAGE_FILE: slender.tar.gz
-  MANAGER_FILE: slender-manager.zip
-
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: catthehacker/ubuntu:act-latest
     env:
       HTTP_PROXY: ${{ vars.PROXY }}
       HTTPS_PROXY: ${{ vars.PROXY }}
@@ -23,38 +17,6 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Download icons
-        id: icons
-        run: |
-          mdi_json="./assets/material-design-icons/index.json"
-          si_json="./assets/simple-icons/index.json"
-          curl -o $mdi_json https://registry.npmjs.org/@mdi/js/latest
-          curl -o ./assets/material-design-icons/index.js https://gcore.jsdelivr.net/npm/@mdi/js@latest/mdi.js
-          curl -o $si_json https://registry.npmjs.org/simple-icons/latest
-          curl -o ./assets/simple-icons/index.js https://gcore.jsdelivr.net/npm/simple-icons@latest/index.js
-          mdi_version=$(cat $mdi_json | jq -r '.version')
-          si_version=$(cat $si_json | jq -r '.version')
-          echo "mdi_version=${mdi_version}" >> ${GITHUB_OUTPUT}
-          echo "si_version=${si_version}" >> ${GITHUB_OUTPUT}
-      - name: Download manager
-        run: |
-          response=$(curl -s "${{ vars.SERVER }}/api/v1/repos/dragonish/slender-manager/releases/latest" --header "Authorization: token ${{ secrets.USER_TOKEN }}" --header "Host: ${{ vars.HOST }}")
-          download_url=$(printf "%s" "$response" | jq -r ".assets[0].browser_download_url")
-          curl -k -o "$MANAGER_FILE" "$download_url" --header "Host: ${{ vars.HTTPS_HOST }}" --header "Authorization: token ${{ secrets.USER_TOKEN }}"
-          unzip $MANAGER_FILE -d ./web/manager/
-      - name: Build Docker image
-        continue-on-error: true
-        run: |
-          VERSION=$(git describe --tags --abbrev=0)
-          COMMIT=$(git rev-parse --short HEAD)
-          echo "Latest: $VERSION / $COMMIT"
-          docker build --build-arg HTTP_PROXY="${{ env.HTTP_PROXY }}" --build-arg HTTPS_PROXY="${{ env.HTTPS_PROXY }}" -t "slender-base:$VERSION" -f docker/Dockerfile.base .
-          docker build --build-arg HTTP_PROXY="${{ env.HTTP_PROXY }}" --build-arg HTTPS_PROXY="${{ env.HTTPS_PROXY }}" -t "$DOCKERHUB_REPO" --build-arg BASE_IMAGE="slender-base:$VERSION" --build-arg VERSION="$VERSION" --build-arg COMMIT="$COMMIT" -f docker/Dockerfile.amd64 .
-          docker image save "$DOCKERHUB_REPO" | gzip > $IMAGE_FILE
-          mkdir -p dist
-          mv $IMAGE_FILE ./dist
       - name: Get git tags
         id: git_tags
         run: |
@@ -94,8 +56,11 @@ jobs:
 
             See: [${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}](/compare/${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}).
       - name: Send notification
-        if: ${{ !cancelled() && vars.CHAT_URL != '' }}
-        uses: dragonish/send-to-synology-chat@v1
+        if: ${{ !cancelled() && secrets.GOTIFY_URL != '' && secrets.GOTIFY_TOKEN != '' }}
+        uses: dragonish/send-to-gotify@v1
         with:
-          webhook-url: ${{ vars.CHAT_URL }}
-          message: "${{ gitea.repository }}\n\nRelease ${{ steps.git_tags.outputs.current }}\n\n#${{ job.status }}"
+          url: ${{ secrets.GOTIFY_URL }}
+          token: ${{ secrets.GOTIFY_TOKEN }}
+          title: ${{ gitea.repository }}
+          message: "Release ${{ steps.git_tags.outputs.current }}\n\n*status: ${{ job.status }}*"
+          content-type: 'text/markdown'
