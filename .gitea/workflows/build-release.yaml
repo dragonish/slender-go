@@ -92,11 +92,14 @@ jobs:
 
             See: [${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}](/compare/${{ steps.git_tags.outputs.prev }}...${{ steps.git_tags.outputs.current }}).
       - name: Send notification
-        if: ${{ !cancelled() && secrets.GOTIFY_URL != '' && secrets.GOTIFY_TOKEN != '' }}
-        uses: dragonish/send-to-gotify@v1
+        if: ${{ !cancelled() && secrets.NTFY_URL != '' && secrets.NTFY_TOPIC != '' && secrets.NTFY_TOKEN != '' }}
+        uses: dragonish/send-to-ntfy@v1
         with:
-          url: ${{ secrets.GOTIFY_URL }}
-          token: ${{ secrets.GOTIFY_TOKEN }}
+          base-url: ${{ secrets.NTFY_URL }}
+          topic: ${{ secrets.NTFY_TOPIC }}
+          access-token: ${{ secrets.NTFY_TOKEN }}
           title: ${{ gitea.repository }}
-          message: "Release ${{ steps.git_tags.outputs.current }}\n\n*status: ${{ job.status }}*"
-          content-type: "text/markdown"
+          message: "Release ${{ steps.git_tags.outputs.current }}"
+          tags: "tea,release,${{ job.status }}"
+          priority: 2
+          click: "${{ vars.WEB_SERVER }}/${{ gitea.repository }}/releases/tag/${{ steps.git_tags.outputs.current }}"
