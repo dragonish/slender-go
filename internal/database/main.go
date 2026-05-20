@@ -67,7 +67,7 @@ func Load(filename string, wal bool) {
 			weight smallint not null default 0 check(weight >= -32768 and weight <= 32767),
 			sort_by varchar(25) not null default 'weight',
 			created_time datetime not null,
-			modified_time datetime not null
+			enabled bool not null default true
 		);`)
 		createTableFatal(err, "folders")
 
@@ -108,6 +108,7 @@ func Load(filename string, wal bool) {
 			visits int unsigned not null default 0,
 			folder_id integer,
 			hide_in_other bool not null default false,
+			enabled bool not null default true,
 			foreign key(folder_id) references folders(id) on delete set null on update cascade
 		);`)
 		createTableFatal(err, "bookmarks")
@@ -156,6 +157,29 @@ func Load(filename string, wal bool) {
 			}
 		} else if intranetErr != nil {
 			log.Fatal("failed to read column info from table", intranetErr, intranetMeta...)
+		}
+
+		//? add new column enabled to bookmarks table
+		enabledMeta := []any{"table", "bookmarks", "column", "enabled"}
+		var enabledCol model.MyString
+		enabledErr := iDb.Get(&enabledCol, "select name from pragma_table_info(?) where name = ?", "bookmarks", "enabled")
+		if enabledErr == sql.ErrNoRows {
+			log.Debug("add new column to table", enabledMeta...)
+			tx := iDb.MustBegin()
+
+			_, enabledErr = tx.Exec("alter table bookmarks add column enabled bool not null default true")
+			if enabledErr != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				log.Fatal("failed to add column to table", enabledErr, enabledMeta...)
+			}
+
+			if cErr := tx.Commit(); cErr != nil {
+				panic(cErr)
+			}
+		} else if enabledErr != nil {
+			log.Fatal("failed to read column info from table", enabledErr, enabledMeta...)
 		}
 
 		_, err = iDb.Exec("create index if not exists idx_bookmarks_created_time on bookmarks(created_time)")

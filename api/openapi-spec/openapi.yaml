@@ -291,6 +291,11 @@ paths:
           name: hide-in-other
           schema:
             $ref: '#/components/schemas/RouteBoolean'
+        - in: query
+          name: enabled
+          schema:
+            $ref: '#/components/schemas/RouteBoolean'
+          description: Filter bookmarks by enabled status
       responses:
         '200':
           description: A list of bookmarks was successfully retrieved.
@@ -377,6 +382,7 @@ paths:
                     - clearVisits
                     - setFolder
                     - setHideInOther
+                    - setEnabled
               required:
                 - action
       responses:
@@ -453,6 +459,8 @@ paths:
                   type: integer
                   minimum: 0
                 hideInOther:
+                  type: boolean
+                enabled:
                   type: boolean
                 files:
                   type: array
@@ -891,6 +899,7 @@ paths:
                   - intranet
                   - icon
                   - hideInOther
+                  - enabled
                 properties:
                   url:
                     type: string
@@ -901,6 +910,8 @@ paths:
                   icon:
                     type: string
                   hideInOther:
+                    type: boolean
+                  enabled:
                     type: boolean
       responses:
         '204':
@@ -1509,12 +1520,15 @@ components:
           minimum: 0
         hideInOther:
           type: boolean
+        enabled:
+          type: boolean
       required:
         - url
         - intranet
         - icon
         - folderId
         - hideInOther
+        - enabled
     BookmarkItem:
       type: object
       allOf:
