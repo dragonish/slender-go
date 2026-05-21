@@ -233,9 +233,9 @@ type BookmarkImportItem struct {
 	Privacy  MyBool   `json:"privacy" db:"privacy"`
 	Weight   MyInt16  `json:"weight" db:"weight"`
 
-	HideInOther MyBool `json:"hideInOther"`
+	HideInOther MyBool `json:"hideInOther" db:"hide_in_other"`
 
-	Enabled MyBool `json:"enabled"`
+	Enabled MyBool `json:"enabled" db:"enabled"`
 }
 
 // LoginListCondition defines login list condition.
