@@ -35,10 +35,8 @@ type UserConfig struct {
 
 // GetInternalNetwork returns the internal network address list as a slice of strings.
 func (uc *UserConfig) GetInternalNetwork() []string {
-	parts := strings.Split(uc.InternalNetwork, ",")
-
 	var trimmedParts []string
-	for _, part := range parts {
+	for part := range strings.SplitSeq(uc.InternalNetwork, ",") {
 		trimmedPart := strings.TrimSpace(part)
 		if len(trimmedPart) > 0 {
 			trimmedParts = append(trimmedParts, trimmedPart)
