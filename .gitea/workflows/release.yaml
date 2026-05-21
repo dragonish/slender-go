@@ -43,13 +43,6 @@ jobs:
           body: |
             ${{ steps.changelog_text.outputs.changes }}
 
-            ## Icons
-
-            | Name | Version |
-            | ---- | :-----: |
-            | [MaterialDesign](https://github.com/Templarian/MaterialDesign) | ${{ steps.icons.outputs.mdi_version }} |
-            | [simple-icons](https://github.com/simple-icons/simple-icons) | ${{ steps.icons.outputs.si_version }} |
-
             ---
 
             ## Details
