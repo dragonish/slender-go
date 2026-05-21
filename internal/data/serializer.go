@@ -58,7 +58,7 @@ func StructToMap(input any, filterList ...string) map[string]any {
 
 		value := val.Field(i)
 
-		if value.Kind() == reflect.Ptr {
+		if value.Kind() == reflect.Pointer {
 			if value.IsNil() {
 				continue
 			}
