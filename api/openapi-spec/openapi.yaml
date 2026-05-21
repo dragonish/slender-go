@@ -296,6 +296,11 @@ paths:
           schema:
             $ref: '#/components/schemas/RouteBoolean'
           description: Filter bookmarks by enabled status
+        - in: query
+          name: enabled-hosts
+          schema:
+            type: string
+          description: Filter bookmarks by enabled hosts (supports wildcard matching)
       responses:
         '200':
           description: A list of bookmarks was successfully retrieved.
@@ -345,6 +350,9 @@ paths:
               required:
                 - files
               properties:
+                enabledHosts:
+                  type: string
+                  description: Hosts where this bookmark is enabled (comma-separated, empty means all hosts)
                 files:
                   type: array
                   items:
@@ -383,6 +391,7 @@ paths:
                     - setFolder
                     - setHideInOther
                     - setEnabled
+                    - setEnabledHosts
               required:
                 - action
       responses:
@@ -462,6 +471,9 @@ paths:
                   type: boolean
                 enabled:
                   type: boolean
+                enabledHosts:
+                  type: string
+                  description: Hosts where this bookmark is enabled (comma-separated, empty means all hosts)
                 files:
                   type: array
                   items:
@@ -913,6 +925,9 @@ paths:
                     type: boolean
                   enabled:
                     type: boolean
+                  enabledHosts:
+                    type: string
+                    description: Hosts where this bookmark is enabled (comma-separated, empty means all hosts)
       responses:
         '204':
           description: No Content
@@ -1522,6 +1537,9 @@ components:
           type: boolean
         enabled:
           type: boolean
+        enabledHosts:
+          type: string
+          description: Hosts where this bookmark is enabled (comma-separated, empty means all hosts)
       required:
         - url
         - intranet

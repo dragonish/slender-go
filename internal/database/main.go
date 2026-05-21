@@ -109,6 +109,7 @@ func Load(filename string, wal bool) {
 			folder_id integer,
 			hide_in_other bool not null default false,
 			enabled bool not null default true,
+			enabled_hosts text not null default '',
 			foreign key(folder_id) references folders(id) on delete set null on update cascade
 		);`)
 		createTableFatal(err, "bookmarks")
@@ -180,6 +181,29 @@ func Load(filename string, wal bool) {
 			}
 		} else if enabledErr != nil {
 			log.Fatal("failed to read column info from table", enabledErr, enabledMeta...)
+		}
+
+		//? add new column enabled_hosts to bookmarks table
+		enabledHostsMeta := []any{"table", "bookmarks", "column", "enabled_hosts"}
+		var enabledHostsCol model.MyString
+		enabledHostsErr := iDb.Get(&enabledHostsCol, "select name from pragma_table_info(?) where name = ?", "bookmarks", "enabled_hosts")
+		if enabledHostsErr == sql.ErrNoRows {
+			log.Debug("add new column to table", enabledHostsMeta...)
+			tx := iDb.MustBegin()
+
+			_, enabledHostsErr = tx.Exec("alter table bookmarks add column enabled_hosts text not null default ''")
+			if enabledHostsErr != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				log.Fatal("failed to add column to table", enabledHostsErr, enabledHostsMeta...)
+			}
+
+			if cErr := tx.Commit(); cErr != nil {
+				panic(cErr)
+			}
+		} else if enabledHostsErr != nil {
+			log.Fatal("failed to read column info from table", enabledHostsErr, enabledHostsMeta...)
 		}
 
 		_, err = iDb.Exec("create index if not exists idx_bookmarks_created_time on bookmarks(created_time)")

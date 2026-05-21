@@ -29,6 +29,8 @@ type HomeBookmarkListItem struct {
 	HideInOther MyBool           `db:"hide_in_other"`
 	CreatedTime MyDatetimeString `db:"created_time"`
 	Visits      MyInt64          `db:"visits"`
+
+	EnabledHosts MyString `db:"enabled_hosts"`
 }
 
 // HomeSearchEngineListItem defines search engine list item used by the homepage.

@@ -7,7 +7,22 @@ import (
 	"slender/internal/icons"
 	"slender/internal/model"
 	"sort"
+	"strings"
 )
+
+func isHostEnabled(bookmark *model.HomeBookmarkListItem, host string) bool {
+	enabledHosts := strings.TrimSpace(bookmark.EnabledHosts.String())
+	if enabledHosts == "" {
+		return true
+	}
+	for part := range strings.SplitSeq(enabledHosts, ",") {
+		part = strings.TrimSpace(part)
+		if part != "" && part == host {
+			return true
+		}
+	}
+	return false
+}
 
 // generateBookmarks returns bookmarks and sidebar templates.
 func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped string, latest string, hot string, isFirefox bool) (template.HTML, template.HTML) {
@@ -40,6 +55,10 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 
 	bookmarks := make(map[model.MyInt64][]model.HomeBookmarkListItem)
 	for _, bookmark := range bookmarkList {
+		if !isHostEnabled(&bookmark, dynamic.Host) {
+			continue
+		}
+
 		if bookmarks[bookmark.FolderID] == nil {
 			bookmarks[bookmark.FolderID] = make([]model.HomeBookmarkListItem, 0)
 			bookmarks[bookmark.FolderID] = append(bookmarks[bookmark.FolderID], bookmark)
@@ -61,15 +80,23 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 		hotBookmarkList := make([]model.HomeBookmarkListItem, 0)
 		hErr := database.GetHomeHotBookmarkList(privacy, inOtherNetwork, global.Config.HotTotal, &hotBookmarkList)
 		if hErr == nil && len(hotBookmarkList) > 0 {
-			h := model.HomeFolderListItem{
-				ID:    -2,
-				Name:  model.MyString(hot),
-				Des:   "",
-				Large: false,
+			filteredHotList := make([]model.HomeBookmarkListItem, 0)
+			for _, b := range hotBookmarkList {
+				if isHostEnabled(&b, dynamic.Host) {
+					filteredHotList = append(filteredHotList, b)
+				}
 			}
-			bookmarksTpl += renderBookmarkList(dynamic, &h, hotBookmarkList, inOtherNetwork, isFirefox)
-			if global.Config.ShowSidebar {
-				sidebarTpl += renderSidebar(&h)
+			if len(filteredHotList) > 0 {
+				h := model.HomeFolderListItem{
+					ID:    -2,
+					Name:  model.MyString(hot),
+					Des:   "",
+					Large: false,
+				}
+				bookmarksTpl += renderBookmarkList(dynamic, &h, filteredHotList, inOtherNetwork, isFirefox)
+				if global.Config.ShowSidebar {
+					sidebarTpl += renderSidebar(&h)
+				}
 			}
 		}
 	}
@@ -78,15 +105,23 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 		latestBookamrkList := make([]model.HomeBookmarkListItem, 0)
 		lErr := database.GetHomeLatestBookmarkList(privacy, inOtherNetwork, global.Config.LatestTotal, &latestBookamrkList)
 		if lErr == nil && len(latestBookamrkList) > 0 {
-			l := model.HomeFolderListItem{
-				ID:    -1,
-				Name:  model.MyString(latest),
-				Des:   "",
-				Large: false,
+			filteredLatestList := make([]model.HomeBookmarkListItem, 0)
+			for _, b := range latestBookamrkList {
+				if isHostEnabled(&b, dynamic.Host) {
+					filteredLatestList = append(filteredLatestList, b)
+				}
 			}
-			bookmarksTpl += renderBookmarkList(dynamic, &l, latestBookamrkList, inOtherNetwork, isFirefox)
-			if global.Config.ShowSidebar {
-				sidebarTpl += renderSidebar(&l)
+			if len(filteredLatestList) > 0 {
+				l := model.HomeFolderListItem{
+					ID:    -1,
+					Name:  model.MyString(latest),
+					Des:   "",
+					Large: false,
+				}
+				bookmarksTpl += renderBookmarkList(dynamic, &l, filteredLatestList, inOtherNetwork, isFirefox)
+				if global.Config.ShowSidebar {
+					sidebarTpl += renderSidebar(&l)
+				}
 			}
 		}
 	}

@@ -27,7 +27,8 @@ type BookmarkPostBody struct {
 
 	HideInOther MyBool `json:"hideInOther" db:"hide_in_other"`
 
-	Enabled MyBool `json:"enabled" db:"enabled"`
+	Enabled      MyBool   `json:"enabled" db:"enabled"`
+	EnabledHosts MyString `json:"enabledHosts" db:"enabled_hosts"`
 
 	Files []MyInt64 `json:"files"`
 }
@@ -46,7 +47,8 @@ type BookmarkPatchBody struct {
 
 	HideInOther *MyBool `json:"hideInOther,omitempty" db:"hide_in_other"`
 
-	Enabled *MyBool `json:"enabled,omitempty" db:"enabled"`
+	Enabled      *MyBool   `json:"enabled,omitempty" db:"enabled"`
+	EnabledHosts *MyString `json:"enabledHosts,omitempty" db:"enabled_hosts"`
 
 	Files []MyInt64 `json:"files,omitempty"`
 }
@@ -65,7 +67,8 @@ type BookmarkListCondition struct {
 
 	HideInOther *MyBool `json:"hideInOther,omitempty"`
 
-	Enabled *MyBool `json:"enabled,omitempty"`
+	Enabled      *MyBool  `json:"enabled,omitempty"`
+	EnabledHosts MyString `json:"enabledHosts,omitempty"`
 }
 
 // FolderListCondition defines folder list condition.
@@ -99,7 +102,8 @@ type BookmarkBaseData struct {
 
 	HideInOther MyBool `json:"hideInOther" db:"hide_in_other"` // hide in other network environments.
 
-	Enabled MyBool `json:"enabled" db:"enabled"`
+	Enabled      MyBool   `json:"enabled" db:"enabled"`
+	EnabledHosts MyString `json:"enabledHosts" db:"enabled_hosts"`
 }
 
 // BookmarkListItem defines bookmark list item.
@@ -235,7 +239,8 @@ type BookmarkImportItem struct {
 
 	HideInOther MyBool `json:"hideInOther" db:"hide_in_other"`
 
-	Enabled MyBool `json:"enabled" db:"enabled"`
+	Enabled      MyBool   `json:"enabled" db:"enabled"`
+	EnabledHosts MyString `json:"enabledHosts" db:"enabled_hosts"`
 }
 
 // LoginListCondition defines login list condition.

@@ -193,5 +193,7 @@ func getBookmarkListCond(ctx *gin.Context) model.BookmarkListCondition {
 		*bookmarkListCond.Enabled = model.MyBool(data.IsRouteTruthy(enabled))
 	}
 
+	bookmarkListCond.EnabledHosts = model.MyString(ctx.Query("enabled-hosts"))
+
 	return bookmarkListCond
 }
