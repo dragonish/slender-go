@@ -92,7 +92,8 @@ func home(router *gin.Engine) {
 
 		identity := ctx.GetString(model.CONTEXT_IDENTITY)
 		isFirefox := parseUserAgent(ctx.Request, "Firefox")
-		bookmarks, sidebar := generateBookmarks(&dynamic, identity == "admin", ungrouped, latest, hot, isFirefox)
+		inMobile := parseUserAgent(ctx.Request, "mobile", "android", "iphone", "ipad")
+		bookmarks, sidebar := generateBookmarks(&dynamic, identity == "admin", ungrouped, latest, hot, isFirefox, inMobile)
 
 		ctx.HTML(http.StatusOK, "home.go.tmpl", gin.H{
 			"Title":           global.Config.Title,

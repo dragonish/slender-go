@@ -25,7 +25,7 @@ func isHostEnabled(bookmark *model.HomeBookmarkListItem, host string) bool {
 }
 
 // generateBookmarks returns bookmarks and sidebar templates.
-func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped string, latest string, hot string, isFirefox bool) (template.HTML, template.HTML) {
+func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped string, latest string, hot string, isFirefox bool, inMobile bool) (template.HTML, template.HTML) {
 	bookmarksTpl := ""
 	sidebarTpl := ""
 
@@ -38,7 +38,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 	inOtherNetwork := global.Config.InOtherNetwork(dynamic.Origin)
 
 	bookmarkList := make([]model.HomeBookmarkListItem, 0)
-	bErr := database.GetHomeBookmarkList(privacy, inOtherNetwork, &bookmarkList)
+	bErr := database.GetHomeBookmarkList(privacy, inOtherNetwork, inMobile, &bookmarkList)
 	if bErr != nil {
 		return template.HTML(bookmarksTpl), template.HTML(sidebarTpl)
 	}
@@ -78,7 +78,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 
 	if global.Config.ShowHot {
 		hotBookmarkList := make([]model.HomeBookmarkListItem, 0)
-		hErr := database.GetHomeHotBookmarkList(privacy, inOtherNetwork, global.Config.HotTotal, &hotBookmarkList)
+		hErr := database.GetHomeHotBookmarkList(privacy, inOtherNetwork, inMobile, global.Config.HotTotal, &hotBookmarkList)
 		if hErr == nil && len(hotBookmarkList) > 0 {
 			filteredHotList := make([]model.HomeBookmarkListItem, 0)
 			for _, b := range hotBookmarkList {
@@ -103,7 +103,7 @@ func generateBookmarks(dynamic *model.PageDynamicURL, privacy bool, ungrouped st
 
 	if global.Config.ShowLatest {
 		latestBookamrkList := make([]model.HomeBookmarkListItem, 0)
-		lErr := database.GetHomeLatestBookmarkList(privacy, inOtherNetwork, global.Config.LatestTotal, &latestBookamrkList)
+		lErr := database.GetHomeLatestBookmarkList(privacy, inOtherNetwork, inMobile, global.Config.LatestTotal, &latestBookamrkList)
 		if lErr == nil && len(latestBookamrkList) > 0 {
 			filteredLatestList := make([]model.HomeBookmarkListItem, 0)
 			for _, b := range latestBookamrkList {

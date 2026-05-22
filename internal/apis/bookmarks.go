@@ -56,7 +56,7 @@ func bookmarks(rGroup *gin.RouterGroup) {
 	})
 
 	// handle bookmark in batches
-	// action: "delete" | "setPrivacy" | "setWeight" | "incWeight" | "clearVisits" | "setFolder" | "setHideInOther"
+	// action: "delete" | "setPrivacy" | "setWeight" | "incWeight" | "clearVisits" | "setFolder" | "setHideInOther" | "setHideMobile"
 	rGroup.PATCH(model.API_BOOKMARKS, func(ctx *gin.Context) {
 		var body model.BatchPatchBody
 		err := ctx.ShouldBindJSON(&body)
@@ -185,6 +185,12 @@ func getBookmarkListCond(ctx *gin.Context) model.BookmarkListCondition {
 	if data.IsRouteTruthy(hideInOther) || data.IsRouteFalsy(hideInOther) {
 		bookmarkListCond.HideInOther = new(model.MyBool)
 		*bookmarkListCond.HideInOther = model.MyBool(data.IsRouteTruthy(hideInOther))
+	}
+
+	hideInMobile := ctx.Query("hide-in-mobile")
+	if data.IsRouteTruthy(hideInMobile) || data.IsRouteFalsy(hideInMobile) {
+		bookmarkListCond.HideInMobile = new(model.MyBool)
+		*bookmarkListCond.HideInMobile = model.MyBool(data.IsRouteTruthy(hideInMobile))
 	}
 
 	enabled := ctx.Query("enabled")

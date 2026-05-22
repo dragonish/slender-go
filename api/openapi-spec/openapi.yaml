@@ -292,6 +292,11 @@ paths:
           schema:
             $ref: '#/components/schemas/RouteBoolean'
         - in: query
+          name: hide-in-mobile
+          schema:
+            $ref: '#/components/schemas/RouteBoolean'
+          description: Filter bookmarks by hide in mobile status
+        - in: query
           name: enabled
           schema:
             $ref: '#/components/schemas/RouteBoolean'
@@ -390,6 +395,7 @@ paths:
                     - clearVisits
                     - setFolder
                     - setHideInOther
+                    - setHideInMobile
                     - setEnabled
                     - setEnabledHosts
               required:
@@ -469,6 +475,9 @@ paths:
                   minimum: 0
                 hideInOther:
                   type: boolean
+                hideInMobile:
+                  type: boolean
+                  description: Hide this bookmark on mobile devices
                 enabled:
                   type: boolean
                 enabledHosts:
@@ -911,6 +920,7 @@ paths:
                   - intranet
                   - icon
                   - hideInOther
+                  - hideInMobile
                   - enabled
                 properties:
                   url:
@@ -922,6 +932,8 @@ paths:
                   icon:
                     type: string
                   hideInOther:
+                    type: boolean
+                  hideInMobile:
                     type: boolean
                   enabled:
                     type: boolean
@@ -1535,6 +1547,9 @@ components:
           minimum: 0
         hideInOther:
           type: boolean
+        hideInMobile:
+          type: boolean
+          description: Hide this bookmark on mobile devices
         enabled:
           type: boolean
         enabledHosts:

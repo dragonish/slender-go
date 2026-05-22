@@ -25,7 +25,8 @@ type BookmarkPostBody struct {
 	Weight   MyInt16   `json:"weight" db:"weight"`
 	FolderID NullInt64 `json:"folderId" db:"folder_id"`
 
-	HideInOther MyBool `json:"hideInOther" db:"hide_in_other"`
+	HideInOther  MyBool `json:"hideInOther" db:"hide_in_other"`
+	HideInMobile MyBool `json:"hideInMobile" db:"hide_in_mobile"`
 
 	Enabled      MyBool   `json:"enabled" db:"enabled"`
 	EnabledHosts MyString `json:"enabledHosts" db:"enabled_hosts"`
@@ -45,7 +46,8 @@ type BookmarkPatchBody struct {
 	Visits   *MyInt64   `json:"visits,omitempty" db:"visits"`
 	FolderID *NullInt64 `json:"folderId,omitempty" db:"folder_id"`
 
-	HideInOther *MyBool `json:"hideInOther,omitempty" db:"hide_in_other"`
+	HideInOther  *MyBool `json:"hideInOther,omitempty" db:"hide_in_other"`
+	HideInMobile *MyBool `json:"hideInMobile,omitempty" db:"hide_in_mobile"`
 
 	Enabled      *MyBool   `json:"enabled,omitempty" db:"enabled"`
 	EnabledHosts *MyString `json:"enabledHosts,omitempty" db:"enabled_hosts"`
@@ -65,7 +67,8 @@ type BookmarkListCondition struct {
 	Privacy *MyBool    `json:"privacy,omitempty"`
 	Folder  *NullInt64 `json:"folder,omitempty"`
 
-	HideInOther *MyBool `json:"hideInOther,omitempty"`
+	HideInOther  *MyBool `json:"hideInOther,omitempty"`
+	HideInMobile *MyBool `json:"hideInMobile,omitempty"`
 
 	Enabled      *MyBool  `json:"enabled,omitempty"`
 	EnabledHosts MyString `json:"enabledHosts,omitempty"`
@@ -100,7 +103,8 @@ type BookmarkBaseData struct {
 
 	FolderID NullInt64 `json:"folderId" db:"folder_id"` // folder id.
 
-	HideInOther MyBool `json:"hideInOther" db:"hide_in_other"` // hide in other network environments.
+	HideInOther  MyBool `json:"hideInOther" db:"hide_in_other"` // hide in other network environments.
+	HideInMobile MyBool `json:"hideInMobile" db:"hide_in_mobile"`
 
 	Enabled      MyBool   `json:"enabled" db:"enabled"`
 	EnabledHosts MyString `json:"enabledHosts" db:"enabled_hosts"`
@@ -237,7 +241,8 @@ type BookmarkImportItem struct {
 	Privacy  MyBool   `json:"privacy" db:"privacy"`
 	Weight   MyInt16  `json:"weight" db:"weight"`
 
-	HideInOther MyBool `json:"hideInOther" db:"hide_in_other"`
+	HideInOther  MyBool `json:"hideInOther" db:"hide_in_other"`
+	HideInMobile MyBool `json:"hideInMobile" db:"hide_in_mobile"`
 
 	Enabled      MyBool   `json:"enabled" db:"enabled"`
 	EnabledHosts MyString `json:"enabledHosts" db:"enabled_hosts"`

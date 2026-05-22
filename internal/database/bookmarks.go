@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"math"
 	"slender/internal/data"
 	"slender/internal/logger"
@@ -19,7 +20,7 @@ func AddBookmark(body *model.BookmarkPostBody) (int64, error) {
 
 	tx := db.MustBegin()
 
-	res, err := tx.NamedExec("insert into bookmarks(url, intranet, name, description, icon, privacy, weight, created_time, modified_time, folder_id, hide_in_other, enabled, enabled_hosts) values(:url, :intranet, :name, :description, :icon, :privacy, :weight, datetime('now', 'localtime'), datetime('now', 'localtime'), :folder_id, :hide_in_other, :enabled, :enabled_hosts)", body)
+	res, err := tx.NamedExec("insert into bookmarks(url, intranet, name, description, icon, privacy, weight, created_time, modified_time, folder_id, hide_in_other, hide_in_mobile, enabled, enabled_hosts) values(:url, :intranet, :name, :description, :icon, :privacy, :weight, datetime('now', 'localtime'), datetime('now', 'localtime'), :folder_id, :hide_in_other, :hide_in_mobile, :enabled, :enabled_hosts)", body)
 	if err != nil {
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)
@@ -80,7 +81,7 @@ func GetBookmarkList(cond *model.BookmarkListCondition, body *model.BookmarkList
 
 	o := getBookmarkListOrder(cond.Order)
 
-	qStmt, err := db.PrepareNamed("select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.privacy, b.weight, b.created_time, b.modified_time, b.visits, b.folder_id, b.hide_in_other, b.enabled, b.enabled_hosts, f.name as folder_name from bookmarks b left outer join folders f on b.folder_id = f.id " + filter + " order by " + o + " limit :offset,:size")
+	qStmt, err := db.PrepareNamed("select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.privacy, b.weight, b.created_time, b.modified_time, b.visits, b.folder_id, b.hide_in_other, b.hide_in_mobile, b.enabled, b.enabled_hosts, f.name as folder_name from bookmarks b left outer join folders f on b.folder_id = f.id " + filter + " order by " + o + " limit :offset,:size")
 	if err != nil {
 		return logger.Err("prepared bookmark list query statement error", err)
 	}
@@ -98,60 +99,73 @@ func GetBookmarkList(cond *model.BookmarkListCondition, body *model.BookmarkList
 }
 
 // GetHomeBookmarkList gets bookmark list used by the homepage.
-func GetHomeBookmarkList(privacy bool, inOtherNetwork bool, list *[]model.HomeBookmarkListItem) error {
-	otherCond := ""
+func GetHomeBookmarkList(privacy bool, inOtherNetwork bool, inMobile bool, list *[]model.HomeBookmarkListItem) error {
+	condList := []string{"(b.enabled = true)"}
 	if inOtherNetwork {
-		otherCond = " and (b.hide_in_other = false)"
+		condList = append(condList, "(b.hide_in_other = false)")
+	}
+	if inMobile {
+		condList = append(condList, "(b.hide_in_mobile = false)")
+	}
+	if !privacy {
+		condList = append(condList, "(b.privacy = false)", "((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.privacy = false)))")
 	}
 
-	sqlStr := "select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.folder_id, b.hide_in_other, b.enabled_hosts, b.created_time, b.visits from bookmarks b where (b.privacy = false) and (b.enabled = true)" + otherCond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.privacy = false))) order by b.weight desc, b.id"
-	if privacy {
-		sqlStr = "select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.folder_id, b.hide_in_other, b.enabled_hosts, b.created_time, b.visits from bookmarks b where (b.enabled = true)" + otherCond + " order by b.weight desc, b.id"
-	}
+	cond := "where " + strings.Join(condList, " and ")
+
+	sqlStr := "select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.folder_id, b.enabled_hosts, b.created_time, b.visits from bookmarks b " + cond + " order by b.weight desc, b.id"
 
 	err := db.Select(list, sqlStr)
 	if err != nil {
-		return logger.Err("get bookmark list used by the homepage error", err, "privacy", privacy, "in_other_newwork", inOtherNetwork)
+		return logger.Err("get bookmark list used by the homepage error", err, "privacy", privacy, "in_other_network", inOtherNetwork, "in_mobile", inMobile)
 	}
 
 	return nil
 }
 
 // GetHomeLatestBookmarkList gets latest bookmark list used by the homepage.
-func GetHomeLatestBookmarkList(privacy bool, inOtherNetwork bool, size uint8, list *[]model.HomeBookmarkListItem) error {
-	otherCond := ""
+func GetHomeLatestBookmarkList(privacy bool, inOtherNetwork bool, inMobile bool, size uint8, list *[]model.HomeBookmarkListItem) error {
+	condList := []string{"(b.enabled = true)", "(b.created_time >= datetime('now', '-15 days'))"}
 	if inOtherNetwork {
-		otherCond = " and (b.hide_in_other = false)"
+		condList = append(condList, "(b.hide_in_other = false)")
 	}
+	if inMobile {
+		condList = append(condList, "(b.hide_in_mobile = false)")
+	}
+	cond := "where " + strings.Join(condList, " and ")
 
-	sqlStr := "select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.hide_in_other, b.enabled_hosts, b.created_time, b.visits from bookmarks b where (b.privacy = false) and (b.enabled = true)" + otherCond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
+	sqlStr := "select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.enabled_hosts, b.created_time, b.visits from bookmarks b " + cond + " and (b.privacy = false) and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) order by b.created_time desc, b.weight desc, b.id limit ?"
 	if privacy {
-		sqlStr = "select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.hide_in_other, b.enabled_hosts, b.created_time, b.visits from bookmarks b where (b.enabled = true)" + otherCond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and (b.created_time >= datetime('now', '-15 days')) order by b.created_time desc, b.weight desc, b.id limit ?"
+		sqlStr = "select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.enabled_hosts, b.created_time, b.visits from bookmarks b " + cond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) order by b.created_time desc, b.weight desc, b.id limit ?"
 	}
 
 	err := db.Select(list, sqlStr, size)
 	if err != nil {
-		return logger.Err("get latest bookmark list used by the homepage error", err, "privacy", privacy, "in_other_network", inOtherNetwork)
+		return logger.Err("get latest bookmark list used by the homepage error", err, "privacy", privacy, "in_other_network", inOtherNetwork, "in_mobile", inMobile)
 	}
 
 	return nil
 }
 
 // GetHomeHotBookmarkList gets hot bookmark list used by the homepage.
-func GetHomeHotBookmarkList(privacy bool, inOtherNetwork bool, size uint8, list *[]model.HomeBookmarkListItem) error {
-	otherCond := ""
+func GetHomeHotBookmarkList(privacy bool, inOtherNetwork bool, inMobile bool, size uint8, list *[]model.HomeBookmarkListItem) error {
+	condList := []string{"(b.enabled = true)", "(b.visits > 0)"}
 	if inOtherNetwork {
-		otherCond = " and (b.hide_in_other = false)"
+		condList = append(condList, "(b.hide_in_other = false)")
 	}
+	if inMobile {
+		condList = append(condList, "(b.hide_in_mobile = false)")
+	}
+	cond := "where " + strings.Join(condList, " and ")
 
-	sqlStr := "select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.hide_in_other, b.enabled_hosts, b.created_time, b.visits from bookmarks b where (b.privacy = false) and (b.enabled = true)" + otherCond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
+	sqlStr := "select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.enabled_hosts, b.created_time, b.visits from bookmarks b " + cond + " and (b.privacy = false) and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false and f.privacy = false))) order by b.visits desc, b.weight desc, b.id limit ?"
 	if privacy {
-		sqlStr = "select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.hide_in_other, b.enabled_hosts, b.created_time, b.visits from bookmarks b where (b.enabled = true)" + otherCond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) and b.visits > 0 order by b.visits desc, b.weight desc, b.id limit ?"
+		sqlStr = "select b.id, b.url, b.intranet, b.name, b.description, b.icon, b.enabled_hosts, b.created_time, b.visits from bookmarks b " + cond + " and ((b.folder_id is null) or (b.folder_id in (select f.id from folders f where f.large = false))) order by b.visits desc, b.weight desc, b.id limit ?"
 	}
 
 	err := db.Select(list, sqlStr, size)
 	if err != nil {
-		return logger.Err("get hot bookmark list used by the homepage error", err, "privacy", privacy, "in_other_network", inOtherNetwork)
+		return logger.Err("get hot bookmark list used by the homepage error", err, "privacy", privacy, "in_other_network", inOtherNetwork, "in_mobile", inMobile)
 	}
 
 	return nil
@@ -398,12 +412,24 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return logger.Err("delete bookmarks error", err)
 		}
-	case "setPrivacy":
+	case "setPrivacy", "setHideInOther", "setHideInMobile", "setEnabled":
 		b, ok := body.Payload.(bool)
 		if ok {
-			log := logger.New("column", "privacy")
+			columnName := ""
+			switch body.Action {
+			case "setPrivacy":
+				columnName = "privacy"
+			case "setHideInOther":
+				columnName = "hide_in_mobile"
+			case "setHideInMobile":
+				columnName = "hide_in_mobile"
+			case "setEnabled":
+				columnName = "enabled"
+			}
 
-			query, args, err := sqlx.In("update bookmarks set modified_time = datetime('now', 'localtime'), privacy = ? where id in (?)", b, body.DataSet)
+			log := logger.New("column", columnName)
+
+			query, args, err := sqlx.In(fmt.Sprintf("update bookmarks set modified_time = datetime('now', 'localtime'), %s = ? where id in (?)", columnName), b, body.DataSet)
 			if err != nil {
 				if rErr := tx.Rollback(); rErr != nil {
 					panic(rErr)
@@ -423,44 +449,23 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 			}
 			return model.ErrQueryParamMissing
 		}
-	case "setHideInOther":
-		b, ok := body.Payload.(bool)
-		if ok {
-			log := logger.New("column", "hide_in_other")
-
-			query, args, err := sqlx.In("update bookmarks set modified_time = datetime('now', 'localtime'), hide_in_other = ? where id in (?)", b, body.DataSet)
-			if err != nil {
-				if rErr := tx.Rollback(); rErr != nil {
-					panic(rErr)
-				}
-				return log.Err("in for update bookmarks statement error", err)
-			}
-			_, err = tx.Exec(query, args...)
-			if err != nil {
-				if rErr := tx.Rollback(); rErr != nil {
-					panic(rErr)
-				}
-				return log.Err("update bookmarks error", err)
-			}
-		} else {
-			if rErr := tx.Rollback(); rErr != nil {
-				panic(rErr)
-			}
-			return model.ErrQueryParamMissing
-		}
-	case "setWeight", "incWeight":
+	case "setWeight", "incWeight", "setFolder":
 		i, ok := body.Payload.(float64)
 		if ok {
 			log := logger.New("column", "weight")
 
 			var params []any
 			str := ""
-			if body.Action == "setWeight" {
+			switch body.Action {
+			case "setWeight":
 				str = "update bookmarks set modified_time = datetime('now', 'localtime'), weight = ? where id in (?)"
 				params = []any{i, body.DataSet}
-			} else {
+			case "incWeight":
 				str = "update bookmarks set modified_time = datetime('now', 'localtime'), weight = weight " + data.Int16ToStringWithSign(int16(math.Round(i))) + " where id in (?)"
 				params = []any{body.DataSet}
+			case "setFolder":
+				str = "update bookmarks set modified_time = datetime('now', 'localtime'), folder_id = ? where id in (?)"
+				params = []any{model.NullInt64(math.Round(i)), body.DataSet}
 			}
 
 			query, args, err := sqlx.In(str, params...)
@@ -499,56 +504,6 @@ func BookmarkBatchHandler(body *model.BatchPatchBody) error {
 				panic(rErr)
 			}
 			return log.Err("update bookmarks error", err)
-		}
-	case "setFolder":
-		i, ok := body.Payload.(float64)
-		if ok {
-			log := logger.New("column", "folder_id")
-
-			query, args, err := sqlx.In("update bookmarks set modified_time = datetime('now', 'localtime'), folder_id = ? where id in (?)", model.NullInt64(math.Round(i)), body.DataSet)
-			if err != nil {
-				if rErr := tx.Rollback(); rErr != nil {
-					panic(rErr)
-				}
-				return log.Err("in for update bookmarks statement error", err)
-			}
-			_, err = tx.Exec(query, args...)
-			if err != nil {
-				if rErr := tx.Rollback(); rErr != nil {
-					panic(rErr)
-				}
-				return log.Err("update bookmarks error", err)
-			}
-		} else {
-			if rErr := tx.Rollback(); rErr != nil {
-				panic(rErr)
-			}
-			return model.ErrQueryParamMissing
-		}
-	case "setEnabled":
-		i, ok := body.Payload.(bool)
-		if ok {
-			log := logger.New("column", "enabled")
-
-			query, args, err := sqlx.In("update bookmarks set modified_time = datetime('now', 'localtime'), enabled = ? where id in (?)", model.MyBool(i), body.DataSet)
-			if err != nil {
-				if rErr := tx.Rollback(); rErr != nil {
-					panic(rErr)
-				}
-				return log.Err("in for update bookmarks statement error", err)
-			}
-			_, err = tx.Exec(query, args...)
-			if err != nil {
-				if rErr := tx.Rollback(); rErr != nil {
-					panic(rErr)
-				}
-				return log.Err("update bookmarks error", err)
-			}
-		} else {
-			if rErr := tx.Rollback(); rErr != nil {
-				panic(rErr)
-			}
-			return model.ErrQueryParamMissing
 		}
 	case "setEnabledHosts":
 		i, ok := body.Payload.(string)
@@ -623,7 +578,7 @@ func ImportBookmarks(list *[]model.BookmarkImportItem) (int64, error) {
 
 	tx := db.MustBegin()
 
-	nstmt, err := tx.PrepareNamed("insert into bookmarks(url, intranet, name, description, icon, privacy, weight, hide_in_other, enabled, enabled_hosts, created_time, modified_time) values(:url, :intranet, :name, :description, :icon, :privacy, :weight, :hide_in_other, :enabled, :enabled_hosts, datetime('now', 'localtime'), datetime('now', 'localtime'))")
+	nstmt, err := tx.PrepareNamed("insert into bookmarks(url, intranet, name, description, icon, privacy, weight, hide_in_other, hide_in_mobile, enabled, enabled_hosts, created_time, modified_time) values(:url, :intranet, :name, :description, :icon, :privacy, :weight, :hide_in_other, :hide_in_mobile, :enabled, :enabled_hosts, datetime('now', 'localtime'), datetime('now', 'localtime'))")
 	if err != nil {
 		if rErr := tx.Rollback(); rErr != nil {
 			panic(rErr)
@@ -664,6 +619,11 @@ func getBookmarkFilterCondition(cond *model.BookmarkListCondition) (string, map[
 	if cond.HideInOther != nil {
 		condList = append(condList, "(b.hide_in_other = :hide_in_other)")
 		params["hide_in_other"] = *cond.HideInOther
+	}
+
+	if cond.HideInMobile != nil {
+		condList = append(condList, "(b.hide_in_mobile = :hide_in_mobile)")
+		params["hide_in_mobile"] = *cond.HideInMobile
 	}
 
 	if cond.Folder != nil {

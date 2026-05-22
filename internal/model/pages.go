@@ -26,7 +26,6 @@ type HomeBookmarkListItem struct {
 	Icon     MyString `db:"icon"`
 	FolderID MyInt64  `db:"folder_id"`
 
-	HideInOther MyBool           `db:"hide_in_other"`
 	CreatedTime MyDatetimeString `db:"created_time"`
 	Visits      MyInt64          `db:"visits"`
 

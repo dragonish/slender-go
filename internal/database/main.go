@@ -106,6 +106,7 @@ func Load(filename string, wal bool) {
 			visits int unsigned not null default 0,
 			folder_id integer,
 			hide_in_other bool not null default false,
+			hide_in_mobile bool not null default false,
 			enabled bool not null default true,
 			enabled_hosts text not null default '',
 			foreign key(folder_id) references folders(id) on delete set null on update cascade
@@ -189,6 +190,28 @@ func Load(filename string, wal bool) {
 					panic(rErr)
 				}
 				log.Fatal("failed to add column to table", enabledHostsErr, enabledHostsMeta...)
+			}
+
+			if cErr := tx.Commit(); cErr != nil {
+				panic(cErr)
+			}
+		}
+
+		//? add new column hide_in_mobile to bookmarks table
+		hideInMobileMeta := []any{"table", "bookmarks", "column", "hide_in_mobile"}
+		if state, hideInMobileErr := queryTableCol(iDb, "bookmarks", "hide_in_mobile"); hideInMobileErr != nil {
+			log.Fatal("failed to read column info from table", hideInMobileErr, hideInMobileMeta...)
+		} else if !state {
+			log.Debug("add new column to table", hideInMobileMeta...)
+
+			tx := iDb.MustBegin()
+
+			_, hideInMobileErr = tx.Exec("alter table bookmarks add column hide_in_mobile bool not null default false")
+			if hideInMobileErr != nil {
+				if rErr := tx.Rollback(); rErr != nil {
+					panic(rErr)
+				}
+				log.Fatal("failed to add column to table", hideInMobileErr, hideInMobileMeta...)
 			}
 
 			if cErr := tx.Commit(); cErr != nil {

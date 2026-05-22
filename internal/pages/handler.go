@@ -69,8 +69,13 @@ func setCacheHeader(c *gin.Context) {
 	c.Header("Expires", time.Now().Add(24*time.Hour).Format(http.TimeFormat))
 }
 
-// parseUserAgent checks if the user agent contains a specific string.
-func parseUserAgent(c *http.Request, checkStr string) bool {
+// parseUserAgent checks if the user agent contains specific string.
+func parseUserAgent(c *http.Request, checkStr ...string) bool {
 	ua := strings.ToLower(c.UserAgent())
-	return strings.Contains(ua, strings.ToLower(checkStr))
+	for _, str := range checkStr {
+		if strings.Contains(ua, strings.ToLower(str)) {
+			return true
+		}
+	}
+	return false
 }
