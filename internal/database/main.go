@@ -73,9 +73,9 @@ func Load(filename string, wal bool) {
 
 		//? add new column sort_by to folders table
 		sortMeta := []any{"table", "folders", "column", "sort_by"}
-		var sortCol model.MyString
-		sortErr := iDb.Get(&sortCol, "select name from pragma_table_info(?) where name = ?", "folders", "sort_by")
-		if sortErr == sql.ErrNoRows {
+		if state, sortErr := queryTableCol(iDb, "folders", "sort_by"); sortErr != nil {
+			log.Fatal("failed to read column info from table", sortErr, sortMeta...)
+		} else if !state {
 			log.Debug("add new column to table", sortMeta...)
 			tx := iDb.MustBegin()
 
@@ -90,8 +90,6 @@ func Load(filename string, wal bool) {
 			if cErr := tx.Commit(); cErr != nil {
 				panic(cErr)
 			}
-		} else if sortErr != nil {
-			log.Fatal("failed to read column info from table", sortErr, sortMeta...)
 		}
 
 		_, err = iDb.Exec(`create table if not exists bookmarks(
@@ -116,9 +114,9 @@ func Load(filename string, wal bool) {
 
 		//? add new column hide_in_other to bookmarks table
 		hideMeta := []any{"table", "bookmarks", "column", "hide_in_other"}
-		var hideCol model.MyString
-		hideErr := iDb.Get(&hideCol, "select name from pragma_table_info(?) where name = ?", "bookmarks", "hide_in_other")
-		if hideErr == sql.ErrNoRows {
+		if state, hideErr := queryTableCol(iDb, "bookmarks", "hide_in_other"); hideErr != nil {
+			log.Fatal("failed to read column info from table", hideErr, hideMeta...)
+		} else if !state {
 			log.Debug("add new column to table", hideMeta...)
 			tx := iDb.MustBegin()
 
@@ -133,15 +131,13 @@ func Load(filename string, wal bool) {
 			if cErr := tx.Commit(); cErr != nil {
 				panic(cErr)
 			}
-		} else if hideErr != nil {
-			log.Fatal("failed to read column info from table", hideErr, hideMeta...)
 		}
 
 		//? add new column intranet to bookmarks table
 		intranetMeta := []any{"table", "bookmarks", "column", "intranet"}
-		var intranetCol model.MyString
-		intranetErr := iDb.Get(&intranetCol, "select name from pragma_table_info(?) where name = ?", "bookmarks", "intranet")
-		if intranetErr == sql.ErrNoRows {
+		if state, intranetErr := queryTableCol(iDb, "bookmarks", "intranet"); intranetErr != nil {
+			log.Fatal("failed to read column info from table", intranetErr, intranetMeta...)
+		} else if !state {
 			log.Debug("add new column to table", intranetMeta...)
 			tx := iDb.MustBegin()
 
@@ -156,15 +152,13 @@ func Load(filename string, wal bool) {
 			if cErr := tx.Commit(); cErr != nil {
 				panic(cErr)
 			}
-		} else if intranetErr != nil {
-			log.Fatal("failed to read column info from table", intranetErr, intranetMeta...)
 		}
 
 		//? add new column enabled to bookmarks table
 		enabledMeta := []any{"table", "bookmarks", "column", "enabled"}
-		var enabledCol model.MyString
-		enabledErr := iDb.Get(&enabledCol, "select name from pragma_table_info(?) where name = ?", "bookmarks", "enabled")
-		if enabledErr == sql.ErrNoRows {
+		if state, enabledErr := queryTableCol(iDb, "bookmarks", "enabled"); enabledErr != nil {
+			log.Fatal("failed to read column info from table", enabledErr, enabledMeta...)
+		} else if !state {
 			log.Debug("add new column to table", enabledMeta...)
 			tx := iDb.MustBegin()
 
@@ -179,15 +173,13 @@ func Load(filename string, wal bool) {
 			if cErr := tx.Commit(); cErr != nil {
 				panic(cErr)
 			}
-		} else if enabledErr != nil {
-			log.Fatal("failed to read column info from table", enabledErr, enabledMeta...)
 		}
 
 		//? add new column enabled_hosts to bookmarks table
 		enabledHostsMeta := []any{"table", "bookmarks", "column", "enabled_hosts"}
-		var enabledHostsCol model.MyString
-		enabledHostsErr := iDb.Get(&enabledHostsCol, "select name from pragma_table_info(?) where name = ?", "bookmarks", "enabled_hosts")
-		if enabledHostsErr == sql.ErrNoRows {
+		if state, enabledHostsErr := queryTableCol(iDb, "bookmarks", "enabled_hosts"); enabledHostsErr != nil {
+			log.Fatal("failed to read column info from table", enabledHostsErr, enabledHostsMeta...)
+		} else if !state {
 			log.Debug("add new column to table", enabledHostsMeta...)
 			tx := iDb.MustBegin()
 
@@ -202,8 +194,6 @@ func Load(filename string, wal bool) {
 			if cErr := tx.Commit(); cErr != nil {
 				panic(cErr)
 			}
-		} else if enabledHostsErr != nil {
-			log.Fatal("failed to read column info from table", enabledHostsErr, enabledHostsMeta...)
 		}
 
 		_, err = iDb.Exec("create index if not exists idx_bookmarks_created_time on bookmarks(created_time)")
@@ -246,9 +236,9 @@ func Load(filename string, wal bool) {
 
 		//? add new column max_age to logins table
 		ageMeta := []any{"table", "logins", "column", "max_age"}
-		var ageCol model.MyString
-		ageErr := iDb.Get(&ageCol, "select name from pragma_table_info(?) where name = ?", "logins", "max_age")
-		if ageErr == sql.ErrNoRows {
+		if state, ageErr := queryTableCol(iDb, "logins", "max_age"); ageErr != nil {
+			log.Fatal("failed to read column info from table", ageErr, ageMeta...)
+		} else if !state {
 			log.Debug("add new column to table", ageMeta...)
 			tx := iDb.MustBegin()
 
@@ -263,15 +253,13 @@ func Load(filename string, wal bool) {
 			if cErr := tx.Commit(); cErr != nil {
 				panic(cErr)
 			}
-		} else if ageErr != nil {
-			log.Fatal("failed to read column info from table", ageErr, ageMeta...)
 		}
 
 		//? add new column active to logins table
 		activeMeta := []any{"table", "logins", "column", "active"}
-		var activeCol model.MyString
-		activeErr := iDb.Get(&activeCol, "select name from pragma_table_info(?) where name = ?", "logins", "active")
-		if activeErr == sql.ErrNoRows {
+		if state, activeErr := queryTableCol(iDb, "logins", "active"); activeErr != nil {
+			log.Fatal("failed to read column info from table", activeErr, activeMeta...)
+		} else if !state {
 			log.Debug("add new column to table", activeMeta...)
 			tx := iDb.MustBegin()
 
@@ -286,8 +274,6 @@ func Load(filename string, wal bool) {
 			if cErr := tx.Commit(); cErr != nil {
 				panic(cErr)
 			}
-		} else if activeErr != nil {
-			log.Fatal("failed to read column info from table", activeErr, activeMeta...)
 		}
 	})
 
@@ -335,4 +321,16 @@ func createIndexFatal(err error, tableName, indexName string) {
 // The filename parameter does not take an extension name.
 func getDBFilePath(filename string) string {
 	return model.DATA_DIR + "/" + filename + ".db"
+}
+
+// queryTableCol returns whether the column exists in the table.
+func queryTableCol(iDb *sqlx.DB, tableName, columnName string) (bool, error) {
+	var col model.MyString
+	err := iDb.Get(&col, "select name from pragma_table_info(?) where name = ?", tableName, columnName)
+	if err == sql.ErrNoRows {
+		return false, nil
+	} else if err != nil {
+		return false, err
+	}
+	return true, nil
 }
